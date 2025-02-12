@@ -3,24 +3,40 @@ package backend343.models;
 import backend343.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
-import java.util.List;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+
+import java.util.List;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder //simplifies object creation, good to have in spring proj
-public class User {
+@Table(name = "users") //rename table to avoid conflicts with user keyword
+@Inheritance(strategy = InheritanceType.JOINED) //each subclass uses the id from user
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(unique = true, nullable = false)
+    private String username;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
+
+    private boolean enabled;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "verification_expiration")
+    private LocalDateTime verificationCodeExpiresAt;
 
     //not creating whole classes for diff types of users - they will be mapped to events based on role
     //your role only allows you to do certain methods, but not stop you from joining any event
@@ -37,13 +53,37 @@ public class User {
     //but a user can still attend as many events they want
     //mapped by the event field in eventAttendee
     //if an event is deleted, all associated attendees in EventAttendee table will be deleted.
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventAttendee> attendees;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventSpeaker> speakers;
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventOrganizer> organizers;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled(){
+        return enabled;
+    }
 
 }
