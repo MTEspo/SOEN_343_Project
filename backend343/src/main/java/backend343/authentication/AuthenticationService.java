@@ -1,5 +1,8 @@
 package backend343.authentication;
 import backend343.dto.LoginUserDto;
+import backend343.models.Attendee;
+import backend343.models.Organizer;
+import backend343.models.Speaker;
 import backend343.repository.UserRepository;
 import backend343.dto.RegisterDto;
 import backend343.dto.VerifyUserDto;
@@ -24,12 +27,23 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
-    public User signup(RegisterDto input){
-        User user = new User(input.getUsername(),input.getEmail(),passwordEncoder.encode(input.getPassword()));
+    public User signup(RegisterDto input) {
+        User user = switch (input.getRole()) {
+            case SPEAKER ->
+                    new Speaker(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole(), input.getExpertise());
+            case ORGANIZER ->
+                    new Organizer(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole(), input.getOrganization());
+            case ATTENDEE ->
+                    new Attendee(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole(), input.getProfession(), input.getUniversity());
+            default ->
+                    new User(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole());
+        };
+
         user.setVerificationCode(generateVerificationCode());
         user.setVerificationCodeExpiresAt(LocalDateTime.now().plusHours(1));
         user.setEnabled(false);
         sendVerificationEmail(user);
+
         return userRepository.save(user);
     }
 

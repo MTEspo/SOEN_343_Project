@@ -4,6 +4,7 @@ import backend343.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -54,16 +56,17 @@ public class User implements UserDetails {
     //mapped by the event field in eventAttendee
     //if an event is deleted, all associated attendees in EventAttendee table will be deleted.
 
-    public User(String username, String email, String password) {
+    public User(String username, String email, String password,Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

@@ -1,5 +1,6 @@
 package backend343.jwt;
 
+import backend343.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -26,13 +27,24 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Long extractUserId(String token) {
+        return (Long) extractClaim(token, claims -> claims.get("userId"));
+    }
+
+    public String extractUserRole(String token) {
+        return (String) extractClaim(token, claims -> claims.get("role"));
+    }
+
     public <T> T extractClaim(String token, Function<Claims,T> claimsResolver){
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
     public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(),userDetails);
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("userId", ((User) userDetails).getId());
+        extraClaims.put("role", ((User) userDetails).getRole());
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(Map<String,Object> extraClaims, UserDetails userDetails){
