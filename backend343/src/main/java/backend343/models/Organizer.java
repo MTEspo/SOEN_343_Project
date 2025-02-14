@@ -6,9 +6,9 @@ import lombok.*;
 import java.util.List;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "organizers")
@@ -16,6 +16,8 @@ import java.util.List;
 public class Organizer extends User {
 
     private String organization;
+
+    public Organizer(){}
 
     @OneToMany(mappedBy = "organizer", cascade = CascadeType.ALL)
     private List<EventOrganizer> eventOrganizers;

@@ -1,6 +1,8 @@
 package backend343.config;
 
+import backend343.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,10 +14,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
-@RequiredArgsConstructor
 public class ApplicationConfiguration {
 
     private final UserRepository userRepository;
+
+    @Autowired
+    public ApplicationConfiguration(UserRepository userRepository){
+        this.userRepository=userRepository;
+    }
 
     @Bean
     UserDetailsService userDetailsService(){

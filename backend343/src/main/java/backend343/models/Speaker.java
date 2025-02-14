@@ -6,16 +6,18 @@ import lombok.*;
 import java.util.List;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "speakers")
-@PrimaryKeyJoinColumn(name = "user_id") // Uses the same ID as User
+@PrimaryKeyJoinColumn(name = "user_id")
 public class Speaker extends User {
 
     private String expertise;
+
+    public Speaker(){}
 
     @OneToMany(mappedBy = "speaker", cascade = CascadeType.ALL)
     private List<EventSpeaker> eventSpeakers;

@@ -27,8 +27,10 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false)
     private String username;
+
     @Column(unique = true, nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String password;
 
@@ -40,29 +42,94 @@ public class User implements UserDetails {
     @Column(name = "verification_expiration")
     private LocalDateTime verificationCodeExpiresAt;
 
-    //not creating whole classes for diff types of users - they will be mapped to events based on role
-    //your role only allows you to do certain methods, but not stop you from joining any event
-    //ex. a speaker does not have to speak at an event.
-    //they are only speaking at events that they are listed as EventSpeakers for
-    //Eventspeaker = class dedicated to linking an event to users who WILL speak at event
-
-    //in later stages can check for role permissions with spring security annotation
-    //ex @PreAuthorize("hasRole('ADMIN')")
     @Enumerated(EnumType.STRING) //stores enum as a string in database
     private Role role;
 
-    //an event can have many attendees, but each eventAttendee is associated to one event
-    //but a user can still attend as many events they want
-    //mapped by the event field in eventAttendee
-    //if an event is deleted, all associated attendees in EventAttendee table will be deleted.
-
-    public User(String username, String email, String password,Role role) {
+    public User(){}
+    public User(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
+    // Getters and Setters
+
+    // Getter and Setter for id
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    // Getter and Setter for username
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    // Getter and Setter for email
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    // Getter and Setter for password
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // Getter and Setter for enabled
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    // Getter and Setter for verificationCode
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
+    }
+
+    // Getter and Setter for verificationCodeExpiresAt
+    public LocalDateTime getVerificationCodeExpiresAt() {
+        return verificationCodeExpiresAt;
+    }
+
+    public void setVerificationCodeExpiresAt(LocalDateTime verificationCodeExpiresAt) {
+        this.verificationCodeExpiresAt = verificationCodeExpiresAt;
+    }
+
+    // Getter and Setter for role
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    // Additional methods from UserDetails interface
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,11 +149,6 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
-    }
-
-    @Override
-    public boolean isEnabled(){
-        return enabled;
     }
 
 }

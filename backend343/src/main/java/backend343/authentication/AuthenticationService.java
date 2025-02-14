@@ -8,8 +8,8 @@ import backend343.dto.RegisterDto;
 import backend343.dto.VerifyUserDto;
 import backend343.service.EmailService;
 import jakarta.mail.MessagingException;
-import lombok.RequiredArgsConstructor;
 import backend343.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,12 +20,22 @@ import java.util.Optional;
 import java.util.Random;
 
 @Service
-@RequiredArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+
+    @Autowired
+    public AuthenticationService(UserRepository userRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 AuthenticationManager authenticationManager,
+                                 EmailService emailService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+        this.emailService = emailService;
+    }
 
     public User signup(RegisterDto input) {
         User user = switch (input.getRole()) {
