@@ -1,25 +1,25 @@
 package backend343.models;
 
 import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class EventAttendee {
+public class EventTicket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Attendee attendee;
+    private String name;
+    private BigDecimal price;
 
     @ManyToOne
     private Event event;
-
-    private LocalDateTime registrationDate;
 }

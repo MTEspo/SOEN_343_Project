@@ -41,7 +41,9 @@ public class SecurityConfiguration {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll() // Allow access to H2 console
+                        .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/api/event/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session->session

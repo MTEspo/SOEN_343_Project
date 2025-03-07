@@ -27,6 +27,6 @@ public class Session {
     private EventType eventType;
 
     //linking it to specific events
-    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
-    private List<EventSession> eventSessions;
+//    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
+//    private List<EventSession> eventSessions;
 }

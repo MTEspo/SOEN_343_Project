@@ -18,6 +18,6 @@ public class EventTrack {
 
     //each eventTrack has multiple events
     //list of events in this track
-    @OneToMany(mappedBy = "eventTrack", cascade = CascadeType.ALL)
-    private List<Event> events;
+//    @OneToMany(mappedBy = "eventTrack", cascade = CascadeType.ALL)
+//    private List<Event> events;
 }

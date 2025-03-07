@@ -26,6 +26,6 @@ public class Stakeholder {
     //bidirectional manytomany
     //this is the other side of the relationship
     //the joining of tables happens in Event class
-    @ManyToMany(mappedBy = "stakeholders")
-    private List<Event> events;
+//    @ManyToMany(mappedBy = "stakeholders")
+//    private List<Event> events;
 }

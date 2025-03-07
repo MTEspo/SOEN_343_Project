@@ -14,7 +14,6 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users") //rename table to avoid conflicts with user keyword
 @Inheritance(strategy = InheritanceType.JOINED) //each subclass uses the id from user
