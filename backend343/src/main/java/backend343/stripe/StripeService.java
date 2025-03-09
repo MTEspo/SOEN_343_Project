@@ -2,7 +2,7 @@ package backend343.stripe;
 
 import backend343.models.Event;
 import backend343.models.User;
-import backend343.models.UserEvent;
+import backend343.models.Ticket;
 import backend343.repository.EventRepository;
 import backend343.repository.UserEventRepository;
 import backend343.repository.UserRepository;
@@ -26,17 +26,18 @@ public class StripeService {
     private UserEventRepository userEventRepository;
 
     public StripeResponse checkoutEvent(ProductRequest productRequest) {
+
         Event event = eventRepository.findById(productRequest.getEventId()).orElseThrow();
         User user = userRepository.findByEmail(productRequest.getUserEmail()).orElseThrow();
 
-        SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData.builder()
+        SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
+                .builder()
                 .setName(event.getName()).build();
 
-        SessionCreateParams.LineItem.PriceData priceData =
-                SessionCreateParams.LineItem.PriceData.builder()
-                        .setCurrency("CAD")
-                        .setUnitAmount(event.getPrice().multiply(BigDecimal.valueOf(100)).longValue())
-                        .setProductData(productData).build();
+        SessionCreateParams.LineItem.PriceData priceData = SessionCreateParams.LineItem.PriceData.builder()
+                .setCurrency("CAD")
+                .setUnitAmount(event.getPrice().multiply(BigDecimal.valueOf(100)).longValue())
+                .setProductData(productData).build();
 
         SessionCreateParams.LineItem lineItem = SessionCreateParams.LineItem.builder()
                 .setQuantity(1L)
@@ -52,14 +53,14 @@ public class StripeService {
                 .build();
 
         Session session = null;
-        try{
+        try {
             session = Session.create(params);
-        }catch(StripeException ex) {
+        } catch (StripeException ex) {
             ex.printStackTrace();
         }
 
         if (session != null) {
-            createUserEvent(event,user);
+            createUserEvent(event, user);
         }
 
         return StripeResponse.builder()
@@ -70,8 +71,8 @@ public class StripeService {
                 .build();
     }
 
-    private void createUserEvent(Event event, User user){
-        UserEvent userEvent = UserEvent.builder()
+    private void createUserEvent(Event event, User user) {
+        Ticket userEvent = Ticket.builder()
                 .user(user)
                 .event(event)
                 .registrationDate(LocalDateTime.now())

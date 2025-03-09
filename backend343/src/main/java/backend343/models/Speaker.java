@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
-
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
@@ -17,14 +16,11 @@ public class Speaker extends User {
 
     private String expertise;
 
-    public Speaker(){}
-
-    @OneToMany(mappedBy = "speaker", cascade = CascadeType.ALL)
-    private List<EventSpeaker> eventSpeakers;
+    public Speaker() {
+    }
 
     public Speaker(String username, String email, String password, Role role, String expertise) {
         super(username, email, password, role);
         this.expertise = expertise;
     }
 }
-

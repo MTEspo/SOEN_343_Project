@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
@@ -28,15 +27,4 @@ public class Event {
 
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventAttendee> attendees;
-
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventOrganizer> organizers;
-
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventSpeaker> speakers;
-
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL)
-    private List<EventSession> sessions;
 }

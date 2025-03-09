@@ -4,10 +4,6 @@ import backend343.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
@@ -21,9 +17,6 @@ public class Attendee extends User {
     public Attendee() {
         super();
     }
-
-    @OneToMany(mappedBy = "attendee", cascade = CascadeType.ALL)
-    private List<EventAttendee> eventAttendees = new ArrayList<>();
 
     public Attendee(String username, String email, String password, Role role, String profession, String university) {
         super(username, email, password, role);
