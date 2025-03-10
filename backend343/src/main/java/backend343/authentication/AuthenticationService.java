@@ -5,6 +5,11 @@ import backend343.repository.UserRepository;
 import backend343.dto.RegisterDto;
 import backend343.dto.VerifyUserDto;
 import backend343.service.EmailService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.Coupon;
+import com.stripe.model.PromotionCode;
+import com.stripe.param.CouponCreateParams;
+import com.stripe.param.PromotionCodeCreateParams;
 import jakarta.mail.MessagingException;
 import backend343.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
@@ -64,7 +70,7 @@ public class AuthenticationService {
         return user;
     }
 
-    public void verifyUser(VerifyUserDto input){
+    public void verifyUser(VerifyUserDto input) throws StripeException, MessagingException {
         Optional<User> optionalUser = userRepository.findByEmail(input.getEmail());
         if(optionalUser.isPresent()){
             User user = optionalUser.get();
@@ -76,6 +82,7 @@ public class AuthenticationService {
                 user.setVerificationCode(null);
                 user.setVerificationCodeExpiresAt(null);
                 userRepository.save(user);
+                sendWelcomeEmailWithCoupon(user);
             } else {
                 throw new RuntimeException("Invalid verification code");
             }
@@ -100,7 +107,39 @@ public class AuthenticationService {
         }
     }
 
-    public void sendVerificationEmail(User user){
+    private void sendWelcomeEmailWithCoupon(User user) throws StripeException, MessagingException {
+        String couponCode = createCoupon(20);
+        String subject = "Welcome to our website!";
+        String htmlMessage = "<h1>Welcome to our website!</h1><p>Thank you for verifying your account. As a token of appreciation, we'd like to offer you a 20% discount on your next purchase. Use the code <strong>" + couponCode + "</strong> at checkout.</p>";
+        emailService.sendWelcomeEmail(user.getEmail(), subject, htmlMessage);
+    }
+
+    public String createCoupon(int percentOff) throws StripeException {
+        String couponCode = generateCouponCode();
+
+        CouponCreateParams params = CouponCreateParams.builder()
+                .setId(couponCode)
+                .setPercentOff(BigDecimal.valueOf(percentOff))
+                .setMaxRedemptions(1L)
+                .build();
+        Coupon coupon = Coupon.create(params);
+
+        PromotionCodeCreateParams promotionCodeParams = PromotionCodeCreateParams.builder()
+                .setCoupon(coupon.getId())
+                .setCode(couponCode)
+                .build();
+        PromotionCode.create(promotionCodeParams);
+
+        return couponCode;
+    }
+
+    private String generateCouponCode() {
+        Random random = new Random();
+        int code = random.nextInt(999999)+100000;
+        return String.valueOf(code);
+    }
+
+    private void sendVerificationEmail(User user){
         String subject = "Account Verification";
         String verificationCode = user.getVerificationCode();
         String htmlMessage = "<h1>Verify your account</h1><p>Use the following code to verify your account: <strong>" + verificationCode + "</strong></p>";
@@ -111,7 +150,7 @@ public class AuthenticationService {
         }
     }
 
-    private String generateVerificationCode(){
+    public static String generateVerificationCode(){
         Random random = new Random();
         int code = random.nextInt(999999)+100000;
         return String.valueOf(code);

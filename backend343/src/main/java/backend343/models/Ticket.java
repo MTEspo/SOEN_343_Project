@@ -22,4 +22,7 @@ public class Ticket {
     private Event event;
 
     private LocalDateTime registrationDate;
+
+    private String ticketCode;
+    private Boolean isCodeUsed;
 }
