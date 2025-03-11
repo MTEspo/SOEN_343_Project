@@ -111,7 +111,7 @@ public class AuthenticationService {
         String couponCode = createCoupon(20);
         String subject = "Welcome to our website!";
         String htmlMessage = "<h1>Welcome to our website!</h1><p>Thank you for verifying your account. As a token of appreciation, we'd like to offer you a 20% discount on your next purchase. Use the code <strong>" + couponCode + "</strong> at checkout.</p>";
-        emailService.sendWelcomeEmail(user.getEmail(), subject, htmlMessage);
+        emailService.sendEmail(user.getEmail(), subject, htmlMessage);
     }
 
     public String createCoupon(int percentOff) throws StripeException {

@@ -1,5 +1,6 @@
 package backend343.service;
 
+import backend343.models.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
+
     public void sendVerificationEmail(String to, String subject, String text) throws MessagingException{
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -23,7 +25,7 @@ public class EmailService {
         emailSender.send(message);
     }
 
-    public void sendWelcomeEmail(String to, String subject, String text) throws MessagingException{
+    public void sendEmail(String to, String subject, String text) throws MessagingException{
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -33,4 +35,6 @@ public class EmailService {
 
         emailSender.send(message);
     }
+
+
 }

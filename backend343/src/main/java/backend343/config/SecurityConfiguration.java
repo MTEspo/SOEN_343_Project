@@ -40,13 +40,8 @@ public class SecurityConfiguration {
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/product/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/event/**").permitAll()
-                        .requestMatchers("/api/schedule/**").permitAll()
-                        .requestMatchers("/api/session/**").permitAll()
-                        .requestMatchers("/api/checkin/**").permitAll()
                         .requestMatchers("/stripe-webhook/**").permitAll()
                         .anyRequest().authenticated()
                 )
