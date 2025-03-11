@@ -6,6 +6,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,7 +25,9 @@ public class Event {
     private LocalDateTime endDate;
     private String location;
     private EventType type;
-
     private BigDecimal price;
 
+    //made fetch type eager bc all schedules associated to event will be loaded every time
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Schedule> schedules;
 }
