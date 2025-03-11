@@ -19,6 +19,15 @@ public class EventService {
         return ticketRepository.hasEventAccess(userId, eventId);
     }
 
+    public Event findById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+    }
+
+    public void save(Event event) {
+        eventRepository.save(event);
+    }
+
     public Event createEvent(Event event) {
         // create stripe product for every event setting the stripe id same as its databse id
 
