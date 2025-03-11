@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.enums.EventType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -24,9 +25,8 @@ public class Session {
     private LocalTime startTime;
     private LocalTime endTime;
     private String location;
-    //price taken from event it's linked to
 
-    @ManyToOne(fetch = FetchType.EAGER) //always load the schedule when loading a session for eventid
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 

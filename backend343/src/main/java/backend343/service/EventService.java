@@ -19,6 +19,15 @@ public class EventService {
         return userEventRepository.hasEventAccess(userId, eventId);
     }
 
+    public Event findById(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found"));
+    }
+
+    public void save(Event event) {
+        eventRepository.save(event);
+    }
+
     public Event createEvent(Event event) {
         return eventRepository.save(event);
     }

@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.enums.EventType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -24,9 +25,11 @@ public class Schedule {
     
     @ManyToOne(fetch = FetchType.EAGER) //always load the event when loading a schedule (for eventid)
     @JoinColumn(name = "event_id")
+    @JsonIgnore
     private Event event;
 
     //always load sessions so user can choose when schedule is clicked
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<Session> sessions;
 }

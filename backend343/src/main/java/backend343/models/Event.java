@@ -27,7 +27,6 @@ public class Event {
     private EventType type;
     private BigDecimal price;
 
-    //made fetch type eager bc all schedules associated to event will be loaded every time
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Schedule> schedules;
 }

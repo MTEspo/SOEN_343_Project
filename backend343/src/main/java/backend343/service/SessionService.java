@@ -3,6 +3,8 @@ package backend343.service;
 import java.util.List;
 import java.util.Optional;
 
+import backend343.models.Event;
+import backend343.models.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,16 @@ public class SessionService {
     @Autowired
     private SessionRepository sessionRepository;
 
+    @Autowired
+    private ScheduleService scheduleService;
+
     public List<Session> getAllSessions() {
         return sessionRepository.findAll();
     }
 
-    public Session createSession(Session session) {
+    public Session createSession(Session session, Long scheduleId) {
+        Schedule schedule = scheduleService.getScheduleById(scheduleId);
+        session.setSchedule(schedule);
         return sessionRepository.save(session);
     }
 

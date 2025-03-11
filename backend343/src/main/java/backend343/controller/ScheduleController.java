@@ -25,15 +25,12 @@ public class ScheduleController {
     
     @GetMapping("/{id}")
     public ResponseEntity<Schedule> getScheduleById(@PathVariable Long id) {
-        return scheduleService.getScheduleById(id)
-        //changing object to a response entity from optional
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(scheduleService.getScheduleById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule) {
-       return ResponseEntity.ok(scheduleService.createSchedule(schedule));
+    @PostMapping("/create/{eventId}")
+    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule, @PathVariable Long eventId) {
+       return ResponseEntity.ok(scheduleService.createSchedule(schedule,eventId));
     }
 
     @DeleteMapping("/{id}")

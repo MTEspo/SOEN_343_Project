@@ -29,9 +29,9 @@ public class SessionController {
         .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    public ResponseEntity<Session> createSession(@RequestBody Session session) {
-        return ResponseEntity.ok(sessionService.createSession(session));
+    @PostMapping("/create/{scheduleId}")
+    public ResponseEntity<Session> createSession(@RequestBody Session session, @PathVariable Long scheduleId) {
+        return ResponseEntity.ok(sessionService.createSession(session, scheduleId));
     }
 
     @DeleteMapping("/{id}")
