@@ -32,4 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .map(user -> new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
     }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
 }

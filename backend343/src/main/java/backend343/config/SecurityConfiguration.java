@@ -46,6 +46,8 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/event/**").permitAll()
                         .requestMatchers("/api/schedule/**").permitAll()
                         .requestMatchers("/api/session/**").permitAll()
+                        .requestMatchers("/api/checkin/**").permitAll()
+                        .requestMatchers("/stripe-webhook/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session->session
