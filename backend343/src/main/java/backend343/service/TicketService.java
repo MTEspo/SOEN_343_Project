@@ -31,7 +31,7 @@ public class TicketService {
         return true;
     }
 
-    public Ticket createTicket(backend343.models.Event event, User user) {
+    public Ticket createTicket(backend343.models.Session session, User user) {
         String ticketCode;
         do {
             ticketCode = generateVerificationCode();
@@ -39,11 +39,15 @@ public class TicketService {
 
         Ticket ticket = Ticket.builder()
                 .user(user)
-                .event(event)
+                .session(session)
                 .registrationDate(LocalDateTime.now())
                 .ticketCode(ticketCode)
                 .isCodeUsed(false)
                 .build();
         return ticketRepository.save(ticket);
+    }
+
+    public boolean hasEventAccess(Long userId, Long sessionId) {
+        return ticketRepository.hasEventAccess(userId, sessionId);
     }
 }

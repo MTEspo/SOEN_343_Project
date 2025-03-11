@@ -19,7 +19,7 @@ public class Ticket {
     private User user;
 
     @ManyToOne
-    private Event event;
+    private Session session;
 
     private LocalDateTime registrationDate;
 

@@ -2,10 +2,7 @@ package backend343.stripe;
 import backend343.models.Event;
 import backend343.models.Ticket;
 import backend343.models.User;
-import backend343.service.EmailService;
-import backend343.service.EventService;
-import backend343.service.TicketService;
-import backend343.service.UserDetailsServiceImpl;
+import backend343.service.*;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.checkout.Session;
 import com.stripe.net.Webhook;
@@ -25,7 +22,7 @@ public class StripeWebhookController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
-    EventService eventService;
+    SessionService sessionService;
 
     @Autowired
     private TicketService ticketService;
@@ -36,7 +33,7 @@ public class StripeWebhookController {
     public ResponseEntity<String> handleStripeWebhook(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signature) {
-        String endpointSecret = "";
+        String endpointSecret = "whsec_fd0626eef51aedead194fef3c6c78388cdb4aa7019242f1b82118b025a32096a";
 
         try {
             com.stripe.model.Event event = Webhook.constructEvent(payload, signature, endpointSecret);
@@ -58,26 +55,26 @@ public class StripeWebhookController {
     }
 
     private void handleCheckoutSessionCompleted(Session session) {
-        String eventIdStr = session.getMetadata().get("event_id");
-        String userIdStr = session.getMetadata().get("user_id");
+        String strSessionId = session.getMetadata().get("session_id");
+        String strUserId = session.getMetadata().get("user_id");
 
-        long eventId = Long.parseLong(eventIdStr);
-        long userId = Long.parseLong(userIdStr);
+        long sessionId = Long.parseLong(strSessionId);
+        long userId = Long.parseLong(strUserId);
 
-        Event event = eventService.getEventById(eventId);
+        backend343.models.Session sessionEvent  = sessionService.getSessionById(sessionId);
         User user = userDetailsService.getUserById(userId);
-        createTicket(event, user);
+        createTicket(sessionEvent, user);
     }
 
-    private void createTicket(backend343.models.Event event, User user) {
-        Ticket ticket = ticketService.createTicket(event, user);
+    private void createTicket(backend343.models.Session sessionEvent, User user) {
+        Ticket ticket = ticketService.createTicket(sessionEvent, user);
         sendConfirmationOfPurchaseEmail(user,ticket);
     }
 
     private void sendConfirmationOfPurchaseEmail(User user, Ticket ticket) {
-        String subject = "Confirmation of Purchase: " + ticket.getEvent().getName();
+        String subject = "Confirmation of Purchase: " + ticket.getSession().getTitle();
         String htmlMessage = "<h1>Confirmation of Purchase</h1>" +
-                "<p>Thank you for purchasing a ticket to " + ticket.getEvent().getName() + ".</p>" +
+                "<p>Thank you for purchasing a ticket to " + ticket.getSession().getTitle() + ".</p>" +
                 "<p>Ticket Code: <strong>" + ticket.getTicketCode() + "</strong></p>" +
                 "<p>Please note that you will be required to provide this ticket code when checking in at the event.</p>";
 

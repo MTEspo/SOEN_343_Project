@@ -1,11 +1,12 @@
 package backend343.stripe;
 
-import backend343.models.Event;
+import backend343.models.Session;
 import backend343.models.User;
-import backend343.repository.EventRepository;
 import backend343.repository.UserRepository;
+import backend343.service.SessionService;
 import com.stripe.exception.StripeException;
-import com.stripe.model.checkout.Session;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.stripe.param.checkout.SessionCreateParams;
@@ -18,23 +19,23 @@ import java.util.Map;
 public class StripeService {
 
     @Autowired
-    private EventRepository eventRepository;
+    private SessionService sessionService;
     @Autowired
     private UserRepository userRepository;
 
 
     public StripeResponse checkoutEvent(ProductRequest productRequest) {
 
-        Event event = eventRepository.findById(productRequest.getEventId()).orElseThrow();
+        Session session = sessionService.getSessionById(productRequest.getSessionId());
         User user = userRepository.findByEmail(productRequest.getUserEmail()).orElseThrow();
 
         SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
                 .builder()
-                .setName(event.getName()).build();
+                .setName(session.getTitle()).build();
 
         SessionCreateParams.LineItem.PriceData priceData = SessionCreateParams.LineItem.PriceData.builder()
                 .setCurrency("CAD")
-                .setUnitAmount(event.getPrice().multiply(BigDecimal.valueOf(100)).longValue())
+                .setUnitAmount(session.getSchedule().getEvent().getPrice().multiply(BigDecimal.valueOf(100)).longValue())
                 .setProductData(productData).build();
 
         SessionCreateParams.LineItem lineItem = SessionCreateParams.LineItem.builder()
@@ -50,27 +51,30 @@ public class StripeService {
                 .setCustomerEmail(productRequest.getUserEmail())
                 .setAllowPromotionCodes(true)
                 .putAllMetadata(Map.of(
-                        "event_id", String.valueOf(productRequest.getEventId()),
+                        "session_id", String.valueOf(productRequest.getSessionId()),
                         "user_id", String.valueOf(user.getId())
                 ))
                 .build();
 
-        Session session = null;
+        com.stripe.model.checkout.Session checkoutSession = null;
         try {
-            session = Session.create(params);
+            checkoutSession = com.stripe.model.checkout.Session.create(params);
         } catch (StripeException ex) {
             ex.printStackTrace();
         }
 
-        if (session != null) {
-
+        if (checkoutSession == null) {
+            return StripeResponse.builder()
+                    .status("FAILURE")
+                    .message("Payment session creation failed")
+                    .build();
         }
 
         return StripeResponse.builder()
                 .status("SUCCESS")
                 .message("Payment session created successfully")
-                .sessionId(session.getId())
-                .sessionUrl(session.getUrl())
+                .sessionId(checkoutSession.getId())
+                .sessionUrl(checkoutSession.getUrl())
                 .build();
     }
 

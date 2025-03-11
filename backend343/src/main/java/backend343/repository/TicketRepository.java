@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    @Query("SELECT CASE WHEN COUNT(ue) > 0 THEN true ELSE false END FROM Ticket ue WHERE ue.user.id = :userId AND ue.event.id = :eventId")
-    boolean hasEventAccess(@Param("userId") Long userId, @Param("eventId") Long eventId);
+    @Query("SELECT CASE WHEN COUNT(ue) > 0 THEN true ELSE false END FROM Ticket ue WHERE ue.user.id = :userId AND ue.session.id = :sessionId")
+    boolean hasEventAccess(@Param("userId") Long userId, @Param("sessionId") Long sessionId);
 
     Ticket findByTicketCode(String ticketCode);
 }

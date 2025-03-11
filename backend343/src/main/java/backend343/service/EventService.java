@@ -10,14 +10,7 @@ import org.springframework.stereotype.Service;
 public class EventService {
 
     @Autowired
-    private TicketRepository ticketRepository;
-
-    @Autowired
     private EventRepository eventRepository;
-
-    public boolean hasAccessToEvent(Long userId, Long eventId) {
-        return ticketRepository.hasEventAccess(userId, eventId);
-    }
 
     public Event findById(Long id) {
         return eventRepository.findById(id)

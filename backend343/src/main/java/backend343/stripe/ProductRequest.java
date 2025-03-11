@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProductRequest {
     private String userEmail;
-    private Long eventId;
+    private Long sessionId;
 }

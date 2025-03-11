@@ -24,9 +24,7 @@ public class SessionController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Session> getSessionById(@PathVariable Long id) {
-        return sessionService.getSessionById(id)
-        .map(ResponseEntity::ok)
-        .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(sessionService.getSessionById(id));
     }
 
     @PostMapping("/create/{scheduleId}")
@@ -46,4 +44,10 @@ public class SessionController {
         Long eventId = sessionService.getEventIdFromSession(id);
         return ResponseEntity.ok(eventId);
     }
+
+    @GetMapping("/access/{userId}/{sessionId}")
+    public boolean hasAccessToEvent(@PathVariable Long userId,@PathVariable Long sessionId) {
+        return sessionService.hasAccessToEvent(userId, sessionId);
+    }
+
 }

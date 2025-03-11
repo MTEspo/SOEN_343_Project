@@ -15,6 +15,9 @@ import backend343.repository.SessionRepository;
 public class SessionService {
 
     @Autowired
+    private TicketService ticketService;
+
+    @Autowired
     private SessionRepository sessionRepository;
 
     @Autowired
@@ -34,8 +37,8 @@ public class SessionService {
         sessionRepository.deleteById(id);
     }
 
-    public Optional<Session> getSessionById(Long id) {
-        return sessionRepository.findById(id);
+    public Session getSessionById(Long id) {
+        return sessionRepository.findById(id).orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
     //method to get the eventID from the session
@@ -43,5 +46,9 @@ public class SessionService {
         return sessionRepository.findById(sessionId)
         .map(session -> session.getSchedule().getEvent().getId())
         .orElseThrow(() -> new RuntimeException("Session not found"));
+    }
+
+    public boolean hasAccessToEvent(Long userId, Long sessionId) {
+        return ticketService.hasEventAccess(userId, sessionId);
     }
 }
