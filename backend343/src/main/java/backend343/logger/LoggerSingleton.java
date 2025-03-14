@@ -1,4 +1,4 @@
-package backend343.utility;
+package backend343.logger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

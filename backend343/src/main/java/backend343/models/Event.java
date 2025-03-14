@@ -21,9 +21,6 @@ public class Event {
 
     private String name;
     private String description;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private String location;
     private EventType type;
     private BigDecimal price;
 

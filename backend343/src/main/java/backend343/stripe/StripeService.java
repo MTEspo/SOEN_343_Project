@@ -1,5 +1,6 @@
 package backend343.stripe;
 
+import backend343.logger.LoggerSingleton;
 import backend343.models.Session;
 import backend343.models.User;
 import backend343.repository.UserRepository;
@@ -23,8 +24,11 @@ public class StripeService {
     @Autowired
     private UserRepository userRepository;
 
+    private static final LoggerSingleton logger = LoggerSingleton.getInstance();
+
 
     public StripeResponse checkoutEvent(ProductRequest productRequest) {
+        logger.logInfo("Initiating checkout for product request: " + productRequest);
 
         Session session = sessionService.getSessionById(productRequest.getSessionId());
         User user = userRepository.findByEmail(productRequest.getUserEmail()).orElseThrow();
@@ -58,18 +62,23 @@ public class StripeService {
 
         com.stripe.model.checkout.Session checkoutSession = null;
         try {
+            logger.logInfo("Creating Stripe checkout session...");
             checkoutSession = com.stripe.model.checkout.Session.create(params);
+            logger.logInfo("Stripe checkout session created successfully");
         } catch (StripeException ex) {
+            logger.logError("Error creating Stripe checkout session: " + ex.getMessage());
             ex.printStackTrace();
         }
 
         if (checkoutSession == null) {
+            logger.logError("Checkout session creation failed");
             return StripeResponse.builder()
                     .status("FAILURE")
                     .message("Payment session creation failed")
                     .build();
         }
 
+        logger.logInfo("Returning successful checkout response");
         return StripeResponse.builder()
                 .status("SUCCESS")
                 .message("Payment session created successfully")
@@ -77,7 +86,4 @@ public class StripeService {
                 .sessionUrl(checkoutSession.getUrl())
                 .build();
     }
-
-
-
 }

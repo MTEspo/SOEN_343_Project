@@ -143,11 +143,7 @@ public class AuthenticationService {
         String subject = "Account Verification";
         String verificationCode = user.getVerificationCode();
         String htmlMessage = "<h1>Verify your account</h1><p>Use the following code to verify your account: <strong>" + verificationCode + "</strong></p>";
-        try{
-            emailService.sendVerificationEmail(user.getEmail(),subject,htmlMessage);
-        } catch(MessagingException e){
-            e.printStackTrace();
-        }
+        emailService.sendVerificationEmail(user.getEmail(),subject,htmlMessage);
     }
 
     public static String generateVerificationCode(){
