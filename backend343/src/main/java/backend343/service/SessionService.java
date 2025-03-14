@@ -23,6 +23,9 @@ public class SessionService {
     @Autowired
     private ScheduleService scheduleService;
 
+    @Autowired
+    private ChatRoomService chatRoomService;
+
     public List<Session> getAllSessions() {
         return sessionRepository.findAll();
     }
@@ -30,7 +33,10 @@ public class SessionService {
     public Session createSession(Session session, Long scheduleId) {
         Schedule schedule = scheduleService.getScheduleById(scheduleId);
         session.setSchedule(schedule);
-        return sessionRepository.save(session);
+        Session savedSession = sessionRepository.save(session);
+        //creating and linking chatroom upon session creation
+        chatRoomService.createChatRoom(savedSession.getId());
+        return savedSession;
     }
 
     public void deleteSession(Long id) {

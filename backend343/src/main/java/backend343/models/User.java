@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.enums.Role;
+import backend343.observer.ChatObserver;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "users") //rename table to avoid conflicts with user keyword
 @Inheritance(strategy = InheritanceType.JOINED) //each subclass uses the id from user
-public class User implements UserDetails {
+public class User implements UserDetails, ChatObserver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
