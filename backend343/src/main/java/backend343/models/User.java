@@ -1,7 +1,7 @@
 package backend343.models;
 
 import backend343.enums.Role;
-import backend343.observer.ChatObserver;
+import backend343.chatRoom.ChatObserver;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -53,7 +53,6 @@ public class User implements UserDetails, ChatObserver {
         this.role = role;
     }
 
-    // Getters and Setters
 
     // Getter and Setter for id
     public Long getId() {
@@ -151,4 +150,8 @@ public class User implements UserDetails, ChatObserver {
         return true;
     }
 
+    @Override
+    public void update() {
+        System.out.println("New message in the chatRoom");
+    }
 }

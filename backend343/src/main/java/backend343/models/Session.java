@@ -1,14 +1,13 @@
 package backend343.models;
 
-import backend343.enums.EventType;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import backend343.chatRoom.ChatRoom;
 import jakarta.persistence.*;
-import lombok.*;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.time.LocalTime;
 
 @Entity
 @Data
@@ -16,7 +15,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @Builder
 public class Session {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,4 +29,13 @@ public class Session {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chatroom_id", referencedColumnName = "id")
+    private ChatRoom chatroom;
+
 }
+
+
+
+
+
