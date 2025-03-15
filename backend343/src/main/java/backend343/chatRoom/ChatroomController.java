@@ -1,7 +1,11 @@
 package backend343.chatRoom;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/chatrooms")
@@ -16,19 +20,17 @@ public class ChatroomController {
         return ResponseEntity.ok("User joined chatroom");
     }
 
-    @PostMapping("/{chatroomId}/leave/{userId}")
-    public ResponseEntity<String> leaveChatroom(@PathVariable Long chatroomId, @PathVariable Long userId) {
-        chatroomService.leaveChatroom(chatroomId, userId);
-        return ResponseEntity.ok("User left chatroom");
+    @PostMapping("/{chatroomId}/msg/{userId}")
+    public ResponseEntity<String> sendMsg(@PathVariable Long chatroomId, @PathVariable Long userId, @RequestBody String msg) {
+        chatroomService.sendMessage(chatroomId, userId, msg);
+        return ResponseEntity.ok("Message sent");
     }
 
-    @PostMapping("/{chatroomId}/message/{userId}")
-    public ResponseEntity<String> sendMessage(
-            @PathVariable Long chatroomId,
-            @PathVariable Long userId,
-            @RequestBody String content) {
-
-        chatroomService.sendMessage(chatroomId, userId, content);
-        return ResponseEntity.ok("Message sent");
+    @PostMapping("/{chatroomId}/leave/{userId}")
+    public ResponseEntity<Map<String, Integer>> leaveChatroom(@PathVariable Long chatroomId, @PathVariable Long userId) {
+        int size = chatroomService.leaveChatroom(chatroomId, userId);
+        Map<String, Integer> response = new HashMap<>();
+        response.put("numberUsersInChatRoom", size);
+        return ResponseEntity.ok(response);
     }
 }

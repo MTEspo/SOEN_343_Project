@@ -2,14 +2,14 @@ package backend343.chatRoom;
 
 import backend343.models.User;
 import backend343.repository.ChatRoomRepository;
-import backend343.repository.UserRepository;
 import backend343.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -17,9 +17,7 @@ public class ChatroomService {
 
     private final ChatRoomRepository chatroomRepository;
     private final UserDetailsServiceImpl userDetailsService;
-    private final ChatRoomHandler chatRoomHandler;
 
-    // User joins a chatroom
     public void joinChatroom(Long chatroomId, Long userId) {
         ChatRoom chatroom = chatroomRepository.findById(chatroomId).orElseThrow();
         User user = userDetailsService.getUserById(userId);
@@ -29,15 +27,18 @@ public class ChatroomService {
         chatroomRepository.save(chatroom);
     }
 
-    public void leaveChatroom(Long chatroomId, Long userId) {
+    public int leaveChatroom(Long chatroomId, Long userId) {
         ChatRoom chatroom = chatroomRepository.findById(chatroomId).orElseThrow();
         User user = userDetailsService.getUserById(userId);
 
         chatroom.getUsers().remove(user);
         chatroom.removeObserver(user);
         chatroomRepository.save(chatroom);
+        return chatroom.getUsers().size();
+
     }
 
+    @Transactional
     public void sendMessage(Long chatroomId, Long userId, String content) {
         ChatRoom chatroom = chatroomRepository.findById(chatroomId).orElseThrow();
         User sender = userDetailsService.getUserById(userId);
@@ -51,6 +52,10 @@ public class ChatroomService {
 
         chatroom.addMessage(message);
         chatroomRepository.save(chatroom);
-        chatRoomHandler.broadcastMessage("New message in chat room " + chatroomId);
+    }
+
+    public List<Message> getExistingMessages(Long chatroomId) {
+        ChatRoom chatroom = chatroomRepository.findById(chatroomId).orElseThrow();
+        return chatroom.getMessages();
     }
 }

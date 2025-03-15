@@ -21,7 +21,7 @@ public class ChatRoom implements ChatObservable {
     private Long id;
 
     @OneToMany(mappedBy = "chatroom", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(
@@ -55,5 +55,7 @@ public class ChatRoom implements ChatObservable {
         messages.add(message);
         notifyObservers();
     }
+
+
 }
 
