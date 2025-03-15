@@ -1,5 +1,4 @@
 package backend343.chatRoom;
-import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
