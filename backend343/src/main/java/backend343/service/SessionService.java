@@ -1,9 +1,9 @@
 package backend343.service;
 
 import java.util.List;
-import java.util.Optional;
 
-import backend343.models.Event;
+import backend343.chatRoom.ChatRoom;
+import backend343.chatRoom.ChatroomService;
 import backend343.models.Schedule;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +23,9 @@ public class SessionService {
     @Autowired
     private ScheduleService scheduleService;
 
+    @Autowired
+    private ChatroomService chatRoomService;
+
     public List<Session> getAllSessions() {
         return sessionRepository.findAll();
     }
@@ -30,6 +33,10 @@ public class SessionService {
     public Session createSession(Session session, Long scheduleId) {
         Schedule schedule = scheduleService.getScheduleById(scheduleId);
         session.setSchedule(schedule);
+
+        ChatRoom chatRoom = new ChatRoom();
+        session.setChatroom(chatRoom);
+
         return sessionRepository.save(session);
     }
 
