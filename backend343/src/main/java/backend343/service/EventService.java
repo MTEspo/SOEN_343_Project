@@ -2,6 +2,7 @@ package backend343.service;
 
 import backend343.enums.EventType;
 import backend343.models.Event;
+import backend343.proxy.EventProxy;
 import backend343.repository.EventRepository;
 import backend343.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,14 @@ import java.math.BigDecimal;
 public class EventService {
 
     @Autowired
-    private EventRepository eventRepository;
+    private EventProxy eventProxy;
 
     public Event findById(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+        return eventProxy.getEventById(id);
     }
 
     public void save(Event event) {
-        eventRepository.save(event);
+        eventProxy.createEvent(event);
     }
 
     public Event createEvent(Event event) {
@@ -44,24 +44,17 @@ public class EventService {
         //    eventRepository.save(savedEvent);
         //
         //    return savedEvent;
-        return eventRepository.save(event)
-                ;
+        return eventProxy.createEvent(event);
     }
     public Event updateEventDescription(Long id,String description) {
-        Event event = findById(id);
-        event.setDescription(description);
-        return eventRepository.save(event);
+        return eventProxy.updateEventDescription(id, description);
     }
 
     public Event updateEventPrice(Long id, BigDecimal price) {
-        Event event = findById(id);
-        event.setPrice(price);
-        return eventRepository.save(event);
+        return eventProxy.updateEventPrice(id, price);
     }
 
     public Event updateEventName(Long id, String name) {
-        Event event = findById(id);
-        event.setName(name);
-        return eventRepository.save(event);
+        return eventProxy.updateEventName(id, name);
     }
 }
