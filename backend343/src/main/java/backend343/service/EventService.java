@@ -1,10 +1,15 @@
 package backend343.service;
 
+import backend343.enums.EventType;
 import backend343.models.Event;
 import backend343.repository.EventRepository;
 import backend343.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.math.BigDecimal;
 
 @Service
 public class EventService {
@@ -42,8 +47,21 @@ public class EventService {
         return eventRepository.save(event)
                 ;
     }
+    public Event updateEventDescription(Long id,String description) {
+        Event event = findById(id);
+        event.setDescription(description);
+        return eventRepository.save(event);
+    }
 
-    public Event getEventById(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow();
+    public Event updateEventPrice(Long id, BigDecimal price) {
+        Event event = findById(id);
+        event.setPrice(price);
+        return eventRepository.save(event);
+    }
+
+    public Event updateEventName(Long id, String name) {
+        Event event = findById(id);
+        event.setName(name);
+        return eventRepository.save(event);
     }
 }

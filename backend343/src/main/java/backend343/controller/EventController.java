@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @RestController
 @RequestMapping("/api/event")
 public class EventController {
@@ -15,5 +17,20 @@ public class EventController {
     @PostMapping("/create")
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {
         return ResponseEntity.ok(eventService.createEvent(event));
+    }
+
+    @PostMapping("/update/description/{id}")
+    public ResponseEntity<Event> updateDescription(@PathVariable Long id, @RequestBody String description) {
+        return ResponseEntity.ok(eventService.updateEventDescription(id, description));
+    }
+
+    @PostMapping("/update/price/{id}")
+    public ResponseEntity<Event> updatePrice(@PathVariable Long id, @RequestBody BigDecimal price) {
+        return ResponseEntity.ok(eventService.updateEventPrice(id, price));
+    }
+
+    @PostMapping("/update/name/{id}")
+    public ResponseEntity<Event> updateName(@PathVariable Long id, @RequestBody String name) {
+        return ResponseEntity.ok(eventService.updateEventName(id, name));
     }
 }
