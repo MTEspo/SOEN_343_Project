@@ -6,8 +6,6 @@ const ChatRoom = ({
   handleSendMessage,
   setNewMessage,
   joined,
-  handleJoinChatroom,
-  handleLeaveChatroom,
 }) => {
   return (
     <div>
@@ -25,13 +23,10 @@ const ChatRoom = ({
             onChange={(event) => setNewMessage(event.target.value)}
             placeholder="Type a message..."
           />
-          <button onClick={handleSendMessage}>Send</button>
-          <button onClick={handleLeaveChatroom}>Leave Chatroom</button>
+          <button onClick={handleSendMessage} disabled={!newMessage.trim()}>Send</button>
         </div>
       ) : (
-        <div>
-          <button onClick={handleJoinChatroom}>Join Chatroom</button>
-        </div>
+        <p>Please join a chatroom first.</p>
       )}
     </div>
   );

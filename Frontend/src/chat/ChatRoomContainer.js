@@ -10,15 +10,16 @@ const ChatRoomContainer = () => {
   const [chatroomId, setChatroomId] = useState('');
   const [userId, setUserId] = useState('');
 
+  // Handle closing WebSocket when user leaves page
   useEffect(() => {
     const handleBeforeUnload = () => {
-      axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/leave/${userId}`)
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      if (chatroomId && userId) {
+        axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/leave/${userId}`)
+          .catch((error) => console.error(error));
+      }
+      if (ws.current) {
+        ws.current.close();
+      }
     };
   
     window.addEventListener('beforeunload', handleBeforeUnload);
@@ -29,61 +30,63 @@ const ChatRoomContainer = () => {
   }, [chatroomId, userId]);
 
   useEffect(() => {
-    if (joined) {
-      if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
-        ws.current = new WebSocket(`ws://localhost:8080/chat/${chatroomId}`);
-  
-        ws.current.onmessage = (event) => {
-          console.log(`Received message: ${event.data}`);
-          setMessages((prevMessages) => [...prevMessages, event.data]);
-        };
-  
-        ws.current.onerror = (event) => {
-          console.error('WebSocket error:', event);
-        };
-  
-        ws.current.onclose = () => {
-          console.log('WebSocket disconnected');
-        };
+    if (joined && chatroomId && userId) {
+      if (ws.current) {
+        ws.current.close(); // Ensure we don't create multiple connections
       }
+
+      const wsUrl = `ws://localhost:8080/chat/${chatroomId}?userId=${userId}`;
+      ws.current = new WebSocket(wsUrl);
+      console.log("Connected to WebSocket:", wsUrl);
+
+      ws.current.onmessage = (event) => {
+        console.log(`Received message: ${event.data}`);
+        setMessages((prevMessages) => [...prevMessages, event.data]);
+      };
+
+      ws.current.onerror = (event) => {
+        console.error('WebSocket error:', event);
+      };
+
+      ws.current.onclose = () => {
+        console.log('WebSocket disconnected');
+      };
+
+      return () => {
+        if (ws.current) {
+          ws.current.close();
+        }
+      };
     }
-  }, [joined, chatroomId]);
-  
-  useEffect(() => {
-    return () => {
-      if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-        ws.current.close();
-      }
-    };
-  }, []);
+  }, [joined, chatroomId, userId]);
 
   const handleJoinChatroom = () => {
+    if (!chatroomId || !userId) {
+      alert("Chatroom ID and User ID are required!");
+      return;
+    }
+
     axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/join/${userId}`)
       .then((response) => {
         console.log(response.data);
         setJoined(true);
+        setMessages([]); // Clear messages when rejoining
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => console.error(error));
   };
 
   const handleLeaveChatroom = () => {
     axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/leave/${userId}`)
       .then((response) => {
         console.log(response.data.numberUsersInChatRoom);
-        if (response.data.numberUsersInChatRoom === 0) {
-          if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-            console.log("here")
-            ws.current.close();
-          }
-        }
         setJoined(false);
-        setMessages([]); // Reset the messages state variable
+        setMessages([]); // Reset chat messages
+        if (ws.current) {
+          ws.current.close();
+          ws.current = null;
+        }
       })
-      .catch((error) => {
-        console.error(error);
-      });
+      .catch((error) => console.error(error));
   };
 
   const handleSendMessage = () => {
@@ -111,7 +114,8 @@ const ChatRoomContainer = () => {
         placeholder="User ID"
       />
       <button onClick={handleJoinChatroom}>Join Chat Room</button>
-      <button onClick={handleLeaveChatroom}>Leave Chat Room</button>
+      <button onClick={handleLeaveChatroom} disabled={!joined}>Leave Chat Room</button>
+      
       <ChatRoom
         messages={messages}
         newMessage={newMessage}
