@@ -8,11 +8,14 @@ import backend343.service.SessionService;
 import com.stripe.exception.StripeException;
 
 
+import com.stripe.model.PromotionCode;
+import com.stripe.param.PromotionCodeListParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 
@@ -24,6 +27,7 @@ public class StripeService {
     @Autowired
     private UserRepository userRepository;
 
+
     private static final LoggerSingleton logger = LoggerSingleton.getInstance();
 
 
@@ -32,6 +36,16 @@ public class StripeService {
 
         Session session = sessionService.getSessionById(productRequest.getSessionId());
         User user = userRepository.findByEmail(productRequest.getUserEmail()).orElseThrow();
+        BigDecimal price = session.getSchedule().getEvent().getPrice().multiply(BigDecimal.valueOf(100));
+        String promoCode = productRequest.getPromoCode();
+        BigDecimal percentOff = getPercentOffForPromoCode(promoCode, session.getStripeProductId());
+
+        logger.logInfo("Checkout promo code: " + promoCode);
+        if (percentOff != null) {
+            BigDecimal discountFactor = (percentOff).divide(BigDecimal.valueOf(100));
+            price = price.multiply(BigDecimal.valueOf(1).subtract(discountFactor));
+        }
+
 
         SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
                 .builder()
@@ -53,7 +67,6 @@ public class StripeService {
                 .setCancelUrl("http://localhost:8080/cancel")
                 .addLineItem(lineItem)
                 .setCustomerEmail(productRequest.getUserEmail())
-                .setAllowPromotionCodes(true)
                 .putAllMetadata(Map.of(
                         "session_id", String.valueOf(productRequest.getSessionId()),
                         "user_id", String.valueOf(user.getId())
@@ -78,6 +91,7 @@ public class StripeService {
                     .build();
         }
 
+
         logger.logInfo("Returning successful checkout response");
         return StripeResponse.builder()
                 .status("SUCCESS")
@@ -85,5 +99,43 @@ public class StripeService {
                 .sessionId(checkoutSession.getId())
                 .sessionUrl(checkoutSession.getUrl())
                 .build();
+    }
+
+    public BigDecimal getPercentOffForPromoCode(String promoCode, String stripeProductId) {
+        try {
+            // Retrieve the promotion code by filtering using the user-facing promo code
+            PromotionCodeListParams params = PromotionCodeListParams.builder()
+                    .setCode(promoCode) // Search by the actual code customers use
+                    .setLimit(1L) // We only need one match
+                    .build();
+
+            List<PromotionCode> promoCodes = PromotionCode.list(params).getData();
+
+            if (promoCodes.isEmpty()) {
+                logger.logError("Promo code not found: " + promoCode);
+                return null;
+            }
+
+            // Get the first (and should be the only) matching promo code
+            PromotionCode promo = promoCodes.get(0);
+            logger.logInfo("Found promo code: " + promo.getId() + " with code: " + promo.getCode());
+
+            // Retrieve metadata for product validation
+            String storedProductId = promo.getMetadata().get("stripe_product_id");
+
+            if (storedProductId == null || storedProductId.isEmpty()) {
+                // No specific product restriction, so it's valid
+                return promo.getCoupon().getPercentOff();
+            } else if (storedProductId.equals(stripeProductId)) {
+                // Product restriction matches, so it's valid
+                return promo.getCoupon().getPercentOff();
+            } else {
+                // Product restriction doesn't match, so it's invalid
+                return null;
+            }
+        } catch (StripeException e) {
+            logger.logError("Error retrieving promo code: " + e.getMessage());
+            return null;
+        }
     }
 }

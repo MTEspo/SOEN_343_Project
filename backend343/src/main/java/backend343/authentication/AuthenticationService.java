@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -127,16 +128,15 @@ public class AuthenticationService {
         PromotionCodeCreateParams promotionCodeParams = PromotionCodeCreateParams.builder()
                 .setCoupon(coupon.getId())
                 .setCode(couponCode)
+                .putAllMetadata(Map.of("stripe_product_id", ""))
                 .build();
         PromotionCode.create(promotionCodeParams);
 
         return couponCode;
     }
 
-    private String generateCouponCode() {
-        Random random = new Random();
-        int code = random.nextInt(999999)+100000;
-        return String.valueOf(code);
+    public static String generateCouponCode() {
+        return generateVerificationCode();
     }
 
     private void sendVerificationEmail(User user){

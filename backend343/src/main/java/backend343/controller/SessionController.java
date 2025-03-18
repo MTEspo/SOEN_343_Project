@@ -5,6 +5,7 @@ import backend343.service.SessionService;
 
 import java.util.List;
 
+import com.stripe.exception.StripeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class SessionController {
     }
 
     @PostMapping("/create/{scheduleId}")
-    public ResponseEntity<Session> createSession(@RequestBody Session session, @PathVariable Long scheduleId) {
+    public ResponseEntity<Session> createSession(@RequestBody Session session, @PathVariable Long scheduleId) throws StripeException {
         return ResponseEntity.ok(sessionService.createSession(session, scheduleId));
     }
 

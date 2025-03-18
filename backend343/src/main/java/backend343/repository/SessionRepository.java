@@ -7,5 +7,5 @@ import backend343.models.Session;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long>{
-    
+    Session findByStripeProductId(String stripeProductId);
 }

@@ -6,4 +6,7 @@ import lombok.Data;
 public class PromotionEmailRequest {
     private String subject;
     private String text;
+    private Long sessionId;
+    private boolean hasDiscount;
+    private int percentageOff;
 }

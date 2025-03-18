@@ -24,6 +24,7 @@ public class Session {
     private LocalTime startTime;
     private LocalTime endTime;
     private String location;
+    private String stripeProductId;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schedule_id")
