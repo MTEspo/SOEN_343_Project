@@ -7,12 +7,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/event")
 public class EventController {
     @Autowired
     private EventService eventService;
+
+    @GetMapping("/all")
+    public ResponseEntity<List<Event>> findAll() {
+        return ResponseEntity.ok(eventService.findAll());
+    }
 
     @PostMapping("/create")
     public ResponseEntity<Event> createEvent(@RequestBody Event event) {

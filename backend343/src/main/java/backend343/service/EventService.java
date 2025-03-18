@@ -10,12 +10,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    public List<Event> findAll(){
+        return eventRepository.findAll();
+    }
 
     public Event findById(Long id) {
         return eventRepository.findById(id)

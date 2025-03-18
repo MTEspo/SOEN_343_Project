@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Login from "./Authentication/Login";
 import SignUp from "./Authentication/SignUp";
 import ChatRoomContainer from './chat/ChatRoomContainer';
+import EventPlanning from './eventplanning/EventPlanning';
 
 const Home = () => (
 <div className="relative w-full max-w-7xl mx-auto h-[90vh] mt-20 overflow-hidden rounded-lg">
@@ -35,7 +36,6 @@ const Home = () => (
 </div>
 );
 
-const EventPlanning = () => <h2 className="text-2xl font-bold text-center mt-6">Event Planning Page</h2>;
 const Attendees = () => <h2 className="text-2xl font-bold text-center mt-6">Attendees Management Page</h2>;
 const Networking = () => <h2 className="text-2xl font-bold text-center mt-6">Networking & Engagement Page</h2>;
 const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payment & Financial Management Page</h2>;
