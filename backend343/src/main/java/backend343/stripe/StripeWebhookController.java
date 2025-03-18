@@ -38,7 +38,7 @@ public class StripeWebhookController {
     public ResponseEntity<String> handleStripeWebhook(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signature) {
-        String endpointSecret = "whsec_fd0626eef51aedead194fef3c6c78388cdb4aa7019242f1b82118b025a32096a";
+        String endpointSecret = "";
 
         try {
             com.stripe.model.Event event = Webhook.constructEvent(payload, signature, endpointSecret);
