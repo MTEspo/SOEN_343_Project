@@ -1,5 +1,6 @@
 package backend343.models;
 
+import backend343.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -23,6 +24,11 @@ public class Ticket {
 
     private LocalDateTime registrationDate;
 
+    private String stripePaymentId;
+
     private String ticketCode;
     private Boolean isCodeUsed;
+
+    @Enumerated(EnumType.STRING)
+    private TicketStatus status;
 }

@@ -1,19 +1,29 @@
 package backend343.stripe;
 
+import backend343.enums.TicketStatus;
 import backend343.logger.LoggerSingleton;
-import backend343.models.Session;
-import backend343.models.User;
+import backend343.models.*;
 import backend343.repository.UserRepository;
+import backend343.service.EmailService;
 import backend343.service.SessionService;
+import backend343.service.TicketService;
+import backend343.service.UserDetailsServiceImpl;
 import com.stripe.exception.StripeException;
 
 
+import com.stripe.model.Refund;
+import com.stripe.net.RequestOptions;
+import com.stripe.param.RefundCreateParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 @Service
@@ -22,7 +32,13 @@ public class StripeService {
     @Autowired
     private SessionService sessionService;
     @Autowired
-    private UserRepository userRepository;
+    private UserDetailsServiceImpl userDetailsService;
+
+    @Autowired
+    private TicketService ticketService;
+
+    @Autowired
+    private EmailService emailService;
 
     private static final LoggerSingleton logger = LoggerSingleton.getInstance();
 
@@ -31,7 +47,7 @@ public class StripeService {
         logger.logInfo("Initiating checkout for product request: " + productRequest);
 
         Session session = sessionService.getSessionById(productRequest.getSessionId());
-        User user = userRepository.findByEmail(productRequest.getUserEmail()).orElseThrow();
+        User user = userDetailsService.findByEmail(productRequest.getUserEmail());
 
         SessionCreateParams.LineItem.PriceData.ProductData productData = SessionCreateParams.LineItem.PriceData.ProductData
                 .builder()
@@ -86,4 +102,82 @@ public class StripeService {
                 .sessionUrl(checkoutSession.getUrl())
                 .build();
     }
+
+    public StripeResponse refundPayment(Long sessionId, Long userId) {
+        logger.logInfo("Initiating refund for session ID " + sessionId + " and user ID " + userId);
+
+        Ticket ticket = ticketService.getTicketBySessionIdAndUserId(sessionId, userId);
+        if (ticket == null) {
+            logger.logError("Ticket not found for session ID " + sessionId + " and user ID " + userId);
+            return StripeResponse.builder()
+                    .status("FAILURE")
+                    .message("Ticket not found")
+                    .build();
+        }
+
+        if (ticket.getStatus() == TicketStatus.REFUNDED) {
+            logger.logError("Ticket has already been refunded");
+            return StripeResponse.builder()
+                    .status("FAILURE")
+                    .message("Ticket has already been refunded")
+                    .build();
+        }
+
+        Session session = sessionService.getSessionById(sessionId);
+        Schedule schedule = session.getSchedule();
+        Event event = schedule.getEvent();
+
+        if (schedule.getDate().isBefore(LocalDate.now()) ||
+                (schedule.getDate().isEqual(LocalDate.now()) && session.getStartTime().isBefore(LocalTime.now()))) {
+            logger.logError("Refund not allowed for session that has already started or passed");
+            return StripeResponse.builder()
+                    .status("FAILURE")
+                    .message("Refund not allowed for session that has already started or passed")
+                    .build();
+        }
+
+        String paymentIntentId = ticket.getStripePaymentId();
+        if (paymentIntentId == null || paymentIntentId.isEmpty()) {
+            logger.logError("No payment intent found for the ticket");
+            return StripeResponse.builder()
+                    .status("FAILURE")
+                    .message("Payment intent not found")
+                    .build();
+        }
+
+        try {
+            String idempotencyKey = "refund_" + paymentIntentId + "_" + userId;
+            RefundCreateParams refundParams = RefundCreateParams.builder()
+                    .setPaymentIntent(paymentIntentId)
+                    .setReason(RefundCreateParams.Reason.REQUESTED_BY_CUSTOMER)
+                    .build();
+
+            RequestOptions requestOptions = RequestOptions.builder()
+                    .setIdempotencyKey(idempotencyKey)
+                    .build();
+
+            Refund refund = Refund.create(refundParams, requestOptions);
+            logger.logInfo("Refund successful for payment intent " + paymentIntentId);
+
+
+
+            String userEmail = userDetailsService.getUserById(userId).getEmail();
+            String emailSubject = "Refund Confirmation";
+            String emailText = "Your refund of $" + refund.getAmount() / 100 + " for the event '" + event.getName() + "' on " + schedule.getDate() + " at " + session.getStartTime() + " has been processed successfully.";
+            emailService.sendEmail(userEmail, emailSubject, emailText);
+            ticketService.refundTicket(ticket);
+            return StripeResponse.builder()
+                    .status("SUCCESS")
+                    .message("Refund successful")
+                    .build();
+
+        } catch (StripeException e) {
+            logger.logError("Error refunding payment: " + e.getMessage());
+            return StripeResponse.builder()
+                    .status("FAILURE")
+                    .message("Error refunding payment: " + e.getMessage())
+                    .build();
+        }
+    }
+
 }

@@ -38,7 +38,7 @@ public class StripeWebhookController {
     public ResponseEntity<String> handleStripeWebhook(
             @RequestBody String payload,
             @RequestHeader("Stripe-Signature") String signature) {
-        String endpointSecret = "";
+        String endpointSecret = "whsec_fd0626eef51aedead194fef3c6c78388cdb4aa7019242f1b82118b025a32096a";
 
         try {
             com.stripe.model.Event event = Webhook.constructEvent(payload, signature, endpointSecret);
@@ -71,14 +71,15 @@ public class StripeWebhookController {
 
         backend343.models.Session sessionEvent  = sessionService.getSessionById(sessionId);
         User user = userDetailsService.getUserById(userId);
+        String stripePaymentId = session.getPaymentIntent();
         long amountPaid = session.getAmountTotal();
         BigDecimal amountPaidDecimal = BigDecimal.valueOf(amountPaid).divide(BigDecimal.valueOf(100)); // amount in dollars
-        createTicket(sessionEvent, user, amountPaidDecimal);
+        createTicket(sessionEvent, user, amountPaidDecimal,stripePaymentId);
     }
 
-    private void createTicket(backend343.models.Session sessionEvent, User user, BigDecimal amountPaid) {
+    private void createTicket(backend343.models.Session sessionEvent, User user, BigDecimal amountPaid, String stripePaymentId) {
         logger.logInfo("Creating ticket for user " + user.getId());
-        Ticket ticket = ticketService.createTicket(sessionEvent, user);
+        Ticket ticket = ticketService.createTicket(sessionEvent, user,stripePaymentId);
         sendConfirmationOfPurchaseEmail(user, ticket, amountPaid);
     }
 
