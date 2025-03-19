@@ -45,15 +45,17 @@ public class ChatRoom implements ChatObservable {
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(Long chatroomId, Long senderId) {
         for (ChatObserver observer : observers) {
-            observer.update();
+            if (!((User) observer).getId().equals(senderId)) {
+                observer.update(chatroomId);
+            }
         }
     }
 
     public void addMessage(Message message) {
         messages.add(message);
-        notifyObservers();
+        notifyObservers(this.id, message.getSender().getId());
     }
 
 

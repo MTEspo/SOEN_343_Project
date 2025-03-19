@@ -2,6 +2,7 @@ package backend343.models;
 
 import backend343.enums.Role;
 import backend343.chatRoom.ChatObserver;
+import backend343.chatRoom.ChatRoom;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,8 +11,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -35,6 +37,12 @@ public class User implements UserDetails, ChatObserver {
     private String password;
 
     private boolean enabled;
+
+    @ElementCollection
+    @CollectionTable(name = "user_chat_notifications", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyColumn(name = "chatroom_id")
+    @Column(name = "notification_count")
+    private Map<Long, Integer> chatroomNotifications = new HashMap<>();
 
     @Column(name = "verification_code")
     private String verificationCode;
@@ -151,7 +159,17 @@ public class User implements UserDetails, ChatObserver {
     }
 
     @Override
-    public void update() {
-        System.out.println("New message in the chatRoom");
+    public void update(Long chatroomId) {
+        System.out.println("New message in the chatRoom notifications should go up");
+
+        chatroomNotifications.put(chatroomId, chatroomNotifications.getOrDefault(chatroomId, 0) + 1);
+    }
+
+    public int getTotalNotifications() {
+        return chatroomNotifications.values().stream().mapToInt(Integer::intValue).sum();
+    }
+
+    public void resetChatroomNotifications(Long chatroomId) {
+        chatroomNotifications.put(chatroomId, 0);
     }
 }
