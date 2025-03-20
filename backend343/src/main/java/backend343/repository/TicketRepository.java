@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,5 +18,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Ticket findByTicketCode(String ticketCode);
 
     Optional<Ticket> findBySessionIdAndUserId(Long sessionId, Long userId);
+
+    List<Ticket> findAllByUserId(Long userId);
 
 }

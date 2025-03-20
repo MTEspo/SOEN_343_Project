@@ -8,7 +8,7 @@ import backend343.repository.TicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.time.LocalDateTime;
 
 import static backend343.authentication.AuthenticationService.generateVerificationCode;
@@ -20,6 +20,13 @@ public class TicketService {
 
     private static final LoggerSingleton logger = LoggerSingleton.getInstance();
 
+    public List<Ticket> getAllTickets(){
+        return ticketRepository.findAll();
+    }
+
+    public List<Ticket> getAllUserTickets(Long userId) {
+        return ticketRepository.findAllByUserId(userId);
+    }
 
     public boolean verifyTicket(String ticketCode) {
         logger.logInfo("Verifying ticket code " + ticketCode);
@@ -72,10 +79,6 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
-    public void deleteTicket(Ticket ticket) {
-        logger.logInfo("Deleting ticket by id: " + ticket.getId());
-        ticketRepository.deleteById(ticket.getId());
-    }
 
     public boolean hasEventAccess(Long userId, Long sessionId) {
         logger.logInfo("Checking event access for user " + userId + " and session " + sessionId);

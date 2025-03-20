@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,6 +34,10 @@ public class Session {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "chatroom_id", referencedColumnName = "id")
     private ChatRoom chatroom;
+
+    @OneToOne
+    @JoinColumn(name = "speaker_id")
+    private Speaker speaker;
 
 }
 

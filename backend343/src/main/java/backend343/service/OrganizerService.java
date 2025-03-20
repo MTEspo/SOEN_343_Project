@@ -1,5 +1,6 @@
 package backend343.service;
 
+import backend343.models.Organizer;
 import backend343.models.User;
 import backend343.repository.OrganizerRepository;
 import jakarta.mail.MessagingException;
@@ -25,5 +26,10 @@ public class OrganizerService {
             emailService.sendEmail(user.getEmail(), subject, text);
         }
     }
+
+    public Organizer findOrganizerById(Long id) {
+        return organizerRepostiory.findById(id).orElseThrow();
+    }
+
 
 }
