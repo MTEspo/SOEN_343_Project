@@ -2,6 +2,7 @@ package backend343.controller;
 
 import backend343.dto.CreateSpeakerOfferRequest;
 import backend343.dto.PromotionEmailRequest;
+import backend343.responses.SpeakerOfferResponse;
 import backend343.service.OrganizerService;
 import backend343.service.SpeakerOfferService;
 import jakarta.mail.MessagingException;
@@ -24,8 +25,8 @@ public class OrganizerController {
     }
 
     @PostMapping("/create-speaker-offer")
-    public ResponseEntity<Void> createSpeakerOffer(@RequestBody CreateSpeakerOfferRequest request) {
-        speakerOfferService.createSpeakerOffer(request.getSessionId(), request.getSpeakerId(),request.getOrganizerId());
-        return ResponseEntity.ok().build();
+    public ResponseEntity<SpeakerOfferResponse> createSpeakerOffer(@RequestBody CreateSpeakerOfferRequest request) {
+        SpeakerOfferResponse response = speakerOfferService.createSpeakerOffer(request.getSessionId(), request.getSpeakerId(),request.getOrganizerId());
+        return ResponseEntity.ok(response);
     }
 }

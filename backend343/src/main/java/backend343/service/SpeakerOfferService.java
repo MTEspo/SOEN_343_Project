@@ -6,6 +6,7 @@ import backend343.models.Speaker;
 import backend343.models.SpeakerOffer;
 import backend343.repository.SpeakerOfferRepository;
 import backend343.repository.SpeakerRepository;
+import backend343.responses.SpeakerOfferResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,10 +33,16 @@ public class SpeakerOfferService {
     private OrganizerService organizerService;
 
     @Transactional
-    public void createSpeakerOffer(Long sessionId, Long speakerId, Long organizerId) {
+    public SpeakerOfferResponse createSpeakerOffer(Long sessionId, Long speakerId, Long organizerId) {
         Session session = sessionService.getSessionById(sessionId);
         Speaker speaker = speakerRepository.findById(speakerId).orElseThrow();
         Organizer organizer = organizerService.findOrganizerById(organizerId);
+
+        if (hasOverlappingSession(speaker, session)) {
+            return SpeakerOfferResponse.builder()
+                    .success(false)
+                    .message("Speaker already has a session scheduled at the same time")
+                    .build();        }
 
         SpeakerOffer speakerOffer = SpeakerOffer.builder()
                 .session(session)
@@ -46,8 +53,18 @@ public class SpeakerOfferService {
 
         speakerOfferRepository.save(speakerOffer);
 
-        emailService.sendEmail(speaker.getEmail(), "Speaker Offer", "You have been offered to speak at session " + session.getTitle());
-    }
+        try {
+            emailService.sendEmail(speaker.getEmail(), "Speaker Offer", "You have been offered to speak at session " + session.getTitle());
+            return SpeakerOfferResponse.builder()
+                    .success(true)
+                    .message("Email sent successfully")
+                    .build();
+        } catch (Exception e) {
+            return SpeakerOfferResponse.builder()
+                    .success(false)
+                    .message("Error sending email: " + e.getMessage())
+                    .build();
+        }    }
 
     @Transactional
     public void updateSpeakerOffer(Long offerId, OfferStatus status) {
@@ -73,5 +90,17 @@ public class SpeakerOfferService {
 
     public List<SpeakerOffer> findBySpeakerId(Long speakerId) {
         return speakerOfferRepository.findBySpeakerId(speakerId);
+    }
+
+    private boolean hasOverlappingSession(Speaker speaker, Session session) {
+        List<Session> speakerSessions = speaker.getSessions();
+        for (Session speakerSession : speakerSessions) {
+            if (speakerSession.getSchedule().getDate().equals(session.getSchedule().getDate()) &&
+                    (session.getStartTime().isBefore(speakerSession.getEndTime()) &&
+                            session.getEndTime().isAfter(speakerSession.getStartTime()))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

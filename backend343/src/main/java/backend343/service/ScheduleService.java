@@ -41,4 +41,9 @@ public class ScheduleService {
     public void deleteSchedule(Long id){
         scheduleRepository.deleteById(id);
     }
+
+    public List<Schedule> getSchedulesForEvent(Long eventId) {
+        return scheduleRepository.findByEventId(eventId);
+    }
+
 }

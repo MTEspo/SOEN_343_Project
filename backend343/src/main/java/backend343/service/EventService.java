@@ -35,23 +35,6 @@ public class EventService {
     }
 
     public Event createEvent(Event event) {
-        // create stripe product for every event setting the stripe id same as its databse id
-
-        //Event savedEvent = eventRepository.save(event);
-        //
-        //    // Create a Stripe product for the event
-        //    ProductCreateParams params = ProductCreateParams.builder()
-        //            .setName(event.getName())
-        //            .setDescription(event.getDescription())
-        //            .setActive(true)
-        //            .build();
-        //    Product product = Product.create(params);
-        //
-        //    // Save the Stripe product ID to the event record
-        //    savedEvent.setStripeProductId(product.getId());
-        //    eventRepository.save(savedEvent);
-        //
-        //    return savedEvent;
         return eventProxy.createEvent(event);
     }
     public Event updateEventDescription(Long id,String description) {
@@ -65,4 +48,5 @@ public class EventService {
     public Event updateEventName(Long id, String name) {
         return eventProxy.updateEventName(id, name);
     }
+
 }

@@ -4,7 +4,9 @@ import org.springframework.stereotype.Repository;
 
 import backend343.models.Schedule;
 
+import java.util.List;
+
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>{
-    
+    List<Schedule> findByEventId(Long eventId);
 }
