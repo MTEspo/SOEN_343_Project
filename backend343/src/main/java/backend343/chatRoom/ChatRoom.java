@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -34,6 +36,9 @@ public class ChatRoom implements ChatObservable {
     @Transient
     private final List<ChatObserver> observers = new ArrayList<>();
 
+    @Autowired
+    private transient ChatroomService chatroomService;
+
     @Override
     public void addObserver(ChatObserver observer) {
         observers.add(observer);
@@ -46,11 +51,8 @@ public class ChatRoom implements ChatObservable {
 
     @Override
     public void notifyObservers(Long chatroomId, Long senderId) {
-        for (ChatObserver observer : observers) {
-            if (!((User) observer).getId().equals(senderId)) {
-                observer.update(chatroomId);
-            }
-        }
+        //moving the logic of notifications to the service layer
+        chatroomService.notifyObservers(chatroomId, senderId);
     }
 
     public void addMessage(Message message) {

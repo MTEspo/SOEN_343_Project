@@ -160,9 +160,9 @@ public class User implements UserDetails, ChatObserver {
 
     @Override
     public void update(Long chatroomId) {
-        System.out.println("New message in the chatRoom notifications should go up");
-
-        chatroomNotifications.put(chatroomId, chatroomNotifications.getOrDefault(chatroomId, 0) + 1);
+        int currentNotificationCount = chatroomNotifications.getOrDefault(chatroomId, 0);
+        chatroomNotifications.put(chatroomId, currentNotificationCount + 1);
+        System.out.println("New notification in chatroom " + chatroomId + ", total: " + chatroomNotifications.get(chatroomId));
     }
 
     public int getTotalNotifications() {

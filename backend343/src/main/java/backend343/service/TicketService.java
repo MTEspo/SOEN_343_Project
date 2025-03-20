@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static backend343.authentication.AuthenticationService.generateVerificationCode;
 
@@ -63,5 +66,15 @@ public class TicketService {
         boolean hasAccess = ticketRepository.hasEventAccess(userId, sessionId);
         logger.logInfo("Event access result for user " + userId + " and session " + sessionId + ": " + hasAccess);
         return hasAccess;
+    }
+
+    public List<User> getUsersWithAccessToSession(Long sessionId) {
+        // Find all tickets related to the given session ID
+        List<Ticket> tickets = ticketRepository.findAllBySessionId(sessionId);
+        
+        //get associated users from each ticket
+        return tickets.stream()
+                      .map(Ticket::getUser)
+                      .collect(Collectors.toList());
     }
 }
