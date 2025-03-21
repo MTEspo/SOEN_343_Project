@@ -24,17 +24,17 @@ public class ScheduleController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Schedule> getScheduleById(@PathVariable Long id) {
+    public ResponseEntity<Schedule> getScheduleById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(scheduleService.getScheduleById(id));
     }
 
     @PostMapping("/create/{eventId}")
-    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule, @PathVariable Long eventId) {
+    public ResponseEntity<Schedule> createSchedule(@RequestBody Schedule schedule, @PathVariable("eventId") Long eventId) {
        return ResponseEntity.ok(scheduleService.createSchedule(schedule,eventId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSchedule(@PathVariable("id") Long id) {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();
     }

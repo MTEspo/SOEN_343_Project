@@ -26,21 +26,21 @@ public class EventController {
     }
 
     @PostMapping("/update/description/{id}")
-    public ResponseEntity<Event> updateDescription(@PathVariable Long id, @RequestBody String description) {
+    public ResponseEntity<Event> updateDescription(@PathVariable("id") Long id, @RequestBody String description) {
         return ResponseEntity.ok(eventService.updateEventDescription(id, description));
     }
 
     @PostMapping("/update/price/{id}")
-    public ResponseEntity<Event> updatePrice(@PathVariable Long id, @RequestBody BigDecimal price) {
+    public ResponseEntity<Event> updatePrice(@PathVariable("id") Long id, @RequestBody BigDecimal price) {
         return ResponseEntity.ok(eventService.updateEventPrice(id, price));
     }
 
     @PostMapping("/update/name/{id}")
-    public ResponseEntity<Event> updateName(@PathVariable Long id, @RequestBody String name) {
+    public ResponseEntity<Event> updateName(@PathVariable("id") Long id, @RequestBody String name) {
         return ResponseEntity.ok(eventService.updateEventName(id, name));
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+    public ResponseEntity<Event> getEventById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.findById(id));
     }
 }
