@@ -41,7 +41,7 @@ const EventPlanning = () => {
 
   return (
     <div className="flex flex-col items-center mt-6">
-      <h2 className="text-2xl font-bold">Event Planning</h2>
+      <h2 className="text-2xl font-bold pt-2">Event Planning</h2>
       <p className="text-gray-600 mt-2">Manage your events efficiently.</p>
 
       {/* Event Creation Form */}
@@ -85,7 +85,7 @@ const EventPlanning = () => {
           className="border p-2 rounded"
           required
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded">Create Event</button>
+        <button type="submit" className="bg-[#D9C2A3] text-[#2E2E2E] p-2 rounded">Create Event</button>
       </form>
 
       {/* Display Events */}
