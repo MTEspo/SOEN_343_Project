@@ -2,6 +2,7 @@ package backend343.service;
 
 import backend343.enums.EventType;
 import backend343.models.Event;
+import backend343.models.Schedule;
 import backend343.repository.EventRepository;
 import backend343.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class EventService {
     @Autowired
     private EventRepository eventRepository;
 
-    public List<Event> findAll(){
+    public List<Event> getAllEvents() {
         return eventRepository.findAll();
     }
 

@@ -41,4 +41,10 @@ public class ScheduleService {
     public void deleteSchedule(Long id){
         scheduleRepository.deleteById(id);
     }
+
+    public Long getEventIdFromSchedule(Long scheduleId){
+        return scheduleRepository.findById(scheduleId)
+        .map(schedule -> schedule.getEvent().getId())
+        .orElseThrow(() -> new RuntimeException("Schedule not found"));
+    }
 }

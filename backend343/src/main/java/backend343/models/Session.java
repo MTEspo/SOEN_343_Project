@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -27,10 +29,12 @@ public class Session {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schedule_id")
+    @JsonIgnore
     private Schedule schedule;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "chatroom_id", referencedColumnName = "id")
+    @JsonIgnore
     private ChatRoom chatroom;
 
 }

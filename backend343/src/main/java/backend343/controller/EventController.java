@@ -15,9 +15,9 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Event>> findAll() {
-        return ResponseEntity.ok(eventService.findAll());
+    @GetMapping
+    public List<Event> getAllEvents() {
+        return eventService.getAllEvents();
     }
 
     @PostMapping("/create")

@@ -30,7 +30,7 @@ const Home = () => {
   return (
     <div className="flex flex-col items-center w-full">
       {/* Welcome Section */}
-      <div className="relative w-full max-w-7xl mx-auto h-[50vh] mt-10 overflow-hidden rounded-lg">
+      <div className="relative w-full max-w-7xl mx-auto h-[50vh] mt-8 overflow-hidden rounded-lg">
         {/* Background Image */}
         <img
           src="/images/event-image.webp"
@@ -61,8 +61,10 @@ const Home = () => {
       
 
         {/*  Browse Events Section */}
-      <div className="w-full max-w-7xl mx-auto mt-10 text-center">
-      <div className="w-160 h-[2px] bg-[#B6B6B6] mx-auto mt-4"></div> {/* Decorative Line */}
+      <div className="w-full max-w-7xl mx-auto mt-8 text-center">
+
+      {/* Decorative Line */}
+      <hr className="w-full max-w-10xl border-t border-gray-300" />
         
         <h2 className="text-3xl font-bold text-[#2E2E2E] mt-4">Browse Events</h2>
         <p className="text-lg text-[#5A5958] mt-2">
@@ -140,7 +142,7 @@ function App() {
     <Router>
       <div className="min-h-screen]">
         {/* Navigation Bar */}
-        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8]/80 py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8]/80 py-4 h-16 border-b border-[#C4A88E]"}`}>
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8] py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8] py-4 h-16 border-b border-[#C4A88E]"}`}>
           <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
             {/* Logo */}
             <Link to="/" className="relative text-[#2E2E2E] font-medium text-lg">
@@ -149,7 +151,7 @@ function App() {
 
             {/* Navigation Links */}
             <div className="hidden md:flex space-x-6">
-              <Link to="/" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+              <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
                 Home
               </Link>
               <Link to="/event-planning" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
@@ -171,7 +173,7 @@ function App() {
 
             {/* Login Button */}
             <Link to="/login" className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-              Login
+              Log In
             </Link>
           </div>
         </nav>
