@@ -18,7 +18,7 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
-    @GetMapping
+    @GetMapping("/all-schedules")
     public List<Schedule> getAllSchedules() {
         return scheduleService.getAllSchedules();
     }
