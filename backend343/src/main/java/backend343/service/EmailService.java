@@ -50,4 +50,6 @@ public class EmailService {
             logger.logError("Error sending email to " + to + ": " + e.getMessage());
         }
     }
+
+
 }

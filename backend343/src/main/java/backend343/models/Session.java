@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.chatRoom.ChatRoom;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -36,6 +39,11 @@ public class Session {
     @JoinColumn(name = "chatroom_id", referencedColumnName = "id")
     @JsonIgnore
     private ChatRoom chatroom;
+
+    @ManyToOne
+    @JoinColumn(name = "speaker_id")
+    @JsonIgnore
+    private Speaker speaker;
 
 }
 

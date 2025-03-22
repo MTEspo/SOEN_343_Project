@@ -1,6 +1,7 @@
 package backend343.controller;
 
 import backend343.models.Session;
+import backend343.models.Speaker;
 import backend343.service.SessionService;
 
 import java.util.List;
@@ -38,7 +39,6 @@ public class SessionController {
         return ResponseEntity.noContent().build();
     }
 
-    //endpoint to get eventId from a session
     @GetMapping("/{id}/event")
     public ResponseEntity<Long> getEventIdFromSession(@PathVariable Long id) {
         Long eventId = sessionService.getEventIdFromSession(id);
@@ -48,6 +48,24 @@ public class SessionController {
     @GetMapping("/access/{userId}/{sessionId}")
     public boolean hasAccessToEvent(@PathVariable Long userId,@PathVariable Long sessionId) {
         return sessionService.hasAccessToEvent(userId, sessionId);
+    }
+
+    @GetMapping("/valid-sessions/{eventId}") // sessions that have speaker and have not passed
+    public ResponseEntity<List<Session>> getValidSessionsForEvent(@PathVariable Long eventId) {
+        List<Session> validSessions = sessionService.getValidSessionsForEvent(eventId);
+        return ResponseEntity.ok(validSessions);
+    }
+
+    @GetMapping("/valid-sessions-for-speaker/{speakerId}") // sessions speakers could register for
+    public ResponseEntity<List<Session>> getValidSessionsForSpeaker(@PathVariable Long speakerId) {
+        List<Session> validSessions = sessionService.getValidSessionsForSpeaker(speakerId);
+        return ResponseEntity.ok(validSessions);
+    }
+
+    @GetMapping("/{sessionId}/eligible-speakers") // list of speakers that are available for a session
+    public ResponseEntity<List<Speaker>> getEligibleSpeakersForSession(@PathVariable Long sessionId) {
+        List<Speaker> eligibleSpeakers = sessionService.getEligibleSpeakersForSession(sessionId);
+        return ResponseEntity.ok(eligibleSpeakers);
     }
 
 }

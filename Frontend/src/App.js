@@ -142,11 +142,11 @@ function App() {
     <Router>
       <div className="min-h-screen]">
         {/* Navigation Bar */}
-        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8] py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8] py-4 h-16 border-b border-[#C4A88E]"}`}>
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8] py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8]/80 py-4 h-16 border-b border-[#C4A88E]"}`}>
           <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
             {/* Logo */}
-            <Link to="/" className="relative text-[#2E2E2E] font-medium text-lg">
-              S E E S
+            <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg">
+              Smart Events
             </Link>
 
             {/* Navigation Links */}

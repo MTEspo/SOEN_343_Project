@@ -47,4 +47,8 @@ public class ScheduleService {
         .map(schedule -> schedule.getEvent().getId())
         .orElseThrow(() -> new RuntimeException("Schedule not found"));
     }
+    public List<Schedule> getSchedulesForEvent(Long eventId) {
+        return scheduleRepository.findByEventId(eventId);
+    }
+
 }

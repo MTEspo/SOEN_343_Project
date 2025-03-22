@@ -71,14 +71,15 @@ public class StripeWebhookController {
 
         backend343.models.Session sessionEvent  = sessionService.getSessionById(sessionId);
         User user = userDetailsService.getUserById(userId);
+        String stripePaymentId = session.getPaymentIntent();
         long amountPaid = session.getAmountTotal();
         BigDecimal amountPaidDecimal = BigDecimal.valueOf(amountPaid).divide(BigDecimal.valueOf(100)); // amount in dollars
-        createTicket(sessionEvent, user, amountPaidDecimal);
+        createTicket(sessionEvent, user, amountPaidDecimal,stripePaymentId);
     }
 
-    private void createTicket(backend343.models.Session sessionEvent, User user, BigDecimal amountPaid) {
+    private void createTicket(backend343.models.Session sessionEvent, User user, BigDecimal amountPaid, String stripePaymentId) {
         logger.logInfo("Creating ticket for user " + user.getId());
-        Ticket ticket = ticketService.createTicket(sessionEvent, user);
+        Ticket ticket = ticketService.createTicket(sessionEvent, user,stripePaymentId);
         sendConfirmationOfPurchaseEmail(user, ticket, amountPaid);
     }
 

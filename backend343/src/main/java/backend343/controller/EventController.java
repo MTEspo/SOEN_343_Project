@@ -39,4 +39,10 @@ public class EventController {
     public ResponseEntity<Event> updateName(@PathVariable Long id, @RequestBody String name) {
         return ResponseEntity.ok(eventService.updateEventName(id, name));
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<Event> getEventById(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.findById(id));
+    }
+
+
 }

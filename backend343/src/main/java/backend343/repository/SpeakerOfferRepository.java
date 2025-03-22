@@ -1,12 +1,12 @@
 package backend343.repository;
+
+import backend343.models.SpeakerOffer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import backend343.models.Schedule;
 
 import java.util.List;
 
 @Repository
-public interface ScheduleRepository extends JpaRepository<Schedule, Long>{
-    List<Schedule> findByEventId(Long eventId);
+public interface SpeakerOfferRepository extends JpaRepository<SpeakerOffer, Long> {
+    List<SpeakerOffer> findBySpeakerId(Long speakerId);
 }
