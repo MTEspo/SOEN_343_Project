@@ -30,6 +30,7 @@ public class ChatroomService {
         chatroomRepository.save(chatroom);
 
         user.resetChatroomNotifications(chatroomId);
+        userDetailsService.saveUser(user);
     }
 
     public int leaveChatroom(Long chatroomId, Long userId) {

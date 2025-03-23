@@ -57,4 +57,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return user.getTotalNotifications();
     }
 
+    public User saveUser(User user) {
+        return userRepository.save(user);
+    }
 }
