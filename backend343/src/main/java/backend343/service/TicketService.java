@@ -9,6 +9,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.time.LocalDateTime;
 
 import static backend343.authentication.AuthenticationService.generateVerificationCode;
@@ -90,5 +91,12 @@ public class TicketService {
     public Ticket getTicketBySessionIdAndUserId(Long sessionId, Long userId) {
         return ticketRepository.findBySessionIdAndUserId(sessionId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket not found"));
+    }
+
+    public List<User> getUsersBySessionId(Long sessionId) {
+        List<Ticket> tickets = ticketRepository.findAllBySessionId(sessionId);
+        return tickets.stream()
+                .map(Ticket::getUser)
+                .collect(Collectors.toList());
     }
 }

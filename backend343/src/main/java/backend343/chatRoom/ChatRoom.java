@@ -1,13 +1,18 @@
 package backend343.chatRoom;
 import backend343.models.User;
+import backend343.repository.ChatRoomRepository;
+import backend343.service.TicketService;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 @Data
@@ -45,15 +50,15 @@ public class ChatRoom implements ChatObservable {
     }
 
     @Override
-    public void notifyObservers() {
-        for (ChatObserver observer : observers) {
-            observer.update();
-        }
+    public void notifyObservers(Long chatroomId, Long senderId) {
+        //did this to not instantiate chatroomservice inside model class
+        ChatroomService chatroomService = ApplicationContextProvider.getBean(ChatroomService.class);
+        chatroomService.notifyObservers(chatroomId, senderId);
     }
 
     public void addMessage(Message message) {
         messages.add(message);
-        notifyObservers();
+        notifyObservers(this.id, message.getSender().getId());
     }
 
 
