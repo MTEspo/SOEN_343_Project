@@ -146,7 +146,7 @@ function App() {
           <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
             {/* Logo */}
             <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg">
-              Smart Events
+              S E E S
             </Link>
 
             {/* Navigation Links */}

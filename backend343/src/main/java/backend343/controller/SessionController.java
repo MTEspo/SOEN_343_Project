@@ -18,7 +18,7 @@ public class SessionController {
     @Autowired
     private SessionService sessionService;
 
-    @GetMapping
+    @GetMapping("/all-sessions")
     public List<Session> getAllSessions() {
         return sessionService.getAllSessions();
     }

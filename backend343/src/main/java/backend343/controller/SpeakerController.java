@@ -20,7 +20,7 @@ public class SpeakerController {
     private final SpeakerService speakerService;
     private final SpeakerOfferService speakerOfferService;
 
-    @GetMapping
+    @GetMapping("/all-speakers")
     public List<Speaker> getAllSpeakers() {
         return speakerService.getAllSpeakers();
     }
