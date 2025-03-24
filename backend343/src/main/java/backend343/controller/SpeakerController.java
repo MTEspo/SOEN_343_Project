@@ -20,6 +20,11 @@ public class SpeakerController {
     private final SpeakerService speakerService;
     private final SpeakerOfferService speakerOfferService;
 
+    @GetMapping("/all-speakers")
+    public List<Speaker> getAllSpeakers() {
+        return speakerService.getAllSpeakers();
+    }
+
     @GetMapping("/get-speaker-by-id/{id}")
     public ResponseEntity<Speaker> getSpeakerById(@PathVariable Long id) {
         Speaker speaker = speakerService.findById(id);

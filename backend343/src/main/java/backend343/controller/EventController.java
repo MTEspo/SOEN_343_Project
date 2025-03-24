@@ -15,9 +15,9 @@ public class EventController {
     @Autowired
     private EventService eventService;
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Event>> findAll() {
-        return ResponseEntity.ok(eventService.findAll());
+    @GetMapping("/all-events")
+    public List<Event> getAllEvents() {
+        return eventService.getAllEvents();
     }
 
     @PostMapping("/create")
@@ -43,4 +43,6 @@ public class EventController {
     public ResponseEntity<Event> getEventById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.findById(id));
     }
+
+
 }

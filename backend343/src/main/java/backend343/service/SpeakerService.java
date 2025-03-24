@@ -19,6 +19,10 @@ public class SpeakerService {
         return speakerRepository.findById(id).orElseThrow();
     }
 
+    public List<Speaker> findAll() {
+        return speakerRepository.findAll();
+    }
+
     public Speaker findByEmail(String email) {
         return speakerRepository.findByEmail(email);
     }
@@ -47,4 +51,10 @@ public class SpeakerService {
     public List<SpeakerOffer> getAllOffers(Long speakerId) {
         return speakerOfferService.findBySpeakerId(speakerId);
     }
+
+    public List<Speaker> getAllSpeakers() {
+        return speakerRepository.findAll();
+    }
+
+
 }

@@ -55,99 +55,112 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </label>
-        <br />
-        <label>
-          Role:
-          <select value={role} onChange={(event) => setRole(event.target.value)}>
-            <option value="">Select a role</option>
-            {roles.map((role) => (
-              <option key={role.value} value={role.value}>
-                {role.label}
-              </option>
-            ))}
-          </select>
-        </label>
-        {role === 'ATTENDEE' && (
-          <>
-            <br />
-            <label>
-              Profession:
-              <input
-                type="text"
-                value={profession}
-                onChange={(event) => setProfession(event.target.value)}
-              />
-            </label>
-            <br />
-            <label>
-              University:
-              <input
-                type="text"
-                value={university}
-                onChange={(event) => setUniversity(event.target.value)}
-              />
-            </label>
-          </>
-        )}
-        {role === 'SPEAKER' && (
-          <>
-            <br />
-            <label>
-              Expertise:
+    <div className="flex justify-center items-center min-h-screen bg-[#E3D5C8]">
+      <div className="bg-white shadow-lg rounded-lg p-8 w-96">
+        <h2 className="text-2xl font-bold text-[#2E2E2E] text-center mb-4">Sign Up</h2>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-[#5A5958] font-medium">Username:</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              placeholder="Enter username"
+              className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+            />
+          </div>
+          <div>
+            <label className="block text-[#5A5958] font-medium">Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Enter email"
+              className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+            />
+          </div>
+          <div>
+            <label className="block text-[#5A5958] font-medium">Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Enter password"
+              className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+            />
+          </div>
+          <div>
+            <label className="block text-[#5A5958] font-medium">Role:</label>
+            <select
+              value={role}
+              onChange={(event) => setRole(event.target.value)}
+              className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+            >
+              <option value="">Select a role</option>
+              {roles.map((role) => (
+                <option key={role.value} value={role.value}>
+                  {role.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          {role === 'ATTENDEE' && (
+            <>
+              <div>
+                <label className="block text-[#5A5958] font-medium">Profession:</label>
+                <input
+                  type="text"
+                  value={profession}
+                  onChange={(event) => setProfession(event.target.value)}
+                  placeholder="Enter profession"
+                  className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+                />
+              </div>
+              <div>
+                <label className="block text-[#5A5958] font-medium">University:</label>
+                <input
+                  type="text"
+                  value={university}
+                  onChange={(event) => setUniversity(event.target.value)}
+                  placeholder="Enter university"
+                  className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+                />
+              </div>
+            </>
+          )}
+          {role === 'SPEAKER' && (
+            <div>
+              <label className="block text-[#5A5958] font-medium">Expertise:</label>
               <input
                 type="text"
                 value={expertise}
                 onChange={(event) => setExpertise(event.target.value)}
+                placeholder="Enter expertise"
+                className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
               />
-            </label>
-          </>
-        )}
-        {role === 'ORGANIZER' && (
-          <>
-            <br />
-            <label>
-              Organization:
+            </div>
+          )}
+          {role === 'ORGANIZER' && (
+            <div>
+              <label className="block text-[#5A5958] font-medium">Organization:</label>
               <input
                 type="text"
                 value={organization}
                 onChange={(event) => setOrganization(event.target.value)}
+                placeholder="Enter organization"
+                className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
               />
-            </label>
-          </>
-        )}
-        <br />
-        <button type="submit">Sign Up</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
+            </div>
+          )}
+          <button
+            type="submit"
+            className="w-full bg-[#D9C2A3] text-[#2E2E2E] py-2 rounded-md font-semibold transition duration-300 hover:bg-[#C4A88E]"
+          >
+            Sign Up
+          </button>
+          {error && <p className="text-red-500 text-center mt-4">{error}</p>}
+        </form>
+      </div>
     </div>
   );
 };

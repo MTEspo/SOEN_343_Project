@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.chatRoom.ChatRoom;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -29,14 +32,17 @@ public class Session {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "schedule_id")
+    @JsonIgnore
     private Schedule schedule;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "chatroom_id", referencedColumnName = "id")
+    @JsonIgnore
     private ChatRoom chatroom;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "speaker_id")
+    @JsonIgnore
     private Speaker speaker;
 
 }

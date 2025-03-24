@@ -18,7 +18,7 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
 
-    @GetMapping
+    @GetMapping("/all-schedules")
     public List<Schedule> getAllSchedules() {
         return scheduleService.getAllSchedules();
     }
@@ -38,4 +38,12 @@ public class ScheduleController {
         scheduleService.deleteSchedule(id);
         return ResponseEntity.noContent().build();
     }
+
+    //endpoint to get eventId from a schedule
+    @GetMapping("/{id}/event")
+    public ResponseEntity<Long> getEventIdFromSchedule(@PathVariable Long id){
+        Long eventId = scheduleService.getEventIdFromSchedule(id);
+        return ResponseEntity.ok(eventId);
+    }
+
 }
