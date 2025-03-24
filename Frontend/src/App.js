@@ -4,6 +4,8 @@ import Login from "./Authentication/Login";
 import SignUp from "./Authentication/SignUp";
 import ChatRoomContainer from './chat/ChatRoomContainer';
 import EventPlanning from './eventplanning/EventPlanning';
+import FinancialDashboard from "./Payment & Financial Management/FinancialDashboard";
+
 
 const events = [
   {id: 1, image: "/images/seminar-image.jpeg", title: "Unlock new perspectives and ignite your curiosity!", button: "Find Seminars"},
@@ -186,7 +188,7 @@ function App() {
             <Route path="/event-planning" element={<EventPlanning />} />
             <Route path="/attendees" element={<Attendees />} />
             <Route path="/networking" element={<Networking />} />
-            <Route path="/payments" element={<Payments />} />
+            <Route path="/payments" element={<FinancialDashboard />} />
             <Route path="/chat" element={<ChatRoomContainer />} />
           </Routes>
         </div>
