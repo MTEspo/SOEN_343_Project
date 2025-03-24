@@ -59,6 +59,12 @@ public class SessionService {
         .orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
+    public Long getScheduleIdFromSession(Long sessionId) {
+        return sessionRepository.findById(sessionId)
+        .map(session -> session.getSchedule().getId())
+        .orElseThrow(() -> new RuntimeException("Session not found"));
+    }
+
     public boolean hasAccessToEvent(Long userId, Long sessionId) {
         return ticketService.hasEventAccess(userId, sessionId);
     }

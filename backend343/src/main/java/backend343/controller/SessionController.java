@@ -45,6 +45,12 @@ public class SessionController {
         return ResponseEntity.ok(eventId);
     }
 
+    @GetMapping("/{id}/schedule")
+    public ResponseEntity<Long> getScheduleIdFromSession(@PathVariable Long id) {
+        Long scheduleId = sessionService.getScheduleIdFromSession(id);
+        return ResponseEntity.ok(scheduleId);
+    }
+
     @GetMapping("/access/{userId}/{sessionId}")
     public boolean hasAccessToEvent(@PathVariable Long userId,@PathVariable Long sessionId) {
         return sessionService.hasAccessToEvent(userId, sessionId);

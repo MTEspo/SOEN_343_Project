@@ -9,6 +9,8 @@ const EventPlanning = () => {
   const [sessions, setSessions] = useState([]);
   const [eventSchedules, setEventSchedules] = useState({});
   const [eventSessions, setEventSessions] = useState({});
+  const [editingEventId, setEditingEventId] = useState(null);
+  const [editFields, setEditFields] = useState({ name: "", description: "", price: "" });
 
   const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
   const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
@@ -72,46 +74,52 @@ const EventPlanning = () => {
       console.log("All sessions fetched:", res.data);
       setSessions(res.data);
     } catch (err){
-      console.errorzd("Failed to fetch all sessions:", err);
+      console.error("Failed to fetch all sessions:", err);
     }
   }
 
-  const loadSchedulesAndSessionsForEvents = async (eventList) => {
-  const eventScheduleMap = {};
-  const eventSessionMap = {};
-
-    for (const event of eventList) {
-      const res = await axios.get(`${API_URL}/schedule/all-schedules`);
-      const allSchedules = res.data;
-
-      const matchingSchedules = [];
-
+  const loadSchedulesAndSessionsForEvents = async () => {
+    const eventScheduleMap = {};
+    const eventSessionMap = {};
+  
+    try {
+      const schedulesRes = await axios.get(`${API_URL}/schedule/all-schedules`);
+      const sessionsRes = await axios.get(`${API_URL}/session/all-sessions`);
+      const allSchedules = schedulesRes.data;
+      const allSessions = sessionsRes.data;
+  
       for (const schedule of allSchedules) {
-        try {
-          const eventRes = await axios.get(`${API_URL}/schedule/${schedule.id}/event`);
-          if (eventRes.data === event.id) {
-            matchingSchedules.push(schedule);
-
-            const sessRes = await axios.get(`${API_URL}/schedule/${schedule.id}/sessions`);
-            const sessionsForSchedule = sessRes.data;
-
-            eventSessionMap[event.id] = (eventSessionMap[event.id] || []).concat(
-              sessionsForSchedule.map(sess => ({ ...sess, scheduleId: schedule.id }))
-            );
-          }
-        } catch (err) {
-          console.error("Error loading schedule/session data", err);
-        }
+        const eventRes = await axios.get(`${API_URL}/schedule/${schedule.id}/event`);
+        const eventId = eventRes.data;
+  
+        // Add schedule to the correct event
+        if (!eventScheduleMap[eventId]) eventScheduleMap[eventId] = [];
+        eventScheduleMap[eventId].push(schedule);
       }
-
-      eventScheduleMap[event.id] = matchingSchedules;
+  
+      for (const session of allSessions) {
+        const scheduleRes = await axios.get(`${API_URL}/session/${session.id}/schedule`);
+        const scheduleId = scheduleRes.data;
+  
+        // Use the scheduleId to find its eventId
+        const eventId = Object.keys(eventScheduleMap).find((eid) =>
+          eventScheduleMap[eid].some((s) => s.id === scheduleId)
+        );
+  
+        if (!eventId) continue; // skip if schedule isn't mapped
+  
+        // Add session under the correct event
+        if (!eventSessionMap[eventId]) eventSessionMap[eventId] = [];
+        eventSessionMap[eventId].push({ ...session, scheduleId });
+      }
+  
+      setEventSchedules(eventScheduleMap);
+      setEventSessions(eventSessionMap);
+    } catch (err) {
+      console.error("Error mapping schedules and sessions:", err);
     }
-
-    setEventSchedules(eventScheduleMap);
-    setEventSessions(eventSessionMap);
   };
-
-
+    
   const handleCreateEvent = async (e) => {
     e.preventDefault();
     if (!newEvent.type) return;
@@ -120,6 +128,7 @@ const EventPlanning = () => {
       const res = await axios.post(`${API_URL}/event/create`, newEvent);
       setEvents([...events, res.data]);
       setNewEvent({ name: "", description: "", price: "", type: "" });
+      alert("Event created successfully!");
     } catch (err) {
       console.error("Failed to create event:", err);
     }
@@ -134,6 +143,7 @@ const EventPlanning = () => {
       await fetchEvents(); // Reloads updated eventSchedules + sessions
       setNewSchedule({ date: "", eventId: null });
       setOpenForm({ eventId: null, type: null });
+      alert("Schedule added!");
     } catch (err) {
       console.error("Failed to create schedule:", err);
     }
@@ -148,11 +158,51 @@ const EventPlanning = () => {
       setNewSession({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
       await fetchEvents();
       setOpenForm({ eventId: null, type: null });
+      alert("Session added!");
     } catch (err) {
       console.error("Failed to create session:", err);
     }
   };
 
+  const handleEventUpdate = async (event) => {
+    try {
+      const plainHeaders = { headers: { "Content-Type": "text/plain" } };
+      const jsonHeaders = { headers: { "Content-Type": "application/json" } };
+  
+      if (editFields.name !== event.name) {
+        await axios.post(
+          `${API_URL}/event/update/name/${event.id}`,
+          editFields.name, // no stringify
+          plainHeaders
+        );
+      }
+  
+      if (editFields.description !== event.description) {
+        await axios.post(
+          `${API_URL}/event/update/description/${event.id}`,
+          editFields.description, // no stringify
+          plainHeaders
+        );
+      }
+  
+      if (parseFloat(editFields.price) !== parseFloat(event.price)) {
+        await axios.post(
+          `${API_URL}/event/update/price/${event.id}`,
+          editFields.price, // can be string or number
+          jsonHeaders
+        );
+      }
+  
+      await fetchEvents();
+      setEditingEventId(null);
+      alert("Event updated successfully!");
+    } catch (err) {
+      console.error("Failed to update event:", err);
+    }
+  };
+  
+  
+  
   return (
     <div className="flex flex-col items-center mt-6">
       <h2 className="text-2xl font-bold pt-2">Event Planning</h2>
@@ -163,31 +213,101 @@ const EventPlanning = () => {
         <div className="mt-8 w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {events.map((event) => (
             <div key={event.id} className="border border-[#D9C2A3] p-4 rounded-lg shadow bg-white flex flex-col justify-between">
-              <div>
+              <div className="relative">
+                {/* Edit button - top right */}
+                <button
+                  className="absolute top-0 right-0 text-blue-500 text-sm hover:underline"
+                  onClick={() => {
+                    setEditingEventId(event.id);
+                    setEditFields({ name: event.name, description: event.description, price: event.price });
+                  }}
+                >
+                  Edit
+                </button>
+
+                {/* Event info */}
                 <h3 className="font-bold text-lg">{event.name}</h3>
                 <p className="text-sm text-gray-700">{event.description}</p>
                 <p className="text-sm mt-1"><strong>Type:</strong> {event.type}</p>
                 <p className="text-sm text-gray-500">Price: ${event.price}</p>
               </div>
 
+              {editingEventId === event.id && (
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleEventUpdate(event);
+                  }}
+                  className="mt-2 flex flex-col gap-2"
+                >
+                  <input
+                    type="text"
+                    value={editFields.name}
+                    onChange={(e) => setEditFields({ ...editFields, name: e.target.value })}
+                    placeholder="New name"
+                    className="border border-gray-300 p-1 rounded"
+                  />
+                  <input
+                    type="text"
+                    value={editFields.description}
+                    onChange={(e) => setEditFields({ ...editFields, description: e.target.value })}
+                    placeholder="New description"
+                    className="border border-gray-300 p-1 rounded"
+                  />
+                  <input
+                    type="number"
+                    value={editFields.price}
+                    onChange={(e) => setEditFields({ ...editFields, price: e.target.value })}
+                    placeholder="New price"
+                    className="border border-gray-300 p-1 rounded"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="submit"
+                      className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500"
+                      onClick={() => setEditingEventId(null)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              )}
+
+
+
               {/* Schedules and Sessions */}
               <div className="mt-2">
-              {(eventSchedules[event.id] || []).map((schedule) => (
+                {(eventSchedules[event.id] || []).map((schedule) => (
+                  <div key={schedule.id} className="mb-2">
+                    <p className="text-sm font-semibold text-gray-700">• Schedule: {schedule.date}</p>
+                    <ul className="ml-6  text-sm text-gray-600">
+                    {(eventSessions[event.id] || [])
+                    .filter((sess) => sess.scheduleId === schedule.id)
+                    .map((sess) => {
+                      const formatTime = (timeStr) => {
+                        const [hour, minute] = timeStr.split(":");
+                        return new Date(0, 0, 0, hour, minute).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true,
+                        });
+                      };
 
-                    <div key={schedule.id} className="mb-1">
-                      <p className="text-sm font-semibold text-gray-700">• Schedule: {schedule.date}</p>
-                      <ul className="ml-4 list-disc text-sm text-gray-600">
-                      {(eventSessions[event.id] || [])
-                            .filter((sess) => sess.scheduleId === schedule.id)
-                            .map((sess) => (
-
-                            <li key={sess.id}>
-                              {sess.title} ({sess.startTime} - {sess.endTime})
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
-                  ))}
+                      return (
+                        <li key={sess.id}>
+                          - {sess.title} ({formatTime(sess.startTime)} - {formatTime(sess.endTime)}) @ {sess.location}
+                        </li>
+                      );
+                    })}
+                    </ul>
+                  </div>
+                ))}
               </div>
 
 
