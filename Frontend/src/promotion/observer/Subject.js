@@ -13,7 +13,7 @@ export class EventService {
   }
 
   promoteEvent(eventData) {
-    console.log("🚀 Promoting Event:", eventData.name);
+    console.log("Promoting Event:", eventData.name);
     this.notifyObservers(eventData);
   }
 }
