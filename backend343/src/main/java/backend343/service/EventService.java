@@ -31,6 +31,12 @@ public class EventService {
         return eventProxy.getEventById(id);
     }
 
+    
+    public Event getEventById(Long id) {
+        return eventProxy.getEventById(id);
+    }
+    
+
     public void save(Event event) {
         eventProxy.save(event);
     }

@@ -46,8 +46,8 @@ public class EventController {
     }
 
     @GetMapping("/{id}/schedules")
-    public List<Schedule> getEventSchedules(@PathVariable Long id) {
-        return eventService.findById(id).getSchedules();
+    public List<Schedule> getSchedulesFromEvent(@PathVariable Long id) {
+        return eventService.getEventById(id).getSchedules();
     }
 
 

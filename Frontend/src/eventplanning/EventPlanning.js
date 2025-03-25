@@ -213,7 +213,7 @@ const EventPlanning = () => {
               <div className="relative">
                 {/* Edit button - top right */}
                 <button
-                  className="absolute top-0 right-0 text-blue-500 text-sm hover:underline"
+                  className="absolute top-0 right-0 text-[#8B5E3C] text-sm hover:underline"
                   onClick={() => {
                     setEditingEventId(event.id);
                     setEditFields({ name: event.name, description: event.description, price: event.price });
