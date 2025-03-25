@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Login from "./Authentication/Login";
 import SignUp from "./Authentication/SignUp";
+import VerifyEmail from "./Authentication/VerifyEmail";
 import ChatRoomContainer from './chat/ChatRoomContainer';
 import EventPlanning from './eventplanning/EventPlanning';
 import FinancialDashboard from "./Payment & Financial Management/FinancialDashboard";
+import AttendeeManagement from "./Attendee/AttendeeManagement";
 
 
 const events = [
@@ -124,7 +126,6 @@ const Home = () => {
   );
 };
 
-const Attendees = () => <h2 className="text-2xl font-bold text-center mt-6">Attendees Management Page</h2>;
 const Networking = () => <h2 className="text-2xl font-bold text-center mt-6">Networking & Engagement Page</h2>;
 const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payment & Financial Management Page</h2>;
 
@@ -185,15 +186,23 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/event-planning" element={<EventPlanning />} />
-            <Route path="/attendees" element={<Attendees />} />
+            <Route path="/attendees" element={<AttendeeManagement />} />
             <Route path="/networking" element={<Networking />} />
             <Route path="/payments" element={<FinancialDashboard />} />
             <Route path="/chat" element={<ChatRoomContainer />} />
           </Routes>
+
+          {/* Footer */}
+          <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4 mt-8 text-sm">
+            © {new Date().getFullYear()} Smart Education Events System. All rights reserved.
+          </footer>
         </div>
       </div>
     </Router>
+
+    
   );
 }
 

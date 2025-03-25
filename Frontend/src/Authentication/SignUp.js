@@ -39,6 +39,7 @@ const SignUp = () => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signup', data);
       console.log(response)
+      alert("Signed up successfully! You may now verify your email")
       navigate('/verify-email', { state: { email: email } });
     } catch (error) {
       if (error.response) {

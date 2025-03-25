@@ -200,9 +200,7 @@ const EventPlanning = () => {
       console.error("Failed to update event:", err);
     }
   };
-  
-  
-  
+    
   return (
     <div className="flex flex-col items-center mt-6">
       <h2 className="text-2xl font-bold pt-2">Event Planning</h2>
