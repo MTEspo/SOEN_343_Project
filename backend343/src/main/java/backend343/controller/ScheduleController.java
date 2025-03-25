@@ -2,6 +2,7 @@ package backend343.controller;
 
 import java.util.List;
 
+import backend343.models.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,11 @@ public class ScheduleController {
     public ResponseEntity<Long> getEventIdFromSchedule(@PathVariable Long id){
         Long eventId = scheduleService.getEventIdFromSchedule(id);
         return ResponseEntity.ok(eventId);
+    }
+
+    @GetMapping("/{id}/sessions")
+    public List<Session> getSessionsFromSchedule(@PathVariable Long id){
+        return scheduleService.getScheduleById(id).getSessions();
     }
 
 }

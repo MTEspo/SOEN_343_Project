@@ -4,6 +4,7 @@ import backend343.logger.LoggerSingleton;
 import backend343.models.Event;
 import backend343.repository.EventRepository;
 
+import backend343.service.OrganizerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -14,12 +15,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class EventProxy {
     
     private EventRepository eventRepository;
+    private OrganizerService organizerService;
     private static final Map<Long, Event> eventCache = new ConcurrentHashMap<>(); // Caching Layer
     private static final LoggerSingleton logger = LoggerSingleton.getInstance(); 
 
     @Autowired
-    public EventProxy(EventRepository eventRepository) {
+    public EventProxy(EventRepository eventRepository,OrganizerService organizerService) {
         this.eventRepository = eventRepository;
+        this.organizerService = organizerService;
     }
 
     public Event getEventById(Long id) {
@@ -35,7 +38,15 @@ public class EventProxy {
         return event;
     }
 
-    public Event createEvent(Event event) {
+    public Event createEvent(Event event, Long organizer_id) {
+        event.setOrganizer(organizerService.findOrganizerById(organizer_id));
+        Event savedEvent = eventRepository.save(event);
+        eventCache.put(savedEvent.getId(), savedEvent); //Cache New Event
+        logger.logInfo("[CACHE ADD] - Event ID " + savedEvent.getId() + " added to cache.");
+        return savedEvent;
+    }
+
+    public Event save(Event event) {
         Event savedEvent = eventRepository.save(event);
         eventCache.put(savedEvent.getId(), savedEvent); //Cache New Event
         logger.logInfo("[CACHE ADD] - Event ID " + savedEvent.getId() + " added to cache.");

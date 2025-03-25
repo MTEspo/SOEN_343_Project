@@ -26,6 +26,10 @@ public class Event {
     private EventType type;
     private BigDecimal price;
 
+    @ManyToOne
+    @JoinColumn(name = "organizer_id")
+    private Organizer organizer;
+
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Schedule> schedules;

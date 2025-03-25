@@ -32,11 +32,11 @@ public class EventService {
     }
 
     public void save(Event event) {
-        eventProxy.createEvent(event);
+        eventProxy.save(event);
     }
 
-    public Event createEvent(Event event) {
-        return eventProxy.createEvent(event);
+    public Event createEvent(Event event,Long organizer_id) {
+        return eventProxy.createEvent(event,organizer_id);
     }
     public Event updateEventDescription(Long id,String description) {
         return eventProxy.updateEventDescription(id, description);

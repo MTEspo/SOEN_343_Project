@@ -1,6 +1,7 @@
 package backend343.controller;
 
 import backend343.models.Event;
+import backend343.models.Schedule;
 import backend343.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class EventController {
         return eventService.getAllEvents();
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<Event> createEvent(@RequestBody Event event) {
-        return ResponseEntity.ok(eventService.createEvent(event));
+    @PostMapping("/create/{organizer_id}")
+    public ResponseEntity<Event> createEvent(@RequestBody Event event, @PathVariable("organizer_id") Long organizer_id) {
+        return ResponseEntity.ok(eventService.createEvent(event,organizer_id));
     }
 
     @PostMapping("/update/description/{id}")
@@ -42,6 +43,11 @@ public class EventController {
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.findById(id));
+    }
+
+    @GetMapping("/{id}/schedules")
+    public List<Schedule> getEventSchedules(@PathVariable Long id) {
+        return eventService.findById(id).getSchedules();
     }
 
 
