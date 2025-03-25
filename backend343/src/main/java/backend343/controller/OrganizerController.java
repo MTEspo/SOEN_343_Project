@@ -3,6 +3,8 @@ package backend343.controller;
 import backend343.dto.CreateSpeakerOfferRequest;
 import backend343.dto.PromotionEmailRequest;
 import backend343.models.Event;
+import backend343.models.Organizer;
+import backend343.models.Schedule;
 import backend343.responses.SpeakerOfferResponse;
 import backend343.service.OrganizerService;
 import backend343.service.SpeakerOfferService;
@@ -36,5 +38,10 @@ public class OrganizerController {
     @GetMapping("/{id}/events")
     public List<Event> getOrganizerEvents(@PathVariable Long id) {
         return organizerService.findOrganizerById(id).getEvents();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Organizer> getOrganizerById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(organizerService.findOrganizerById(id));
     }
 }

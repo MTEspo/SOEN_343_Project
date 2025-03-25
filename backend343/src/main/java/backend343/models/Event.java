@@ -28,6 +28,7 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "organizer_id")
+    @JsonIgnore
     private Organizer organizer;
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

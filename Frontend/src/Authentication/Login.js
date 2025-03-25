@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const navigate = useNavigate();
@@ -16,16 +17,25 @@ function Login() {
         password,
       });
 
-      const { jwtToken, expiration } = response.data;
-      console.log("JWT Token:", jwtToken);
-      console.log("Expires at:", expiration);
-
-      // Optionally store token (e.g. in localStorage or cookie)
+      console.log("Full login response:", response);
+  
+      const jwtToken = response.data.token;
+      const expiration = response.data.expiresIn;
+  
+      console.log("JWT Tokennn:", jwtToken);
+      console.log("Expires attt:", expiration);
+  
       localStorage.setItem("token", jwtToken);
       localStorage.setItem("tokenExpiration", expiration);
+  
+      const decoded = jwtDecode(jwtToken);
+      localStorage.setItem("userId", decoded.userId);
+      localStorage.setItem("role", decoded.role);
 
-      // Navigate to home or dashboard
-      alert("Logged in successfully! Happy learning!")
+      console.log("user id:", decoded.userId);
+      console.log("role:", decoded.role);
+  
+      alert("Logged in successfully! Happy learning!");
       navigate("/");
     } catch (err) {
       console.error("Login error:", err);
@@ -36,6 +46,7 @@ function Login() {
       }
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#E3D5C8]">

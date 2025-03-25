@@ -18,6 +18,9 @@ const EventPlanning = () => {
 
   const [openForm, setOpenForm] = useState({ eventId: null, type: null });
 
+  const token = localStorage.getItem("token");
+  const organizerId = localStorage.getItem("userId");
+
   useEffect(() => {
     fetchEvents();
     fetchAllSchedules();
@@ -26,21 +29,30 @@ const EventPlanning = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get(`${API_URL}/event/all-events`);
+      const res = await axios.get(`${API_URL}/organizer/${organizerId}/events`);
       setEvents(res.data);
       await loadSchedulesAndSessionsForEvents(res.data);
+      
     } catch (err) {
-      console.error("Failed to fetch events:", err);
+    console.error("Failed to fetch events:", err);
     }
   };
 
   const fetchAllSchedules = async () => {
     try {
       const res = await axios.get(`${API_URL}/schedule/all-schedules`);
-      console.log("All schedules fetched:", res.data);    
       setSchedules(res.data);
     } catch (err) {
       console.error("Failed to fetch all schedules:", err);
+    }
+  };
+
+  const fetchAllSessions = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/session/all-sessions`);
+      setSessions(res.data);
+    } catch (err) {
+      console.error("Failed to fetch all sessions:", err);
     }
   };
 
@@ -48,7 +60,6 @@ const EventPlanning = () => {
     try {
       const res = await axios.get(`${API_URL}/schedule/all-schedules`);
       const allSchedules = res.data;
-
       const matchingSchedules = [];
 
       for (const schedule of allSchedules) {
@@ -68,64 +79,66 @@ const EventPlanning = () => {
     }
   };
 
-  const fetchAllSessions = async () => {
-    try{
-      const res = await axios.get(`${API_URL}/session/all-sessions`);
-      console.log("All sessions fetched:", res.data);
-      setSessions(res.data);
-    } catch (err){
-      console.error("Failed to fetch all sessions:", err);
-    }
-  }
-
-  const loadSchedulesAndSessionsForEvents = async () => {
+  const loadSchedulesAndSessionsForEvents = async (eventList) => {
     const eventScheduleMap = {};
     const eventSessionMap = {};
-  
+
     try {
       const schedulesRes = await axios.get(`${API_URL}/schedule/all-schedules`);
       const sessionsRes = await axios.get(`${API_URL}/session/all-sessions`);
       const allSchedules = schedulesRes.data;
       const allSessions = sessionsRes.data;
-  
+
       for (const schedule of allSchedules) {
         const eventRes = await axios.get(`${API_URL}/schedule/${schedule.id}/event`);
         const eventId = eventRes.data;
-  
-        // Add schedule to the correct event
         if (!eventScheduleMap[eventId]) eventScheduleMap[eventId] = [];
         eventScheduleMap[eventId].push(schedule);
       }
-  
+
       for (const session of allSessions) {
         const scheduleRes = await axios.get(`${API_URL}/session/${session.id}/schedule`);
         const scheduleId = scheduleRes.data;
-  
-        // Use the scheduleId to find its eventId
-        const eventId = Object.keys(eventScheduleMap).find((eid) =>
-          eventScheduleMap[eid].some((s) => s.id === scheduleId)
+
+        const eventId = Object.keys(eventScheduleMap).find(eid =>
+          eventScheduleMap[eid].some(s => s.id === scheduleId)
         );
-  
-        if (!eventId) continue; // skip if schedule isn't mapped
-  
-        // Add session under the correct event
+
+        if (!eventId) continue;
+
         if (!eventSessionMap[eventId]) eventSessionMap[eventId] = [];
         eventSessionMap[eventId].push({ ...session, scheduleId });
       }
-  
+
       setEventSchedules(eventScheduleMap);
       setEventSessions(eventSessionMap);
     } catch (err) {
       console.error("Error mapping schedules and sessions:", err);
     }
   };
-    
+
   const handleCreateEvent = async (e) => {
     e.preventDefault();
-    if (!newEvent.type) return;
+
+    console.log("Organizer ID:", organizerId);
+    console.log("New Event:", newEvent);
+
+    if (!newEvent.type || !organizerId) return;
 
     try {
-      const res = await axios.post(`${API_URL}/event/create`, newEvent);
+      console.log("Organizer ID:", organizerId);
+      console.log("New Event:", newEvent);
+
+
+      const res = await axios.post(
+        `${API_URL}/event/create/${organizerId}`,
+        newEvent,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setEvents([...events, res.data]);
       setNewEvent({ name: "", description: "", price: "", type: "" });
       alert("Event created successfully!");
@@ -139,8 +152,8 @@ const EventPlanning = () => {
     if (!newSchedule.date || !newSchedule.eventId) return;
 
     try {
-      const res = await axios.post(`${API_URL}/schedule/create/${newSchedule.eventId}`, newSchedule);
-      await fetchEvents(); // Reloads updated eventSchedules + sessions
+      await axios.post(`${API_URL}/schedule/create/${newSchedule.eventId}`, newSchedule);
+      await fetchEvents();
       setNewSchedule({ date: "", eventId: null });
       setOpenForm({ eventId: null, type: null });
       alert("Schedule added!");
@@ -154,7 +167,7 @@ const EventPlanning = () => {
     if (!newSession.scheduleId) return;
 
     try {
-      const res = await axios.post(`${API_URL}/session/create/${newSession.scheduleId}`, newSession);
+      await axios.post(`${API_URL}/session/create/${newSession.scheduleId}`, newSession);
       setNewSession({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
       await fetchEvents();
       setOpenForm({ eventId: null, type: null });
@@ -168,31 +181,17 @@ const EventPlanning = () => {
     try {
       const plainHeaders = { headers: { "Content-Type": "text/plain" } };
       const jsonHeaders = { headers: { "Content-Type": "application/json" } };
-  
+
       if (editFields.name !== event.name) {
-        await axios.post(
-          `${API_URL}/event/update/name/${event.id}`,
-          editFields.name, // no stringify
-          plainHeaders
-        );
+        await axios.post(`${API_URL}/event/update/name/${event.id}`, editFields.name, plainHeaders);
       }
-  
       if (editFields.description !== event.description) {
-        await axios.post(
-          `${API_URL}/event/update/description/${event.id}`,
-          editFields.description, // no stringify
-          plainHeaders
-        );
+        await axios.post(`${API_URL}/event/update/description/${event.id}`, editFields.description, plainHeaders);
       }
-  
       if (parseFloat(editFields.price) !== parseFloat(event.price)) {
-        await axios.post(
-          `${API_URL}/event/update/price/${event.id}`,
-          editFields.price, // can be string or number
-          jsonHeaders
-        );
+        await axios.post(`${API_URL}/event/update/price/${event.id}`, editFields.price, jsonHeaders);
       }
-  
+
       await fetchEvents();
       setEditingEventId(null);
       alert("Event updated successfully!");
