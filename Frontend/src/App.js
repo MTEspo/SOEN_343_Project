@@ -157,6 +157,7 @@ function App() {
     localStorage.removeItem("tokenExpiration");
     localStorage.removeItem("userId");
     localStorage.removeItem("role");
+    localStorage.removeItem("email");
     setIsLoggedIn(false);
     window.location.href = "/"; // Refresh to force re-render + redirect to homepage
   };

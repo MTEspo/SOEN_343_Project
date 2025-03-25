@@ -68,20 +68,35 @@ const AttendeeManagement = () => {
     }
   };
   
-  const confirmSessionRegistration = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!selectedSessionId || !userId) return;
+  const checkout = async () => {
+    const userEmail = localStorage.getItem("email");
+    if (!selectedSessionId || !userEmail) return;
   
     try {
-      await axios.post(`${API_URL}/`);
-      alert("Successfully registered for the session!");
-      setShowSessionModal(false);
-      setSelectedSessionId(null);
+
+      console.log("Sending to Stripe:", {
+        userEmail,
+        sessionId: Number(selectedSessionId),
+      });
+      
+
+      const response = await axios.post("http://localhost:8080/api/product/v1/checkout", {
+        userEmail,
+        sessionId: Number(selectedSessionId),
+      });
+  
+      // Redirect to Stripe Checkout session
+      if (response.data && response.data.sessionUrl) {
+        window.location.href = response.data.sessionUrl;
+      } else {
+        alert("Checkout failed. No URL returned.");
+      }
     } catch (err) {
-      console.error("Registration failed:", err);
-      alert("Failed to register.");
+      console.error("Checkout error:", err);
+      alert("Checkout failed. Please try again.");
     }
   };
+  
   
 
   return (
@@ -162,10 +177,10 @@ const AttendeeManagement = () => {
                 Cancel
               </button>
               <button
-                onClick={confirmSessionRegistration}
+                onClick={checkout}
                 className="bg-[#D9C2A3] px-3 py-1 rounded hover:bg-[#C4A88E]"
               >
-                Register
+                Checkout
               </button>
             </div>
           </div>

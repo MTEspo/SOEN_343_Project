@@ -29,13 +29,16 @@ function Login() {
       localStorage.setItem("tokenExpiration", expiration);
   
       const decoded = jwtDecode(jwtToken);
+
       localStorage.setItem("userId", decoded.userId);
       localStorage.setItem("role", decoded.role);
+      localStorage.setItem("email", email);
 
       window.dispatchEvent(new Event("storage"));
 
       console.log("user id:", decoded.userId);
       console.log("role:", decoded.role);
+      console.log("email:", email)
   
       alert("Logged in successfully! Happy learning!");
       navigate("/");
