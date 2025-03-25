@@ -26,9 +26,9 @@ export class EmailNotifier {
           },
         }
       );
-      console.log(`📧 Email promotion sent for: ${eventData.name}`);
+      console.log(` Email promotion sent for: ${eventData.name}`);
     } catch (err) {
-      console.error(`❌ Failed to send email promotion for ${eventData.name}:`, err.message);
+      console.error(`Failed to send email promotion for ${eventData.name}:`, err.message);
     }
   }
 }

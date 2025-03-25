@@ -132,6 +132,7 @@ const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payme
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token")); // check if token exists
 
   useEffect(() => {
     const handleScroll = () => {
@@ -141,6 +142,24 @@ function App() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsLoggedIn(!!localStorage.getItem("token"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+  
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiration");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    setIsLoggedIn(false);
+    window.location.href = "/"; // Refresh to force re-render + redirect to homepage
+  };
 
   return (
     <Router>
@@ -180,9 +199,22 @@ function App() {
             </div>
 
             {/* Login Button */}
-            <Link to="/login" className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-              Log In
-            </Link>
+            {isLoggedIn ? (
+              <button
+                onClick={handleLogout}
+                className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Log Out
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Log In
+              </Link>
+            )}
+
           </div>
         </nav>
         {/* Adjust spacing so content does not go under the fixed navbar */}

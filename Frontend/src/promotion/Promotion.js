@@ -11,6 +11,10 @@ const Promotion = () => {
   // Using useRef to keep observer service instance between renders
   const eventServiceRef = useRef(new EventService());
 
+  
+  const token = localStorage.getItem("token");
+  const organizerId = localStorage.getItem("userId");
+
   useEffect(() => {
     // Register all observers once on mount
     const service = eventServiceRef.current;
@@ -20,7 +24,7 @@ const Promotion = () => {
 
   const fetchEvents = async () => {
     try {
-      const res = await axios.get(`${API_URL}/event/all-events`);
+      const res = await axios.get(`${API_URL}/organizer/${organizerId}/events`);
       setEvents(res.data);
     } catch (err) {
       console.error("Failed to fetch events:", err);
@@ -29,7 +33,7 @@ const Promotion = () => {
 
   const handlePromote = (event) => {
     eventServiceRef.current.promoteEvent(event);
-    alert(`Promotion triggered for "${event.name}" — check console log!`);
+    alert(`Promotion triggered for ${event.name}!`);
   };
 
   return (
