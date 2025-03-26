@@ -135,7 +135,7 @@ const Home = () => {
 };
 
 const Networking = () => <h2 className="text-2xl font-bold text-center mt-6">Networking & Engagement Page</h2>;
-const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payment & Financial Management Page</h2>;
+const Unauthorized = () => <h2 className="text-center mt-10 text-xl text-red-600">Access Denied: Organizers Only</h2>;
 
 const SuccessPage = () => {
   const navigate = useNavigate();
@@ -227,8 +227,9 @@ function App() {
         <Link to="/networking" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
           Networking
         </Link>
-        <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Financial Management
+         {userRole === "ORGANIZER" && (
+                <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">Financial Management</Link>
+              )}
         </Link>
         <Link to="/chat" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
           Chat Room
@@ -267,7 +268,7 @@ function App() {
             <Route path="/event-planning" element={<EventPlanning />} />
             <Route path="/attendees" element={<AttendeeManagement />} />
             <Route path="/networking" element={<Networking />} />
-            <Route path="/payments" element={<FinancialDashboard />} />
+            <Route path="/payments" element={userRole === "ORGANIZER" ? <FinancialDashboard /> : <Unauthorized />} />
             <Route path="/chat" element={<ChatRoomContainer />} />
             <Route path="/promotion" element={<Promotion />} />
             <Route path="/success" element={<SuccessPage />} />
