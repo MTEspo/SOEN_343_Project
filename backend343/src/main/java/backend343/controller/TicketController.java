@@ -28,8 +28,9 @@ public class TicketController {
 
     @PostMapping("/check-in")
     public ResponseEntity<String> verifyTicket(@RequestBody VerifyTicketRequest request) {
-            boolean ticketValid = ticketService.verifyTicket(request.getTicketCode());
-            return ticketValid? ResponseEntity.ok("Ticket is valid") : ResponseEntity.badRequest().body("Ticket is invalid");
+        boolean ticketValid = ticketService.verifyTicket(request.getTicketCode());
+        return ticketValid ? ResponseEntity.ok("Ticket is valid")
+                : ResponseEntity.badRequest().body("Ticket is invalid");
     }
 
     @GetMapping("/all-users-tickets/{userId}")
@@ -38,12 +39,18 @@ public class TicketController {
     }
 
     @PostMapping("/create/{userId}/{sessionId}")
-    public ResponseEntity<Ticket> createTicket(@PathVariable("userId") Long userId, @PathVariable("sessionId") Long sessionId) {
+    public ResponseEntity<Ticket> createTicket(@PathVariable("userId") Long userId,
+            @PathVariable("sessionId") Long sessionId) {
         User user = userDetailsService.getUserById(userId);
         Session session = sessionService.getSessionById(sessionId);
 
         // Manually create a ticket without Stripe integration for testing
         Ticket ticket = ticketService.createTicket(session, user, "test");
         return ResponseEntity.ok(ticket);
+    }
+
+    @GetMapping("/get-all-users-sessions/{userId}")
+    public List<Session> getAllSessionsUserHasAccessTo(@PathVariable("userId") Long userId) {
+        return ticketService.getAllUsersSessions(userId);
     }
 }

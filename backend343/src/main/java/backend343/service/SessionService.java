@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import backend343.chatRoom.ChatRoom;
-import backend343.chatRoom.ChatroomService;
 import backend343.models.Schedule;
 import backend343.models.Speaker;
 import backend343.repository.SpeakerRepository;
@@ -55,14 +54,14 @@ public class SessionService {
 
     public Long getEventIdFromSession(Long sessionId) {
         return sessionRepository.findById(sessionId)
-        .map(session -> session.getSchedule().getEvent().getId())
-        .orElseThrow(() -> new RuntimeException("Session not found"));
+                .map(session -> session.getSchedule().getEvent().getId())
+                .orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
     public Long getScheduleIdFromSession(Long sessionId) {
         return sessionRepository.findById(sessionId)
-        .map(session -> session.getSchedule().getId())
-        .orElseThrow(() -> new RuntimeException("Session not found"));
+                .map(session -> session.getSchedule().getId())
+                .orElseThrow(() -> new RuntimeException("Session not found"));
     }
 
     public boolean hasAccessToEvent(Long userId, Long sessionId) {
@@ -139,7 +138,8 @@ public class SessionService {
 
         for (Session speakerSession : speakerSessions) {
             if (speakerSession.getSchedule().getDate().equals(schedule.getDate())
-                    && isTimeOverlapping(speakerSession.getStartTime(), speakerSession.getEndTime(), session.getStartTime(), session.getEndTime())) {
+                    && isTimeOverlapping(speakerSession.getStartTime(), speakerSession.getEndTime(),
+                            session.getStartTime(), session.getEndTime())) {
                 return false;
             }
         }
@@ -150,4 +150,9 @@ public class SessionService {
     private boolean isTimeOverlapping(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
         return (start1.isBefore(end2) && start2.isBefore(end1));
     }
+
+    public List<Session> findAllById(List<Long> sessionIds) {
+        return sessionRepository.findAllById(sessionIds);
+    }
+
 }

@@ -2,6 +2,7 @@ package backend343.service;
 
 import backend343.enums.TicketStatus;
 import backend343.logger.LoggerSingleton;
+import backend343.models.Session;
 import backend343.models.Ticket;
 import backend343.models.User;
 import backend343.repository.TicketRepository;
@@ -20,8 +21,10 @@ public class TicketService {
     private TicketRepository ticketRepository;
 
     private static final LoggerSingleton logger = LoggerSingleton.getInstance();
+    @Autowired
+    private SessionService sessionService;
 
-    public List<Ticket> getAllTickets(){
+    public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
     }
 
@@ -54,7 +57,7 @@ public class TicketService {
         return true;
     }
 
-    public Ticket createTicket(backend343.models.Session session, User user,String stripePaymentId) {
+    public Ticket createTicket(backend343.models.Session session, User user, String stripePaymentId) {
         logger.logInfo("Creating new ticket for user " + user.getId() + " and session " + session.getId());
         String ticketCode;
         do {
@@ -80,7 +83,6 @@ public class TicketService {
         ticketRepository.save(ticket);
     }
 
-
     public boolean hasEventAccess(Long userId, Long sessionId) {
         logger.logInfo("Checking event access for user " + userId + " and session " + sessionId);
         boolean hasAccess = ticketRepository.hasEventAccessAndActiveStatus(userId, sessionId);
@@ -98,5 +100,13 @@ public class TicketService {
         return tickets.stream()
                 .map(Ticket::getUser)
                 .collect(Collectors.toList());
+    }
+
+    public List<Session> getAllUsersSessions(Long userId) {
+        List<Ticket> userTickets = ticketRepository.findAllByUserId(userId);
+        List<Long> sessionIds = userTickets.stream()
+                .map(ticket -> ticket.getSession().getId())
+                .collect(Collectors.toList());
+        return sessionService.findAllById(sessionIds);
     }
 }
