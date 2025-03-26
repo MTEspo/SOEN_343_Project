@@ -9,6 +9,7 @@ import FinancialDashboard from "./Payment & Financial Management/FinancialDashbo
 import AttendeeManagement from "./Attendee/AttendeeManagement";
 import Promotion from "./promotion/Promotion";
 import UsersSessions from "./YourSessions/UsersSessions.js"
+import SessionDetails from './YourSessions/SessionDetails.js';
 
 
 
@@ -271,6 +272,8 @@ function App() {
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
             <Route path="/sessions" element={< UsersSessions />} />
+            <Route path="/session-details/:sessionId" element={<SessionDetails />} />
+            <Route path="/chat/:chatroomId" element={<ChatRoomContainer />} />
           </Routes>
 
           {/* Footer */}

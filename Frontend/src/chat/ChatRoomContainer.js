@@ -1,34 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 import ChatRoom from './ChatRoom';
 
 const ChatRoomContainer = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const ws = useRef(null); 
+  const ws = useRef(null);
   const [joined, setJoined] = useState(false);
-  const [chatroomId, setChatroomId] = useState('');
-  const [userId, setUserId] = useState('');
+  const { chatroomId } = useParams();  // Get the chatroom ID from the URL
+  const userId = localStorage.getItem("userId");  // Get the user ID from local storage
+  const navigate = useNavigate();
 
-  // Handle closing WebSocket when user leaves page
+  // Automatically join chatroom on page load
   useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (chatroomId && userId) {
-        axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/leave/${userId}`)
-          .catch((error) => console.error(error));
-      }
-      if (ws.current) {
-        ws.current.close();
-      }
-    };
-  
-    window.addEventListener('beforeunload', handleBeforeUnload);
-  
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
+    handleJoinChatroom();
   }, [chatroomId, userId]);
 
+  // Establish WebSocket connection
   useEffect(() => {
     if (joined && chatroomId && userId) {
       if (ws.current) {
@@ -61,37 +50,41 @@ const ChatRoomContainer = () => {
   }, [joined, chatroomId, userId]);
 
   const handleJoinChatroom = () => {
-    if (!chatroomId || !userId) {
-      alert("Chatroom ID and User ID are required!");
-      return;
+    if (!joined && chatroomId && userId) {
+      console.log("Attempting to join chatroom...");
+      axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/join/${userId}`)
+        .then((response) => {
+          console.log("Join response:", response.data);
+          setJoined(true);
+          setMessages([]);
+        })
+        .catch((error) => console.error("Error joining chatroom:", error));
     }
-
-    axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/join/${userId}`)
-      .then((response) => {
-        console.log(response.data);
-        setJoined(true);
-        setMessages([]); // Clear messages when rejoining
-      })
-      .catch((error) => console.error(error));
   };
 
+  // Leave chatroom and navigate back
   const handleLeaveChatroom = () => {
     axios.post(`http://localhost:8080/api/chatrooms/${chatroomId}/leave/${userId}`)
       .then((response) => {
         console.log(response.data.numberUsersInChatRoom);
         setJoined(false);
-        setMessages([]); // Reset chat messages
         if (ws.current) {
           ws.current.close();
           ws.current = null;
         }
+        navigate('/sessions');
       })
       .catch((error) => console.error(error));
   };
 
+  // Send a message through the WebSocket
   const handleSendMessage = () => {
+    const username = localStorage.getItem("username");
     if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-      const messageData = JSON.stringify({ userId, message: newMessage });
+      const messageData = JSON.stringify({ 
+        userId, 
+        message: `${username}: ${newMessage}`
+      });
       ws.current.send(messageData);
       setNewMessage('');
     } else {
@@ -101,27 +94,13 @@ const ChatRoomContainer = () => {
 
   return (
     <div>
-      <input
-        type="text"
-        value={chatroomId}
-        onChange={(event) => setChatroomId(event.target.value)}
-        placeholder="Chat Room ID"
-      />
-      <input
-        type="text"
-        value={userId}
-        onChange={(event) => setUserId(event.target.value)}
-        placeholder="User ID"
-      />
-      <button onClick={handleJoinChatroom}>Join Chat Room</button>
-      <button onClick={handleLeaveChatroom} disabled={!joined}>Leave Chat Room</button>
-      
       <ChatRoom
         messages={messages}
         newMessage={newMessage}
         handleSendMessage={handleSendMessage}
         setNewMessage={setNewMessage}
         joined={joined}
+        handleLeaveChatroom={handleLeaveChatroom}
       />
     </div>
   );
