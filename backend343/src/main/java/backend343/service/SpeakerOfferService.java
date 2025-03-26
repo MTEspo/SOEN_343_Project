@@ -72,6 +72,10 @@ public class SpeakerOfferService {
 
         if (status == OfferStatus.ACCEPTED) {
             Session session = speakerOffer.getSession();
+            if (hasOverlappingSession(speakerOffer.getSpeaker(), session)) {
+                throw new RuntimeException("Speaker already has a session scheduled at the same time");
+            }
+
             session.setSpeaker(speakerOffer.getSpeaker());
             sessionService.saveSession(session);
             Speaker speaker = speakerOffer.getSpeaker();
