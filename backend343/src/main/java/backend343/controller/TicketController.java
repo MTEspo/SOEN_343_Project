@@ -44,7 +44,6 @@ public class TicketController {
         User user = userDetailsService.getUserById(userId);
         Session session = sessionService.getSessionById(sessionId);
 
-        // Manually create a ticket without Stripe integration for testing
         Ticket ticket = ticketService.createTicket(session, user, "test");
         return ResponseEntity.ok(ticket);
     }

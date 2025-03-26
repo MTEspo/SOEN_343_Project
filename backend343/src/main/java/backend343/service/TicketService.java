@@ -5,6 +5,7 @@ import backend343.logger.LoggerSingleton;
 import backend343.models.Session;
 import backend343.models.Ticket;
 import backend343.models.User;
+import backend343.repository.SessionRepository;
 import backend343.repository.TicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class TicketService {
 
     private static final LoggerSingleton logger = LoggerSingleton.getInstance();
     @Autowired
-    private SessionService sessionService;
+    private SessionRepository sessionRepository;
 
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
@@ -107,6 +108,6 @@ public class TicketService {
         List<Long> sessionIds = userTickets.stream()
                 .map(ticket -> ticket.getSession().getId())
                 .collect(Collectors.toList());
-        return sessionService.findAllById(sessionIds);
+        return sessionRepository.findAllById(sessionIds);
     }
 }
