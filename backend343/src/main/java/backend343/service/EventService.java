@@ -30,13 +30,12 @@ public class EventService {
     public Event findById(Long id) {
         return eventProxy.getEventById(id);
     }
-
-    
-    public Event getEventById(Long id) {
-        return eventProxy.getEventById(id);
+  
+    public Event getEventDirectlyFromRepo(Long id) {
+        return eventRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Event not found with ID: " + id));
     }
     
-
     public void save(Event event) {
         eventProxy.save(event);
     }

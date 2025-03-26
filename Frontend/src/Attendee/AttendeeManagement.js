@@ -52,6 +52,7 @@ const AttendeeManagement = () => {
   
     try {
       const res = await axios.get(`${API_URL}/event/${eventId}/schedules`);
+      console.log("Schedules API response:", res.data);
       const schedules = res.data;
   
       const sessionPromises = schedules.map(schedule =>

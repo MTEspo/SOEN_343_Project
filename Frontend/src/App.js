@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate} from "react-router-dom";
 import Login from "./Authentication/Login";
 import SignUp from "./Authentication/SignUp";
 import VerifyEmail from "./Authentication/VerifyEmail";
@@ -130,6 +130,38 @@ const Home = () => {
 const Networking = () => <h2 className="text-2xl font-bold text-center mt-6">Networking & Engagement Page</h2>;
 const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payment & Financial Management Page</h2>;
 
+const SuccessPage = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] flex flex-col justify-center items-center">
+      <h1 className="text-3xl font-bold text-[#2E2E2E] mb-6">Payment Successful!</h1>
+      <button
+        onClick={() => navigate("/attendees")}
+        className="bg-[#D9C2A3] text-[#2E2E2E] px-6 py-2 rounded hover:bg-[#C4A88E] transition"
+      >
+        Back to Events
+      </button>
+    </div>
+  );
+};
+
+const CancelPage = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-[#FDECEA] flex flex-col justify-center items-center">
+      <h1 className="text-3xl font-bold text-red-600 mb-6">Payment Canceled</h1>
+      <button
+        onClick={() => navigate("/attendees")}
+        className="bg-[#FBB6B6] text-[#2E2E2E] px-6 py-2 rounded hover:bg-[#f69393] transition"
+      >
+        Back to Events
+      </button>
+    </div>
+  );
+};
+
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token")); // check if token exists
@@ -231,6 +263,8 @@ function App() {
             <Route path="/payments" element={<FinancialDashboard />} />
             <Route path="/chat" element={<ChatRoomContainer />} />
             <Route path="/promotion" element={<Promotion />} />
+            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/cancel" element={<CancelPage />} />
           </Routes>
 
           {/* Footer */}
