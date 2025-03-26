@@ -8,6 +8,8 @@ import EventPlanning from './eventplanning/EventPlanning';
 import FinancialDashboard from "./Payment & Financial Management/FinancialDashboard";
 import AttendeeManagement from "./Attendee/AttendeeManagement";
 import Promotion from "./promotion/Promotion";
+import UsersSessions from "./YourSessions/UsersSessions.js"
+
 
 
 const events = [
@@ -228,6 +230,9 @@ function App() {
               <Link to="/promotion" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
                 Promotions
               </Link>
+              <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+                Your Sessions
+              </Link>
 
             </div>
 
@@ -265,6 +270,7 @@ function App() {
             <Route path="/promotion" element={<Promotion />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
+            <Route path="/sessions" element={< UsersSessions />} />
           </Routes>
 
           {/* Footer */}
