@@ -9,6 +9,11 @@ import FinancialDashboard from "./Payment & Financial Management/FinancialDashbo
 import AttendeeManagement from "./Attendee/AttendeeManagement";
 import Promotion from "./promotion/Promotion";
 import UsersSessions from "./YourSessions/UsersSessions.js"
+import DropdownMenu from "./Dropdowns/DropdownMenu.js";
+import SpeakerOffers from "./Dropdowns/Speaker/SpeakerOffers.js";
+import ContactSpeakers from "./eventplanning/ContactSpeakers.js"
+import SendOfferToSpeaker from "./eventplanning/SendOfferToSpeaker.js"
+
 
 
 
@@ -201,60 +206,57 @@ function App() {
       <div className="min-h-screen]">
         {/* Navigation Bar */}
         <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8] py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8]/80 py-4 h-16 border-b border-[#C4A88E]"}`}>
-          <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
-            {/* Logo */}
-            <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg">
-              S E E S
-            </Link>
+  <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
+    {/* Logo */}
+    <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg">
+      S E E S
+    </Link>
 
-            {/* Navigation Links */}
-            <div className="hidden md:flex space-x-6">
-              <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Home
-              </Link>
-              <Link to="/event-planning" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Event Planning
-              </Link>
-              <Link to="/attendees" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Attendees
-              </Link>
-              <Link to="/networking" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Networking
-              </Link>
-              <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Payments
-              </Link>
-              <Link to="/chat" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Chat Room
-              </Link>
-              <Link to="/promotion" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Promotions
-              </Link>
-              <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-                Your Sessions
-              </Link>
-
-            </div>
-
-            {/* Login Button */}
-            {isLoggedIn ? (
-              <button
-                onClick={handleLogout}
-                className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
-              >
-                Log Out
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
-              >
-                Log In
-              </Link>
-            )}
-
-          </div>
-        </nav>
+    {/* Navigation Links and Dropdown Menu */}
+    <div className="flex space-x-6">
+      <div className="hidden md:flex space-x-6">
+        <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Home
+        </Link>
+        <Link to="/event-planning" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Event Planning
+        </Link>
+        <Link to="/attendees" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Attendees
+        </Link>
+        <Link to="/networking" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Networking
+        </Link>
+        <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Payments
+        </Link>
+        <Link to="/chat" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Chat Room
+        </Link>
+        <Link to="/promotion" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Promotions
+        </Link>
+        <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+          Your Sessions
+        </Link>
+      </div>
+      {isLoggedIn && (
+        <DropdownMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      )}
+                  </div>
+      
+                  {/* Login Button */}
+                  {!isLoggedIn && (
+                    <Link
+                      to="/login"
+                      className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+                    >
+                      Log In
+                    </Link>
+                  )}
+                </div>
+              </nav>
+      
         {/* Adjust spacing so content does not go under the fixed navbar */}
         <div className="mt-16">
           <Routes>
@@ -271,6 +273,9 @@ function App() {
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />
             <Route path="/sessions" element={< UsersSessions />} />
+            <Route path="/dropdowns/speaker/speaker-offers" element={<SpeakerOffers />} />
+            <Route path="/contact-speakers/:eventId" element={<ContactSpeakers />} />
+            <Route path="/reach-out-to-speakers/:sessionId" element={<SendOfferToSpeaker />} />
           </Routes>
 
           {/* Footer */}
