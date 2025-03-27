@@ -14,9 +14,8 @@ import SpeakerOffers from "./Dropdowns/Speaker/SpeakerOffers.js";
 import ContactSpeakers from "./eventplanning/ContactSpeakers.js"
 import SendOfferToSpeaker from "./eventplanning/SendOfferToSpeaker.js"
 import SessionDetails from './YourSessions/SessionDetails.js';
-
-
-
+import SpeakerSessions from "./Dropdowns/Speaker/SpeakerSessions.js";
+import NotificationBell from "./NotificationBell.js";
 
 
 const events = [
@@ -235,9 +234,13 @@ function App() {
         <Link to="/promotion" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
           Promotions
         </Link>
-        <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Your Sessions
-        </Link>
+        <div className="relative flex items-center space-x-2">
+          <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
+            Your Sessions
+          </Link>
+          <NotificationBell />
+        </div>
+
       </div>
       {isLoggedIn && (
         <DropdownMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
@@ -276,6 +279,8 @@ function App() {
             <Route path="/reach-out-to-speakers/:sessionId" element={<SendOfferToSpeaker />} />
             <Route path="/session-details/:sessionId" element={<SessionDetails />} />
             <Route path="/chat/:chatroomId" element={<ChatRoomContainer />} />
+            <Route path="/dropdowns/speaker/speaker-sessions"   element={<SpeakerSessions />}
+ />
           </Routes>
 
           {/* Footer */}

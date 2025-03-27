@@ -21,6 +21,7 @@ const DropdownMenu = ({ isLoggedIn, handleLogout }) => {
       case "SPEAKER":
         return [
           { label: "Your Offers", path: "/dropdowns/speaker/speaker-offers" },
+          { label: "Sessions Your Speaking at", path: "/dropdowns/speaker/speaker-sessions" },
         ];
       default:
         return [];
