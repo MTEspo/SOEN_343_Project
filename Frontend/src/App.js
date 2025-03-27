@@ -36,7 +36,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col items-center w-full">
-      <div className="relative w-full max-w-7xl mx-auto h-[50vh] mt-8 overflow-hidden rounded-lg">
+      <div className="relative w-full max-w-7xl mx-auto h-[50vh] overflow-hidden rounded-lg">
         <img src="/images/event-image.webp" alt="Event" className="w-full h-full object-cover rounded-lg" style={{ objectPosition: "center 60%" }} />
         <div className="absolute inset-0 bg-black/50 rounded-lg pointer-events-none"></div>
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
@@ -48,13 +48,13 @@ const Home = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto mt-8 text-center">
+      <div className="w-full max-w-7xl mx-auto text-center">
         <hr className="w-full max-w-10xl border-t border-gray-300" />
         <h2 className="text-3xl font-bold text-[#2E2E2E] mt-4">Browse Events</h2>
-        <p className="text-lg text-[#5A5958] mt-2">Discover upcoming seminars, webinars, workshops, and conferences tailored for you.</p>
+        <p className="text-lg text-[#5A5958] mt-2">Below you can find upcoming seminars, webinars, workshops, and conferences tailored to your needs.</p>
       </div>
 
-      <div className="relative w-full max-w-7xl mx-auto h-[30vh] mt-10 overflow-hidden rounded-lg">
+      <div className="relative w-full max-w-7xl mx-auto h-[30vh] mt-6 overflow-hidden rounded-lg">
         <div className="relative w-full h-full">
           <img 
             src={events[currentIndex].image} 
@@ -148,7 +148,7 @@ function App() {
             <Route path="/chat" element={<ChatRoomContainer />} />
             <Route path="/promotion" element={<Promotion />} />
           </Routes>
-          <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4 mt-8 text-sm">
+          <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4  text-sm">
             © {new Date().getFullYear()} Smart Education Events System. All rights reserved.
           </footer>
         </div>

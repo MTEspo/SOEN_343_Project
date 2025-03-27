@@ -37,7 +37,7 @@ const Promotion = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="min-h-screen flex flex-col p-8">
       <h1 className="text-4xl font-bold text-center text-[#2E2E2E] mb-4">
         Event Promotions
       </h1>
@@ -48,7 +48,7 @@ const Promotion = () => {
       {events.length === 0 ? (
         <p className="text-center text-gray-500">No events to promote yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto flex-grow">
           {events.map((event) => (
             <div key={event.id} className="bg-white border border-[#D9C2A3] p-4 rounded-lg shadow">
               <h2 className="text-xl font-bold mb-1">{event.name}</h2>

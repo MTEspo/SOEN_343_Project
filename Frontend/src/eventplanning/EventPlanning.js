@@ -208,8 +208,8 @@ const EventPlanning = () => {
   };
     
   return (
-    <div className="flex flex-col items-center mt-6">
-      <h2 className="text-2xl font-bold pt-2">Event Planning</h2>
+    <div className="min-h-screen flex flex-col items-center mt-6">
+      <h2 className="text-2xl font-bold pt-6">Event Planning</h2>
       <p className="text-gray-600 mt-2">Manage your events efficiently.</p>
 
       {/* Display Events in Grid Format */}
@@ -420,10 +420,10 @@ const EventPlanning = () => {
       )}
 
       {/* Decorative Line */}
-      <hr className="my-10 w-full max-w-6xl border-t border-gray-300" />
+      <hr className="my-6 w-full max-w-6xl border-t border-gray-300" />
 
       {/* Event Creation Form in Box */}
-      <div className="mt-8 w-full max-w-3xl border border-[#D9C2A3] rounded-2xl shadow p-6 bg-white">
+      <div className="mt-6 mb-4 w-full max-w-3xl border border-[#D9C2A3] rounded-2xl shadow p-6 bg-white">
         <h2 className="text-2xl font-bold">Event Creation</h2>
         <p className="text-gray-600 mt-2 mb-4">Create your event in a few clicks!</p>
 

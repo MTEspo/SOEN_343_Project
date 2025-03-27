@@ -101,8 +101,8 @@ const AttendeeManagement = () => {
   
 
   return (
-    <div className="flex flex-col items-center mt-6">
-      <h2 className="text-2xl font-bold pt-2">Browse All Events</h2>
+    <div className="min-h-screen flex flex-col items-center mt-6">
+      <h2 className="mt-8 text-2xl font-bold pt-2">Browse All Events</h2>
       <p className="text-gray-600 mt-2">
         Discover all upcoming educational events across seminars, webinars, workshops, and conferences.
       </p>
