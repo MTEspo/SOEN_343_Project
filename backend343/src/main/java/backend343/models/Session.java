@@ -45,6 +45,18 @@ public class Session {
     @JsonIgnore
     private Speaker speaker;
 
+    public String getScheduleDate() {
+        return schedule.getDate().toString();
+    }
+
+    public Long getChatroomId() {
+        return chatroom.getId();
+    }
+
+    public String getSpeakerUsername() {
+        return speaker != null ? speaker.getUsername() : "No speaker assigned yet";
+    }
+
 }
 
 

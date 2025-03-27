@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:8080/api";
 const SessionsPage = () => {
   const [sessions, setSessions] = useState([]);
   const userId = localStorage.getItem("userId");
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -22,6 +25,10 @@ const SessionsPage = () => {
     console.log("Updated Sessions State:", sessions);
   }, [sessions]);
 
+  const handleAccessDetails = (sessionId) => {
+    navigate(`/session-details/${sessionId}`);
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center mt-6">
       <h2 className="text-2xl font-bold pt-2">Your Sessions</h2>
@@ -39,6 +46,12 @@ const SessionsPage = () => {
     <p className="text-sm text-gray-700 mt-1">
       {session.location} | {session.startTime} - {session.endTime}
     </p>
+    <button
+                className="mt-2 bg-[#D9C2A3] text-[#2E2E2E] px-4 py-2 rounded-md hover:bg-[#C4A88E] transition"
+                onClick={() => handleAccessDetails(session.id)}
+              >
+                Access Details
+              </button>
   </div>
 ))}
         </div>

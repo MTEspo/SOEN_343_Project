@@ -47,6 +47,7 @@ public class JwtService {
         System.out.println(user.getId());
         extraClaims.put("userId", user.getId());
         extraClaims.put("role", user.getRole());
+        extraClaims.put("username", user.getUsername());
         return generateToken(extraClaims, userDetails);
     }
 

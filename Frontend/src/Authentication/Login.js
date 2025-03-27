@@ -33,6 +33,8 @@ function Login() {
       localStorage.setItem("userId", decoded.userId);
       localStorage.setItem("role", decoded.role);
       localStorage.setItem("email", email);
+      localStorage.setItem("username", decoded.username);
+
 
       window.dispatchEvent(new Event("storage"));
 
