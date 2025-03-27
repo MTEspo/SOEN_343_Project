@@ -40,6 +40,7 @@ public class OrganizerController {
         return organizerService.findOrganizerById(id).getEvents();
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<Organizer> getOrganizerById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(organizerService.findOrganizerById(id));

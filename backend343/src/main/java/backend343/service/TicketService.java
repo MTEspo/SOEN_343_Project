@@ -106,6 +106,7 @@ public class TicketService {
     public List<Session> getAllUsersSessions(Long userId) {
         List<Ticket> userTickets = ticketRepository.findAllByUserId(userId);
         List<Long> sessionIds = userTickets.stream()
+                .filter(ticket -> ticket.getStatus() == TicketStatus.ACTIVE)
                 .map(ticket -> ticket.getSession().getId())
                 .collect(Collectors.toList());
         return sessionRepository.findAllById(sessionIds);

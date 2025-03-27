@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
+
+
 
 const API_URL = "http://localhost:8080/api";
 
@@ -11,6 +14,7 @@ const EventPlanning = () => {
   const [eventSessions, setEventSessions] = useState({});
   const [editingEventId, setEditingEventId] = useState(null);
   const [editFields, setEditFields] = useState({ name: "", description: "", price: "" });
+  const navigate = useNavigate();
 
   const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
   const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
@@ -20,6 +24,9 @@ const EventPlanning = () => {
 
   const token = localStorage.getItem("token");
   const organizerId = localStorage.getItem("userId");
+
+  const [showSpeakerInfo, setShowSpeakerInfo] = useState(false); 
+
 
   useEffect(() => {
     fetchEvents();
@@ -201,15 +208,19 @@ const EventPlanning = () => {
   };
     
   return (
-    <div className="flex flex-col items-center mt-6">
-      <h2 className="text-2xl font-bold pt-2">Event Planning</h2>
+    <div className="min-h-screen flex flex-col items-center mt-6">
+      <h2 className="text-2xl font-bold pt-6">Event Planning</h2>
       <p className="text-gray-600 mt-2">Manage your events efficiently.</p>
 
       {/* Display Events in Grid Format */}
       {events.length > 0 && (
         <div className="mt-8 w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
           {events.map((event) => (
-            <div key={event.id} className="border border-[#D9C2A3] p-4 rounded-lg shadow bg-white flex flex-col justify-between">
+            <div
+              key={event.id}
+              className="border border-[#D9C2A3] p-6 rounded-lg shadow bg-white flex flex-col justify-between" // Increased padding
+              style={{ width: '400px' }} // You can adjust this width as needed
+            >
               <div className="relative">
                 {/* Edit button - top right */}
                 <button
@@ -330,6 +341,14 @@ const EventPlanning = () => {
                 >
                   Add Session
                 </button>
+                  
+                <button
+                  className="bg-[#D9C2A3] text-[#2E2A2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
+                  onClick={() => navigate(`/contact-speakers/${event.id}`)}
+                >
+                  Contact Speakers
+                </button>
+              
               </div>
 
               {/* SCHEDULE FORM */}
@@ -401,10 +420,10 @@ const EventPlanning = () => {
       )}
 
       {/* Decorative Line */}
-      <hr className="my-10 w-full max-w-6xl border-t border-gray-300" />
+      <hr className="my-6 w-full max-w-6xl border-t border-gray-300" />
 
       {/* Event Creation Form in Box */}
-      <div className="mt-8 w-full max-w-3xl border border-[#D9C2A3] rounded-2xl shadow p-6 bg-white">
+      <div className="mt-6 mb-4 w-full max-w-3xl border border-[#D9C2A3] rounded-2xl shadow p-6 bg-white">
         <h2 className="text-2xl font-bold">Event Creation</h2>
         <p className="text-gray-600 mt-2 mb-4">Create your event in a few clicks!</p>
 

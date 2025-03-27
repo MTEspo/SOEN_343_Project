@@ -29,7 +29,7 @@ const SessionsPage = () => {
   }, [sessions]);
 
   return (
-    <div className="flex flex-col items-center mt-6">
+    <div className="min-h-screen flex flex-col items-center mt-6">
       <h2 className="text-2xl font-bold pt-2">Your Sessions</h2>
       <p className="text-gray-600 mt-2">
         Here are the sessions you have access to:
