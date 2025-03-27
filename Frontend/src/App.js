@@ -267,7 +267,6 @@ function App() {
             <Route path="/attendees" element={<AttendeeManagement />} />
             <Route path="/networking" element={<Networking />} />
             <Route path="/payments" element={<FinancialDashboard />} />
-            <Route path="/chat" element={<ChatRoomContainer />} />
             <Route path="/promotion" element={<Promotion />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/cancel" element={<CancelPage />} />

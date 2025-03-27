@@ -8,13 +8,16 @@ const ChatRoomContainer = () => {
   const [newMessage, setNewMessage] = useState('');
   const ws = useRef(null);
   const [joined, setJoined] = useState(false);
-  const { chatroomId } = useParams();  // Get the chatroom ID from the URL
-  const userId = localStorage.getItem("userId");  // Get the user ID from local storage
+  const { chatroomId } = useParams();  
+  const userId = localStorage.getItem("userId");  
   const navigate = useNavigate();
+  const hasJoined = useRef(false);
 
-  // Automatically join chatroom on page load
   useEffect(() => {
-    handleJoinChatroom();
+    if (chatroomId && userId && !hasJoined.current) {
+      handleJoinChatroom();
+      hasJoined.current = true;
+    }
   }, [chatroomId, userId]);
 
   // Establish WebSocket connection
