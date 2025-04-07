@@ -1,7 +1,6 @@
 package backend343.config;
 
 import backend343.jwt.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +26,8 @@ public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    public SecurityConfiguration(AuthenticationProvider authenticationProvider,JwtAuthenticationFilter jwtAuthenticationFilter){
+    public SecurityConfiguration(AuthenticationProvider authenticationProvider,
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
@@ -38,29 +38,32 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/product/**").permitAll()
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+                        .httpStrictTransportSecurity(HeadersConfigurer.HstsConfig::disable))
+                        .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/api/event/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session->session
+                        .requestMatchers("/stripe-webhook/**").permitAll()
+                        .requestMatchers("/chat/**").permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
+
     @Bean
-    public CorsConfigurationSource corsConfigurationSource(){
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://backend.com","http://localhost:8080"));
-        configuration.setAllowedMethods(List.of("GET","POST","PUT","DELETE"));
-        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
+        configuration
+                .setAllowedOrigins(List.of("https://backend.com", "http://localhost:8080", "http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 }

@@ -6,6 +6,9 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Data
@@ -20,11 +23,15 @@ public class Event {
 
     private String name;
     private String description;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private String location;
     private EventType type;
-
     private BigDecimal price;
 
+    @ManyToOne
+    @JoinColumn(name = "organizer_id")
+    @JsonIgnore
+    private Organizer organizer;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<Schedule> schedules;
 }

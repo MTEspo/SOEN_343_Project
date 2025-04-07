@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.enums.Role;
+import backend343.chatRoom.ChatObserver;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,15 +10,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
 @AllArgsConstructor
 @Table(name = "users") //rename table to avoid conflicts with user keyword
 @Inheritance(strategy = InheritanceType.JOINED) //each subclass uses the id from user
-public class User implements UserDetails {
+public class User implements UserDetails, ChatObserver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,6 +46,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING) //stores enum as a string in database
     private Role role;
 
+    @ElementCollection //storing map in database
+    @CollectionTable(name = "user_chat_notifications", joinColumns = @JoinColumn(name = "user_id"))
+    @MapKeyColumn(name = "chatroom_id")
+    @Column(name = "notification_count")
+    private Map<Long, Integer> chatroomNotifications = new HashMap<>();
+
     public User(){}
     public User(String username, String email, String password, Role role) {
         this.username = username;
@@ -52,7 +60,6 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    // Getters and Setters
 
     // Getter and Setter for id
     public Long getId() {
@@ -150,4 +157,23 @@ public class User implements UserDetails {
         return true;
     }
 
+    @Override
+    public void update(Long chatroomId, Long senderId) {
+        System.out.println("New message in the chatRoom");
+        incrementChatroomNotifications(chatroomId);
+    }
+
+    //increment notifications for a specific chatroom
+    public void incrementChatroomNotifications(Long chatroomId) {
+        chatroomNotifications.put(chatroomId, chatroomNotifications.getOrDefault(chatroomId, 0) + 1);
+    }
+
+    //reset notifs when they join
+    public void resetChatroomNotifications(Long chatroomId) {
+        chatroomNotifications.put(chatroomId, 0);
+    }
+
+    public int getTotalNotifications() {
+        return chatroomNotifications.values().stream().mapToInt(Integer::intValue).sum();
+    }
 }

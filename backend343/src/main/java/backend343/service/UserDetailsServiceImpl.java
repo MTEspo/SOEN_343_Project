@@ -3,23 +3,20 @@ package backend343.service;
 import backend343.models.User;
 import backend343.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
@@ -31,5 +28,36 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userRepository.findById(userId)
                 .map(user -> new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), user.getAuthorities()))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with ID: " + userId));
+    }
+
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow();
+    }
+
+    public User updateUsername(Long userId, String newUsername) {
+        if (userRepository.findByUsername(newUsername).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setUsername(newUsername);
+        return userRepository.save(user);
+    }
+
+    public int getTotalNotifications(Long userId) {
+        User user = getUserById(userId);
+        return user.getTotalNotifications();
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }
