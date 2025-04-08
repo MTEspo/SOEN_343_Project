@@ -1,8 +1,8 @@
 package backend343.service;
 
 import backend343.enums.EventType;
-import backend343.models.Event;
-import backend343.models.Schedule;
+import backend343.enums.TicketStatus;
+import backend343.models.*;
 import backend343.proxy.EventProxy;
 import backend343.repository.EventRepository;
 import backend343.repository.TicketRepository;
@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class EventService {
@@ -22,6 +26,9 @@ public class EventService {
 
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private TicketService ticketService;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -53,6 +60,34 @@ public class EventService {
 
     public Event updateEventName(Long id, String name) {
         return eventProxy.updateEventName(id, name);
+    }
+
+    public Analytics getAnalytics(Long id) {
+        Event event = getEventDirectlyFromRepo(id);
+        List<Schedule> schedules = event.getSchedules();
+        Set<Speaker> speakers = new HashSet<>();
+        Set<User> users = new HashSet<>();
+        List<Ticket> tickets = new ArrayList<>();
+        BigDecimal sum = BigDecimal.ZERO;
+        for(Schedule schedule : schedules) {
+            tickets.addAll(ticketService.getTicketsBySessionId(schedule.getId()));
+        }
+
+        List<Ticket> activeTickets = tickets.stream()
+                .filter(ticket -> ticket.getStatus() == TicketStatus.ACTIVE)
+                .toList();
+
+        for (Ticket ticket : activeTickets) {
+            sum = sum.add(ticket.getAmountPaid());
+            speakers.add(ticket.getSession().getSpeaker());
+            users.add(ticket.getUser());
+        }
+
+        return Analytics.builder()
+                .speakers(new ArrayList<>(speakers))
+                .amountGenerated(sum)
+                .attendees(new ArrayList<>(users))
+                .build();
     }
 
 }

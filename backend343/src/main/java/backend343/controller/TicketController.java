@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -40,11 +41,11 @@ public class TicketController {
 
     @PostMapping("/create/{userId}/{sessionId}")
     public ResponseEntity<Ticket> createTicket(@PathVariable("userId") Long userId,
-            @PathVariable("sessionId") Long sessionId) {
+            @PathVariable("sessionId") Long sessionId,@RequestBody BigDecimal amountPaid) {
         User user = userDetailsService.getUserById(userId);
         Session session = sessionService.getSessionById(sessionId);
 
-        Ticket ticket = ticketService.createTicket(session, user, "test");
+        Ticket ticket = ticketService.createTicket(session, user, "test",amountPaid);
         return ResponseEntity.ok(ticket);
     }
 

@@ -82,7 +82,7 @@ public class StripeWebhookController {
     private void createTicket(backend343.models.Session sessionEvent, User user, BigDecimal amountPaid,
             String stripePaymentId) {
         logger.logInfo("Creating ticket for user " + user.getId());
-        Ticket ticket = ticketService.createTicket(sessionEvent, user, stripePaymentId);
+        Ticket ticket = ticketService.createTicket(sessionEvent, user, stripePaymentId, amountPaid);
         sendConfirmationOfPurchaseEmail(user, ticket, amountPaid);
     }
 

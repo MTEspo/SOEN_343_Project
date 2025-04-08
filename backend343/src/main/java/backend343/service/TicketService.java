@@ -10,6 +10,8 @@ import backend343.repository.TicketRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -58,7 +60,7 @@ public class TicketService {
         return true;
     }
 
-    public Ticket createTicket(backend343.models.Session session, User user, String stripePaymentId) {
+    public Ticket createTicket(backend343.models.Session session, User user, String stripePaymentId, BigDecimal amountPaid) {
         logger.logInfo("Creating new ticket for user " + user.getId() + " and session " + session.getId());
         String ticketCode;
         do {
@@ -73,6 +75,7 @@ public class TicketService {
                 .ticketCode(ticketCode)
                 .isCodeUsed(false)
                 .status(TicketStatus.ACTIVE)
+                .amountPaid(amountPaid)
                 .build();
         ticket = ticketRepository.save(ticket);
         logger.logInfo("New ticket created successfully for user " + user.getId() + " and session " + session.getId());
@@ -101,6 +104,10 @@ public class TicketService {
         return tickets.stream()
                 .map(Ticket::getUser)
                 .collect(Collectors.toList());
+    }
+
+    public List<Ticket> getTicketsBySessionId(Long sessionId) {
+        return ticketRepository.findAllBySessionId(sessionId);
     }
 
     public List<Session> getAllUsersSessions(Long userId) {

@@ -16,8 +16,10 @@ const DropdownMenu = ({ isLoggedIn, handleLogout }) => {
     switch (role) {
       case "ATTENDEE":
         return []; // No options for now
-      case "ORGANIZER":
-        return []; // No options for now
+        case "ORGANIZER":
+          return [
+            { label: "Analytics", path: "/dropdowns/organizer/event-analytics" },
+          ];
       case "SPEAKER":
         return [
           { label: "Your Offers", path: "/dropdowns/speaker/speaker-offers" },

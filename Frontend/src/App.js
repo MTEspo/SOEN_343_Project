@@ -16,6 +16,8 @@ import SendOfferToSpeaker from "./eventplanning/SendOfferToSpeaker.js"
 import SessionDetails from './YourSessions/SessionDetails.js';
 import SpeakerSessions from "./Dropdowns/Speaker/SpeakerSessions.js";
 import NotificationBell from "./NotificationBell.js";
+import EventAnalytics from "./Dropdowns/Organizer/EventAnalytics.js";
+import EventAnalyticsPage from "./Dropdowns/Organizer/EventAnalyticsPage.js";
 
 
 const events = [
@@ -279,9 +281,9 @@ function App() {
             <Route path="/reach-out-to-speakers/:sessionId" element={<SendOfferToSpeaker />} />
             <Route path="/session-details/:sessionId" element={<SessionDetails />} />
             <Route path="/chat/:chatroomId" element={<ChatRoomContainer />} />
-            <Route path="/dropdowns/speaker/speaker-sessions"   element={<SpeakerSessions />}
- />
-          </Routes>
+            <Route path="/dropdowns/speaker/speaker-sessions"   element={<SpeakerSessions />}/>
+            <Route path="/dropdowns/organizer/event-analytics" element={<EventAnalytics />} />          
+            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} />            </Routes>
 
           {/* Footer */}
           <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4 mt-8 text-sm">

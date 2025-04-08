@@ -1,5 +1,6 @@
 package backend343.controller;
 
+import backend343.models.Analytics;
 import backend343.models.Event;
 import backend343.models.Schedule;
 import backend343.service.EventService;
@@ -48,6 +49,11 @@ public class EventController {
     @GetMapping("/{id}/schedules")
     public List<Schedule> getSchedulesFromEvent(@PathVariable Long id) {
         return eventService.getEventDirectlyFromRepo(id).getSchedules();
+    }
+
+    @GetMapping("/{id}/get-event-analytics")
+    public ResponseEntity<Analytics> getEventAnalytics(@PathVariable Long id) {
+        return ResponseEntity.ok(eventService.getAnalytics(id));
     }
 
 
