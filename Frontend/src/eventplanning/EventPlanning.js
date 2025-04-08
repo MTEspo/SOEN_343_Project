@@ -209,8 +209,8 @@ const EventPlanning = () => {
     
   return (
     <div className="min-h-screen flex flex-col items-center mt-6">
-      <h2 className="text-2xl font-bold pt-6">Event Planning</h2>
-      <p className="text-gray-600 mt-2">Manage your events efficiently.</p>
+      <h2 className="text-2xl font-bold pt-6">Plan Events</h2>
+      <p className="text-gray-600 mt-2">Plan and Manage your events efficiently.</p>
 
       {/* Display Events in Grid Format */}
       {events.length > 0 && (

@@ -137,9 +137,6 @@ const Home = () => {
   );
 };
 
-const Networking = () => <h2 className="text-2xl font-bold text-center mt-6">Networking & Engagement Page</h2>;
-const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payment & Financial Management Page</h2>;
-
 const SuccessPage = () => {
   const navigate = useNavigate();
 
@@ -222,13 +219,10 @@ function App() {
           Home
         </Link>
         <Link to="/event-planning" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Event Planning
+          Plan Events
         </Link>
         <Link to="/attendees" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Attendees
-        </Link>
-        <Link to="/networking" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Networking
+          Attend Events
         </Link>
         <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
           Payments
@@ -270,7 +264,6 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/event-planning" element={<EventPlanning />} />
             <Route path="/attendees" element={<AttendeeManagement />} />
-            <Route path="/networking" element={<Networking />} />
             <Route path="/payments" element={<FinancialDashboard />} />
             <Route path="/promotion" element={<Promotion />} />
             <Route path="/success" element={<SuccessPage />} />
@@ -283,7 +276,8 @@ function App() {
             <Route path="/chat/:chatroomId" element={<ChatRoomContainer />} />
             <Route path="/dropdowns/speaker/speaker-sessions"   element={<SpeakerSessions />}/>
             <Route path="/dropdowns/organizer/event-analytics" element={<EventAnalytics />} />          
-            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} />            </Routes>
+            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} />            
+          </Routes>
 
           {/* Footer */}
           <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4 mt-8 text-sm">
