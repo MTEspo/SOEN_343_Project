@@ -27,31 +27,31 @@ public class SpeakerController {
     }
 
     @GetMapping("/get-speaker-by-id/{id}")
-    public ResponseEntity<Speaker> getSpeakerById(@PathVariable Long id) {
+    public ResponseEntity<Speaker> getSpeakerById(@PathVariable("id") Long id) {
         Speaker speaker = speakerService.findById(id);
         return ResponseEntity.ok(speaker);
     }
 
     @GetMapping("/get-speaker-by-email/{email}")
-    public ResponseEntity<Speaker> getSpeakerByEmail(@PathVariable String email) {
+    public ResponseEntity<Speaker> getSpeakerByEmail(@PathVariable("email") String email) {
         Speaker speaker = speakerService.findByEmail(email);
         return ResponseEntity.ok(speaker);
     }
 
     @GetMapping("/get-speaker-username/{speakerId}")
-    public ResponseEntity<String> getSpeakerUsernameById(@PathVariable Long speakerId) {
+    public ResponseEntity<String> getSpeakerUsernameById(@PathVariable("speakerId") Long speakerId) {
         String username = speakerService.getUsernameById(speakerId);
         return ResponseEntity.ok(username);
     }
 
     @GetMapping("/get-speaker-average-rating/{speakerId}")
-    public ResponseEntity<Double> getSpeakerAverageRating(@PathVariable Long speakerId) {
+    public ResponseEntity<Double> getSpeakerAverageRating(@PathVariable("speakerId") Long speakerId) {
         Double averageRating = speakerService.getAverageRating(speakerId);
         return ResponseEntity.ok(averageRating);
     }
 
     @GetMapping("/sessions/{speakerId}")
-    public ResponseEntity<List<Session>> getSessionsBySpeakerId(@PathVariable Long speakerId) {
+    public ResponseEntity<List<Session>> getSessionsBySpeakerId(@PathVariable("speakerId") Long speakerId) {
         List<Session> sessions = speakerService.getSessionsBySpeakerId(speakerId);
         return ResponseEntity.ok(sessions);
     }
@@ -63,17 +63,17 @@ public class SpeakerController {
     }
 
     @GetMapping("/get-all-offers/{speakerId}")
-    public List<SpeakerOffer> getAllOffers(@PathVariable Long speakerId) {
+    public List<SpeakerOffer> getAllOffers(@PathVariable("speakerId") Long speakerId) {
         return speakerService.getAllOffers(speakerId);
     }
 
     @GetMapping("/{speakerOfferId}/get-organizer")
-    public ResponseEntity<Organizer> getOrganizer(@PathVariable Long speakerOfferId) {
+    public ResponseEntity<Organizer> getOrganizer(@PathVariable("speakerOfferId") Long speakerOfferId) {
         return ResponseEntity.ok(speakerOfferService.getOrganizer(speakerOfferId));
     }
 
     @GetMapping("/{speakerOfferId}/get-session")
-    public ResponseEntity<Session> getSession(@PathVariable Long speakerOfferId) {
+    public ResponseEntity<Session> getSession(@PathVariable("speakerOfferId") Long speakerOfferId) {
         return ResponseEntity.ok(speakerOfferService.getSession(speakerOfferId));
     }
 }

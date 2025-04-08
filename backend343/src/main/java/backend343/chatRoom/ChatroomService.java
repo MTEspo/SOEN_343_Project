@@ -1,8 +1,10 @@
 package backend343.chatRoom;
 
 import backend343.logger.LoggerSingleton;
+import backend343.models.Speaker;
 import backend343.models.User;
 import backend343.repository.ChatRoomRepository;
+import backend343.service.SpeakerService;
 import backend343.service.TicketService;
 import backend343.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,7 @@ public class ChatroomService {
     private final ChatRoomRepository chatroomRepository;
     private final UserDetailsServiceImpl userDetailsService;
     private final TicketService ticketService;
+    private final SpeakerService speakerService;
 
     public void joinChatroom(Long chatroomId, Long userId) {
         ChatRoom chatroom = chatroomRepository.findById(chatroomId).orElseThrow();
@@ -75,18 +80,28 @@ public class ChatroomService {
     
         // Get all users who have access to this chatroom
         List<User> usersWithAccess = ticketService.getUsersBySessionId(chatroomId);    
+        //Get all speakers who were assigned to this chatroom
+        List<Speaker> speakers = speakerService.getSpeakersByChatroomId(chatroomId);
         // Get users currently in the chatroom
         List<User> usersInChatroom = getUsersInChatroom(chatroomId);
+
+        Set<Long> notifiedIds = new HashSet<>();
     
         for (User user : usersWithAccess) {
-            // Notify users who are not in the chatroom and are not the sender
+            notifiedIds.add(user.getId());
             if (!usersInChatroom.contains(user) && !user.getId().equals(senderId)) {
                 user.incrementChatroomNotifications(chatroomId);
-                LoggerSingleton.getInstance().logInfo("Notification incremented for user: " + user.getId() + " for chatroom: " + chatroomId);
-            } else {
-                LoggerSingleton.getInstance().logInfo("No notification for user: " + user.getId() + " - Either in chatroom or sender.");
+                LoggerSingleton.getInstance().logInfo("Notification incremented for ticket user: " + user.getId());
             }
         }
+    
+        for (Speaker speaker : speakers) {
+            if (!notifiedIds.contains(speaker.getId()) && !usersInChatroom.contains(speaker) && !speaker.getId().equals(senderId)) {
+                speaker.incrementChatroomNotifications(chatroomId);
+                LoggerSingleton.getInstance().logInfo("Notification incremented for speaker: " + speaker.getId());
+            }
+        }
+    
         LoggerSingleton.getInstance().logInfo("Notification process completed for chatroom ID: " + chatroomId);
     }
 }

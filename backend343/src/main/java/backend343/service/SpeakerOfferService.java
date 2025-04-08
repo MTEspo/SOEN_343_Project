@@ -81,6 +81,9 @@ public class SpeakerOfferService {
             Speaker speaker = speakerOffer.getSpeaker();
             speaker.getSessions().add(session);
             speakerRepository.save(speaker);
+            //creating row for speaker in user_chat_notifications table
+            speaker.resetChatroomNotifications(session.getChatroom().getId());
+            speakerRepository.save(speaker);
 
             Organizer organizer = speakerOffer.getOrganizer();
             emailService.sendEmail(organizer.getEmail(), "Speaker Accepted Offer", "Speaker " + speakerOffer.getSpeaker().getUsername() + " has accepted the offer to speak at session " + session.getTitle());

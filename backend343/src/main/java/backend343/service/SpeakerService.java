@@ -56,5 +56,9 @@ public class SpeakerService {
         return speakerRepository.findAll();
     }
 
+    public List<Speaker> getSpeakersByChatroomId(Long chatroomId) {
+        return speakerRepository.findSpeakersByChatroomId(chatroomId);
+    }
+
 
 }

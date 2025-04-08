@@ -47,12 +47,12 @@ public class EventController {
     }
 
     @GetMapping("/{id}/schedules")
-    public List<Schedule> getSchedulesFromEvent(@PathVariable Long id) {
+    public List<Schedule> getSchedulesFromEvent(@PathVariable("id") Long id) {
         return eventService.getEventDirectlyFromRepo(id).getSchedules();
     }
 
     @GetMapping("/{id}/get-event-analytics")
-    public ResponseEntity<Analytics> getEventAnalytics(@PathVariable Long id) {
+    public ResponseEntity<Analytics> getEventAnalytics(@PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.getAnalytics(id));
     }
 

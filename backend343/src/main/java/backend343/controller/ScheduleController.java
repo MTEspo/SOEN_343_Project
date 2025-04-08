@@ -42,13 +42,13 @@ public class ScheduleController {
 
     //endpoint to get eventId from a schedule
     @GetMapping("/{id}/event")
-    public ResponseEntity<Long> getEventIdFromSchedule(@PathVariable Long id){
+    public ResponseEntity<Long> getEventIdFromSchedule(@PathVariable("id") Long id){
         Long eventId = scheduleService.getEventIdFromSchedule(id);
         return ResponseEntity.ok(eventId);
     }
 
     @GetMapping("/{id}/sessions")
-    public List<Session> getSessionsFromSchedule(@PathVariable Long id){
+    public List<Session> getSessionsFromSchedule(@PathVariable("id") Long id){
         return scheduleService.getScheduleById(id).getSessions();
     }
 

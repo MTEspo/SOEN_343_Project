@@ -55,13 +55,13 @@ public class SessionController {
     }
 
     @GetMapping("/{id}/schedule")
-    public ResponseEntity<Long> getScheduleIdFromSession(@PathVariable Long id) {
+    public ResponseEntity<Long> getScheduleIdFromSession(@PathVariable("id") Long id) {
         Long scheduleId = sessionService.getScheduleIdFromSession(id);
         return ResponseEntity.ok(scheduleId);
     }
 
     @GetMapping("/{id}/get-schedule")
-    public ResponseEntity<Schedule> getScheduleFromSession(@PathVariable Long id) {
+    public ResponseEntity<Schedule> getScheduleFromSession(@PathVariable("id") Long id) {
         return ResponseEntity.ok(sessionService.getScheduleFromSession(id));
     }
 
@@ -71,19 +71,19 @@ public class SessionController {
     }
 
     @GetMapping("/valid-sessions/{eventId}") // sessions that have speaker and have not passed
-    public ResponseEntity<List<Session>> getValidSessionsForEvent(@PathVariable Long eventId) {
+    public ResponseEntity<List<Session>> getValidSessionsForEvent(@PathVariable("eventId") Long eventId) {
         List<Session> validSessions = sessionService.getValidSessionsForEvent(eventId);
         return ResponseEntity.ok(validSessions);
     }
 
     @GetMapping("/valid-sessions-for-speaker/{speakerId}") // sessions speakers could register for
-    public ResponseEntity<List<Session>> getValidSessionsForSpeaker(@PathVariable Long speakerId) {
+    public ResponseEntity<List<Session>> getValidSessionsForSpeaker(@PathVariable("speakerId") Long speakerId) {
         List<Session> validSessions = sessionService.getValidSessionsForSpeaker(speakerId);
         return ResponseEntity.ok(validSessions);
     }
 
     @GetMapping("/{sessionId}/eligible-speakers") // list of speakers that are available for a session
-    public ResponseEntity<List<Speaker>> getEligibleSpeakersForSession(@PathVariable Long sessionId) {
+    public ResponseEntity<List<Speaker>> getEligibleSpeakersForSession(@PathVariable("sessionId") Long sessionId) {
         List<Speaker> eligibleSpeakers = sessionService.getEligibleSpeakersForSession(sessionId);
         return ResponseEntity.ok(eligibleSpeakers);
     }

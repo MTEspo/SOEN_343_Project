@@ -30,13 +30,13 @@ public class OrganizerController {
     }
 
     @PostMapping("/create-speaker-offer")
-    public ResponseEntity<SpeakerOfferResponse> createSpeakerOffer(@RequestBody CreateSpeakerOfferRequest request) {
+    public ResponseEntity<SpeakerOfferResponse> createSpeakerOffer(@RequestBody() CreateSpeakerOfferRequest request) {
         SpeakerOfferResponse response = speakerOfferService.createSpeakerOffer(request.getSessionId(), request.getSpeakerId(),request.getOrganizerId());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}/events")
-    public List<Event> getOrganizerEvents(@PathVariable Long id) {
+    public List<Event> getOrganizerEvents(@PathVariable("id") Long id) {
         return organizerService.findOrganizerById(id).getEvents();
     }
 
