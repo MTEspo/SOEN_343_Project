@@ -5,12 +5,15 @@ import backend343.enums.TicketStatus;
 import backend343.models.*;
 import backend343.proxy.EventProxy;
 import backend343.repository.EventRepository;
+import backend343.repository.ResourceRepository;
 import backend343.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +32,9 @@ public class EventService {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private ResourceRepository resourceRepository;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -88,6 +94,42 @@ public class EventService {
                 .amountGenerated(sum)
                 .attendees(new ArrayList<>(users))
                 .build();
+    }
+
+    public Event addFilesToEvent(Long id, MultipartFile[] files) {
+        try {
+            Event event = findById(id);
+            for (MultipartFile file : files) {
+                Resource resource = Resource.builder()
+                        .name(file.getOriginalFilename())
+                        .type(file.getContentType())
+                        .content(file.getBytes())
+                        .event(event)
+                        .build();
+                resourceRepository.save(resource);
+            }
+            return event;
+        } catch (IOException e) {
+            throw new RuntimeException("Error adding files to event", e);
+        } catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred while adding files to event", e);
+        }
+    }
+
+    public List<Resource> getSavedResources(Long id) {
+        Event event = getEventDirectlyFromRepo(id);
+        return event.getResources();
+    }
+
+    public Event removeFileFromEvent(Long id, Long fileId) {
+        Event event = getEventDirectlyFromRepo(id);
+        Resource resourceToRemove = event.getResources().stream()
+                .filter(resource -> resource.getId().equals(fileId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + fileId));
+        event.getResources().remove(resourceToRemove);
+        resourceRepository.deleteById(fileId);
+        return eventRepository.save(event);
     }
 
 }

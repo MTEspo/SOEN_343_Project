@@ -8,31 +8,92 @@ const API_URL = "http://localhost:8080/api";
 
 const EventPlanning = () => {
   const [events, setEvents] = useState([]);
-  const [schedules, setSchedules] = useState([]);
-  const [sessions, setSessions] = useState([]);
-  const [eventSchedules, setEventSchedules] = useState({});
-  const [eventSessions, setEventSessions] = useState({});
-  const [editingEventId, setEditingEventId] = useState(null);
-  const [editFields, setEditFields] = useState({ name: "", description: "", price: "" });
-  const navigate = useNavigate();
+const [schedules, setSchedules] = useState([]);
+const [sessions, setSessions] = useState([]);
+const [eventSchedules, setEventSchedules] = useState({});
+const [eventSessions, setEventSessions] = useState({});
+const [editingEventId, setEditingEventId] = useState(null);
+const [editFields, setEditFields] = useState({ name: "", description: "", price: "" });
+const navigate = useNavigate();
+const [savedResources, setSavedResources] = useState({});
 
-  const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
-  const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
-  const [newSession, setNewSession] = useState({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
+const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
+const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
+const [newSession, setNewSession] = useState({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
 
-  const [openForm, setOpenForm] = useState({ eventId: null, type: null });
+const [openForm, setOpenForm] = useState({ eventId: null, type: null });
 
-  const token = localStorage.getItem("token");
-  const organizerId = localStorage.getItem("userId");
+const token = localStorage.getItem("token");
+const organizerId = localStorage.getItem("userId");
 
-  const [showSpeakerInfo, setShowSpeakerInfo] = useState(false); 
+const [showSpeakerInfo, setShowSpeakerInfo] = useState(false); 
 
+const [selectedFiles, setSelectedFiles] = useState({});
+const [dragging, setDragging] = useState({});
 
-  useEffect(() => {
-    fetchEvents();
-    fetchAllSchedules();
-    fetchAllSessions();
-  }, []);
+const fetchLatestResources = async (eventId) => {
+  try {
+    const response = await axios.get(`${API_URL}/event/${eventId}/resources`);
+    setSavedResources((prevResources) => ({ ...prevResources, [eventId]: response.data }));
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleDrop = (eventId, e) => {
+  e.preventDefault();
+  const files = e.dataTransfer.files;
+  setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [...(prevFiles[eventId] || []), ...files] }));
+  setDragging((prevDragging) => ({ ...prevDragging, [eventId]: false }));
+};
+
+const handleDragOver = (eventId, e) => {
+  e.preventDefault();
+  setDragging((prevDragging) => ({ ...prevDragging, [eventId]: true }));
+};
+
+const handleDragLeave = (eventId, e) => {
+  e.preventDefault();
+  setDragging((prevDragging) => ({ ...prevDragging, [eventId]: false }));
+};
+
+const handleFileChange = (eventId, e) => {
+  const files = e.target.files;
+  setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [...(prevFiles[eventId] || []), ...files] }));
+};
+
+const handleRemoveFile = async (eventId, fileId) => {
+  try {
+    await axios.post(`${API_URL}/event/${eventId}/remove-file/${fileId}`);
+    await fetchLatestResources(eventId);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const handleSaveFiles = async (eventId) => {
+  if (!selectedFiles[eventId] || selectedFiles[eventId].length === 0) return;
+
+  const formData = new FormData();
+  selectedFiles[eventId].forEach((file) => {
+    formData.append("files", file);
+  });
+
+  try {
+    await axios.post(`${API_URL}/event/${eventId}/add-files`, formData);
+    setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [] }));
+    await fetchLatestResources(eventId);
+    alert("Files saved successfully!");
+  } catch (err) {
+    console.error("Failed to save files:", err);
+  }
+};
+
+useEffect(() => {
+  fetchEvents();
+  fetchAllSchedules();
+  fetchAllSessions();
+}, []);
 
   const fetchEvents = async () => {
     try {
@@ -214,8 +275,8 @@ const EventPlanning = () => {
 
       {/* Display Events in Grid Format */}
       {events.length > 0 && (
-        <div className="mt-8 w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {events.map((event) => (
+        <div className="mt-8 w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {events.map((event) => (
             <div
               key={event.id}
               className="border border-[#D9C2A3] p-6 rounded-lg shadow bg-white flex flex-col justify-between" // Increased padding
@@ -319,37 +380,109 @@ const EventPlanning = () => {
               </div>
 
 
-              <div className="flex space-x-2 mt-3">
-                {/* ADD SCHEDULE BUTTON*/}
-                <button
-                  className="bg-[#D9C2A3] text-[#2E2E2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
-                  onClick={() => {
-                    setOpenForm({ eventId: event.id, type: 'schedule' });
-                    setNewSchedule({ date: "", eventId: event.id });
-                  }}
-                >
-                  Add Schedule
-                </button>
+              <div className="mt-3 space-y-4">
+  {/* Button Row */}
+  <div className="flex space-x-2">
+    {/* ADD SCHEDULE BUTTON*/}
+    <button
+      className="bg-[#D9C2A3] text-[#2E2E2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
+      onClick={() => {
+        setOpenForm({ eventId: event.id, type: 'schedule' });
+        setNewSchedule({ date: "", eventId: event.id });
+      }}
+    >
+      Add Schedule
+    </button>
 
-                {/* ADD SESSION BUTTON*/}
-                <button
-                  className="bg-[#D9C2A3] text-[#2E2E2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
-                  onClick={async () => {
-                    await fetchSchedulesForEvent(event.id);
-                    setOpenForm({ eventId: event.id, type: 'session' });
-                  }}
-                >
-                  Add Session
-                </button>
-                  
-                <button
-                  className="bg-[#D9C2A3] text-[#2E2A2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
-                  onClick={() => navigate(`/contact-speakers/${event.id}`)}
-                >
-                  Contact Speakers
-                </button>
-              
-              </div>
+    {/* ADD SESSION BUTTON*/}
+    <button
+      className="bg-[#D9C2A3] text-[#2E2E2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
+      onClick={async () => {
+        await fetchSchedulesForEvent(event.id);
+        setOpenForm({ eventId: event.id, type: 'session' });
+      }}
+    >
+      Add Session
+    </button>
+
+    {/* CONTACT SPEAKERS BUTTON */}
+    <button
+      className="bg-[#D9C2A3] text-[#2E2A2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
+      onClick={() => navigate(`/contact-speakers/${event.id}`)}
+    >
+      Contact Speakers
+    </button>
+  </div>
+
+  {/* File Upload Section */}
+  <div>
+    <h3 className="font-bold text-lg">Upload Files</h3>
+    <div
+      className={`border-2 border-dashed p-4 rounded-lg ${
+        dragging[event.id] ? "border-green-500" : "border-gray-300"
+      }`}
+      style={{ width: '300px' }}
+      onDragOver={(e) => handleDragOver(event.id, e)}
+      onDragLeave={(e) => handleDragLeave(event.id, e)}
+      onDrop={(e) => handleDrop(event.id, e)}
+    >
+      {selectedFiles[event.id] && selectedFiles[event.id].length > 0 ? (
+        <ul>
+          {selectedFiles[event.id].map((file, index) => (
+            <li key={index}>{file.name}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>Drag and drop files or click to upload</p>
+      )}
+      <input
+        type="file"
+        multiple
+        onChange={(e) => handleFileChange(event.id, e)}
+        className="hidden"
+        id={`file-input-${event.id}`}
+      />
+      <label
+        htmlFor={`file-input-${event.id}`}
+        className="bg-[#D9C2A3] text-[#2E2E2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
+      >
+        Browse Files
+      </label>
+    </div>
+    <button
+      className="mt-2 bg-[#D9C2A3] text-[#2E2E2E] px-3 py-1 rounded transition duration-300 hover:bg-[#C4A88E]"
+      onClick={() => handleSaveFiles(event.id)}
+    >
+      Save Files
+    </button>
+  </div>
+
+  {/* Saved Resources Section */}
+<div>
+  <h3 className="font-bold text-lg">Saved Resources</h3>
+  {savedResources[event.id] && savedResources[event.id].length > 0 ? (
+    <ul className="space-y-1">
+      {savedResources[event.id].map((resource) => (
+        <li key={resource.id} className="flex items-center space-x-2">
+          <span>{resource.name}</span>
+          <button
+            className="text-white bg-red-600 border border-red-700 px-2 py-0.5 text-xs rounded hover:bg-red-700"
+            onClick={() => handleRemoveFile(event.id, resource.id)}
+          >
+            Remove
+          </button>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p>No resources for this event</p>
+  )}
+</div>
+
+
+
+</div>
+
 
               {/* SCHEDULE FORM */}
               {openForm.eventId === event.id && openForm.type === 'schedule' && (
