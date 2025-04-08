@@ -132,4 +132,12 @@ public class EventService {
         return eventRepository.save(event);
     }
 
+    public Resource getResource(Long id, Long resourceId) {
+        Event event = getEventDirectlyFromRepo(id);
+        return event.getResources().stream()
+                .filter(resource -> resource.getId().equals(resourceId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + resourceId));
+    }
+
 }

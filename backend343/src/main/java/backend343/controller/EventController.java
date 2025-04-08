@@ -9,7 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -72,6 +73,16 @@ public class EventController {
     public ResponseEntity<List<Resource>> getSavedResources(@PathVariable Long id) {
         List<Resource> resources = eventService.getSavedResources(id);
         return ResponseEntity.ok(resources);
+    }
+
+    @GetMapping("/{id}/resources/{resourceId}/download")
+    public ResponseEntity<byte[]> getResource(@PathVariable("id") Long id, @PathVariable("resourceId") Long resourceId) {
+        Resource resource = eventService.getResource(id, resourceId);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getName() + "\"")
+                .contentType(MediaType.parseMediaType(resource.getType()))
+                .body(resource.getContent());
     }
 
 
