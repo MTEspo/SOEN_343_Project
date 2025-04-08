@@ -4,6 +4,10 @@ const API_URL = "http://localhost:8080/api/speakers";
 
 const SpeakerOffersPage = () => {
   const [offers, setOffers] = useState([]);
+  const [organizers, setOrganizers] = useState({});
+  const [sessions, setSessions] = useState({});
+  const [events, setEvents] = useState({});
+  const [schedules, setSchedules] = useState({});
   const speakerId = localStorage.getItem("userId");
 
   const fetchOffers = async () => {
@@ -20,7 +24,39 @@ const SpeakerOffersPage = () => {
   }, [speakerId]);
 
   useEffect(() => {
-    console.log("Updated Offers State:", offers);
+    offers.forEach(offer => {
+      axios.get(`http://localhost:8080/api/speakers/${offer.id}/get-organizer`)
+        .then(response => {
+          setOrganizers(prevOrganizers => ({ ...prevOrganizers, [offer.id]: response.data }));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      axios.get(`http://localhost:8080/api/speakers/${offer.id}/get-session`)
+        .then(response => {
+          setSessions(prevSessions => ({ ...prevSessions, [offer.id]: response.data }));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      axios.get(`http://localhost:8080/api/session/${sessions[offer.id]?.id}/get-event`)
+        .then(response => {
+          setEvents(prevEvents => ({ ...prevEvents, [offer.id]: response.data }));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+
+      axios.get(`http://localhost:8080/api/session/${sessions[offer.id]?.id}/get-schedule`)
+        .then(response => {
+          setSchedules(prevSchedules => ({ ...prevSchedules, [offer.id]: response.data }));
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    });
   }, [offers]);
 
   const handleOfferUpdate = async (offerId, status) => {
@@ -43,14 +79,26 @@ const SpeakerOffersPage = () => {
       <p className="text-gray-600 mt-2">
         Here are the offers you have received:
       </p>
-
+  
       <hr className="my-10 w-full max-w-6xl border-t border-gray-300" />
-
+  
       {offers.length > 0 ? (
         <div className="w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {offers.map((offer) => (
             <div key={offer.id} className="border border-[#D9C2A3] bg-white p-4 rounded-lg shadow flex flex-col justify-between">
-              <h3 className="font-bold text-lg text-[#2E2E2E]">Offer {offer.id}</h3>
+              <h3 className="font-bold text-lg text-[#2E2E2E]">From: {organizers[offer.id]?.email}</h3>
+              <p className="text-sm text-gray-700 mt-1">
+                Session Name: {sessions[offer.id]?.title}
+              </p>
+              <p className="text-sm text-gray-700 mt-1">
+                Event Name: {events[offer.id]?.name}
+              </p>
+              <p className="text-sm text-gray-700 mt-1">
+                Schedule Date: {schedules[offer.id]?.date}
+              </p>
+              <p className="text-sm text-gray-700 mt-1">
+                Session Time: {sessions[offer.id]?.startTime} - {sessions[offer.id]?.endTime}
+              </p>
               <p className="text-sm text-gray-700 mt-1">
                 Status: {offer.status}
               </p>

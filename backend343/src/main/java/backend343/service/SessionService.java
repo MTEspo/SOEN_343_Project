@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import backend343.chatRoom.ChatRoom;
+import backend343.models.Event;
 import backend343.models.Schedule;
 import backend343.models.Speaker;
 import backend343.repository.SpeakerRepository;
@@ -55,6 +56,18 @@ public class SessionService {
     public Long getEventIdFromSession(Long sessionId) {
         return sessionRepository.findById(sessionId)
                 .map(session -> session.getSchedule().getEvent().getId())
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+    }
+
+    public Event getEventFromSession(Long sessionId) {
+        return sessionRepository.findById(sessionId)
+                .map(session -> session.getSchedule().getEvent())
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+    }
+
+    public Schedule getScheduleFromSession(Long sessionId) {
+        return sessionRepository.findById(sessionId)
+                .map(Session::getSchedule)
                 .orElseThrow(() -> new RuntimeException("Session not found"));
     }
 

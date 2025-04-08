@@ -1,8 +1,6 @@
 package backend343.controller;
 
-import backend343.models.Session;
-import backend343.models.User;
-import backend343.models.Speaker;
+import backend343.models.*;
 import backend343.service.SessionService;
 import backend343.service.TicketService;
 
@@ -51,10 +49,20 @@ public class SessionController {
         return ResponseEntity.ok(eventId);
     }
 
+    @GetMapping("/{id}/get-event")
+    public ResponseEntity<Event> getEventFromSession(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(sessionService.getEventFromSession(id));
+    }
+
     @GetMapping("/{id}/schedule")
     public ResponseEntity<Long> getScheduleIdFromSession(@PathVariable Long id) {
         Long scheduleId = sessionService.getScheduleIdFromSession(id);
         return ResponseEntity.ok(scheduleId);
+    }
+
+    @GetMapping("/{id}/get-schedule")
+    public ResponseEntity<Schedule> getScheduleFromSession(@PathVariable Long id) {
+        return ResponseEntity.ok(sessionService.getScheduleFromSession(id));
     }
 
     @GetMapping("/access/{userId}/{sessionId}")

@@ -1,6 +1,7 @@
 package backend343.controller;
 
 import backend343.dto.UpdateSpeakerOfferRequest;
+import backend343.models.Organizer;
 import backend343.models.Session;
 import backend343.models.Speaker;
 import backend343.models.SpeakerOffer;
@@ -64,5 +65,15 @@ public class SpeakerController {
     @GetMapping("/get-all-offers/{speakerId}")
     public List<SpeakerOffer> getAllOffers(@PathVariable Long speakerId) {
         return speakerService.getAllOffers(speakerId);
+    }
+
+    @GetMapping("/{speakerOfferId}/get-organizer")
+    public ResponseEntity<Organizer> getOrganizer(@PathVariable Long speakerOfferId) {
+        return ResponseEntity.ok(speakerOfferService.getOrganizer(speakerOfferId));
+    }
+
+    @GetMapping("/{speakerOfferId}/get-session")
+    public ResponseEntity<Session> getSession(@PathVariable Long speakerOfferId) {
+        return ResponseEntity.ok(speakerOfferService.getSession(speakerOfferId));
     }
 }

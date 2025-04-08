@@ -107,4 +107,12 @@ public class SpeakerOfferService {
         }
         return false;
     }
+
+    public Organizer getOrganizer(Long speakerOfferId) {
+        return speakerOfferRepository.findById(speakerOfferId).orElseThrow().getOrganizer();
+    }
+
+    public Session getSession(Long speakerOfferId) {
+        return speakerOfferRepository.findById(speakerOfferId).orElseThrow().getSession();
+    }
 }
