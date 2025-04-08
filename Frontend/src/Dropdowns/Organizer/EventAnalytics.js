@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const API_URL = "http://localhost:8080/api/";
 
-const GetAnalyticsPage = () => {
+const EventAnalytics = () => {
   const [events, setEvents] = useState([]);
   const organizerId = localStorage.getItem("userId");
   const navigate = useNavigate();
@@ -57,4 +57,4 @@ const GetAnalyticsPage = () => {
   );
 };
 
-export default GetAnalyticsPage;
+export default EventAnalytics;

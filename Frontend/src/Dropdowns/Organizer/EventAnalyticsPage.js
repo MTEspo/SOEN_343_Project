@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 const API_URL = "http://localhost:8080/api/";
 
-const EventsAnalyticsDetails = () => {
+const EventsAnalyticsPage = () => {
   const { eventId } = useParams();
   const [analytics, setAnalytics] = useState(null);
 
@@ -47,4 +47,4 @@ const EventsAnalyticsDetails = () => {
   );
 };
 
-export default EventsAnalyticsDetails;
+export default EventsAnalyticsPage;

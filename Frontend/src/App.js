@@ -205,55 +205,83 @@ function App() {
     <Router>
       <div className="min-h-screen]">
         {/* Navigation Bar */}
-        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8] py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8]/80 py-4 h-16 border-b border-[#C4A88E]"}`}>
-  <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
-    {/* Logo */}
-    <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg">
-      S E E S
-    </Link>
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${
+          isScrolled
+            ? "bg-[#E3D5C8] py-3 h-[60px] border-b border-[#C4A88E]"
+            : "bg-[#E3D5C8]/80 py-4 h-[64px] border-b border-[#C4A88E]"
+        }`}>
+          <div className="max-w-7xl mx-auto grid grid-cols-12 items-center w-full px-6">
+            
+          {/* Left: S E E S + Home Icon (3/12) */}
+          <div className="col-span-3 flex items-center space-x-4">
+            {/* S E E S Logo */}
+            <Link
+              to="/"
+              className="text-[#8B5E3C] font-serif font-bold text-xl tracking-wide hover:text-[#2E2E2E] transition"
+            >
+              S E E S
+            </Link>
 
-    {/* Navigation Links and Dropdown Menu */}
-    <div className="flex space-x-6">
-      <div className="hidden md:flex space-x-6">
-        <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Home
-        </Link>
-        <Link to="/event-planning" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Plan Events
-        </Link>
-        <Link to="/attendees" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Attend Events
-        </Link>
-        <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Payments
-        </Link>
-        <Link to="/promotion" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Promotions
-        </Link>
-        <div className="relative flex items-center space-x-2">
-          <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-            Your Sessions
-          </Link>
-          <NotificationBell />
-        </div>
+            {/* Separate Home Icon Link */}
+            <Link
+              to="/"
+              className="p-1 rounded"
+              title="Home"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-[#8B5E3C] hover:text-[#2E2E2E] transition"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 9.75L12 4.5l9 5.25M4.5 10.5V19.5a.75.75 0 00.75.75h3.75v-5.25a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75V20.25h3.75a.75.75 0 00.75-.75V10.5"
+                />
+              </svg>
+            </Link>
+          </div>
 
-      </div>
-      {isLoggedIn && (
-        <DropdownMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-      )}
-                  </div>
-      
-                  {/* Login Button */}
-                  {!isLoggedIn && (
-                    <Link
-                      to="/login"
-                      className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
-                    >
-                      Log In
-                    </Link>
-                  )}
-                </div>
-              </nav>
+            {/* Center: Nav Links (6/12) */}
+            <div className="col-span-6 hidden md:flex justify-center items-center gap-x-10 whitespace-nowrap">
+ 
+              <Link
+                to="/event-planning"
+                className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Plan Events
+              </Link>
+
+              <Link
+                to="/attendees"
+                className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Attend Events
+              </Link>
+
+            </div>
+
+
+            {/* Right: Notification + Login/Menu (3/12) */}
+            <div className="col-span-3 flex justify-end items-center space-x-4">
+              <NotificationBell />
+              {isLoggedIn ? (
+                <DropdownMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+              ) : (
+                <Link
+                  to="/login"
+                  className="w-[90px] text-center bg-[#D9C2A3] text-[#2E2E2E] px-4 py-[6px] rounded-md text-lg leading-none font-semibold transition duration-300 hover:bg-[#C4A88E]"
+                >
+                  Log in
+                </Link>
+              )}
+            </div>
+
+          </div>
+        </nav>
       
         {/* Adjust spacing so content does not go under the fixed navbar */}
         <div className="mt-16">

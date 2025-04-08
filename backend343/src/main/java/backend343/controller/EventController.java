@@ -2,11 +2,13 @@ package backend343.controller;
 
 import backend343.models.Analytics;
 import backend343.models.Event;
+import backend343.models.Resource;
 import backend343.models.Schedule;
 import backend343.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -54,6 +56,22 @@ public class EventController {
     @GetMapping("/{id}/get-event-analytics")
     public ResponseEntity<Analytics> getEventAnalytics(@PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.getAnalytics(id));
+    }
+
+    @PostMapping("/{id}/add-files")
+    public ResponseEntity<Event> addFileToEvent(@PathVariable("id") Long id, @RequestParam("files") MultipartFile[] files) {
+        return ResponseEntity.ok(eventService.addFilesToEvent(id, files));
+    }
+
+    @PostMapping("/{id}/remove-file/{fileId}")
+    public ResponseEntity<Event> removeFile(@PathVariable("id") Long id, @PathVariable("fileId") Long fileId) {
+        return ResponseEntity.ok(eventService.removeFileFromEvent(id, fileId));
+    }
+
+    @GetMapping("/{id}/resources")
+    public ResponseEntity<List<Resource>> getSavedResources(@PathVariable Long id) {
+        List<Resource> resources = eventService.getSavedResources(id);
+        return ResponseEntity.ok(resources);
     }
 
 
