@@ -1,8 +1,11 @@
 package backend343.models;
 
+import backend343.enums.Role;
 import backend343.enums.StakeholderType;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -11,21 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Stakeholder {
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Stakeholder extends User{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String name;
+    private String companyName;
     private String description;
 
     @Enumerated(EnumType.STRING)
     private StakeholderType stakeholderType;
 
-    //bidirectional manytomany
-    //this is the other side of the relationship
-    //the joining of tables happens in Event class
-//    @ManyToMany(mappedBy = "stakeholders")
-//    private List<Event> events;
+    @ManyToMany(mappedBy = "stakeholders")
+    private List<Event> investedEvents = new ArrayList<>();
+
+    public Stakeholder(String username, String email, String password, Role role, StakeholderType stakeholderType, String companyName) {
+        super(username, email, password, role);
+        this.stakeholderType = stakeholderType;
+        this.companyName = companyName;
+    }
 }

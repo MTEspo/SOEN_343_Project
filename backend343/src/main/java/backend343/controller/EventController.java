@@ -8,6 +8,7 @@ import backend343.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ public class EventController {
 
     @PostMapping("/create/{organizer_id}")
     public ResponseEntity<Event> createEvent(@RequestBody Event event, @PathVariable("organizer_id") Long organizer_id) {
+        System.out.println("Received content type: " + RequestContextHolder.currentRequestAttributes());
         return ResponseEntity.ok(eventService.createEvent(event,organizer_id));
     }
 

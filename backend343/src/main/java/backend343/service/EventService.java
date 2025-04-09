@@ -7,6 +7,10 @@ import backend343.proxy.EventProxy;
 import backend343.repository.EventRepository;
 import backend343.repository.ResourceRepository;
 import backend343.repository.TicketRepository;
+
+import java.util.Optional;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -138,6 +142,27 @@ public class EventService {
                 .filter(resource -> resource.getId().equals(resourceId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + resourceId));
+    }
+
+    public boolean handleStakeholderInvestment(Stakeholder stakeholder, Long eventId, BigDecimal amount) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if (optionalEvent.isEmpty() || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return false;
+        }
+    
+        Event event = optionalEvent.get();
+
+        if (!event.getStakeholders().contains(stakeholder)) {
+            event.getStakeholders().add(stakeholder);
+        }
+    
+        // Update or add investment amount
+        Map<Stakeholder, BigDecimal> investments = event.getInvestments();
+        BigDecimal existingAmount = investments.getOrDefault(stakeholder, BigDecimal.ZERO);
+        investments.put(stakeholder, existingAmount.add(amount));
+    
+        eventRepository.save(event);
+        return true;
     }
 
 }

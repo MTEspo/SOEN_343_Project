@@ -1,6 +1,7 @@
 package backend343.dto;
 
 import backend343.enums.Role;
+import backend343.enums.StakeholderType;
 import lombok.Data;
 
 public class RegisterDto {
@@ -12,6 +13,8 @@ public class RegisterDto {
     private String organization; // For Organizer
     private String profession; // For Attendee
     private String university; // For Attendee
+    private StakeholderType stakeholderType; // for stakeholders
+    private String companyName; //the name of the company that stakeholder is representing like Concordia
 
     public String getEmail() {
         return email;
@@ -43,6 +46,14 @@ public class RegisterDto {
 
     public String getUniversity() {
         return university;
+    }
+
+    public StakeholderType getStakeholderType(){
+        return stakeholderType;
+    }
+
+    public String getCompanyName() {
+        return companyName;
     }
 }
 
