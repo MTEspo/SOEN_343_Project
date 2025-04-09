@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.enums.EventType;
+import backend343.enums.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,6 +44,7 @@ public class Event {
     @JsonIgnore
     private List<Schedule> schedules;
 
+
     @ManyToMany
     @JoinTable(
     name = "event_stakeholders",
@@ -53,4 +55,16 @@ public class Event {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventInvestment> investments = new ArrayList<>();
+
+    @ElementCollection
+    @CollectionTable(
+            name = "event_tags",
+            joinColumns = @JoinColumn(name = "event_id")
+    )
+    @Column(name = "tag")
+    @Enumerated(EnumType.STRING)
+    private List<Tag> tags = new ArrayList<>();
+
+    private Double averageRating;
+
 }

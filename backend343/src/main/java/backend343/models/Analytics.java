@@ -15,5 +15,8 @@ public class Analytics{
     private BigDecimal fundingGoal;
     private List<Speaker> speakers;
     private List<User> attendees;
+
     private List<Stakeholder> stakeholders;      // who invested
+
+    private Double averageRating;
 }

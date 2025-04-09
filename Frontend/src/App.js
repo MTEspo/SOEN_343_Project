@@ -18,17 +18,24 @@ import SpeakerSessions from "./Dropdowns/Speaker/SpeakerSessions.js";
 import NotificationBell from "./NotificationBell.js";
 import EventAnalytics from "./Dropdowns/Organizer/EventAnalytics.js";
 import EventAnalyticsPage from "./Dropdowns/Organizer/EventAnalyticsPage.js";
+import Receipts from "./Dropdowns/Attendee/Receipts.js";
 
 
 const events = [
-  {id: 1, image: "/images/seminar-image.jpeg", title: "Unlock new perspectives and ignite your curiosity!", button: "Find Seminars"},
-  {id: 2, image: "/images/webinar-image.jpeg", title: "Learn from anywhere, grow from everywhere!", button: "Find Webinars"},
-  {id: 3, image: "/images/workshop-image.jpeg", title: "Get hands-on experience with industry pros!", button: "Find Workshops"},
-  {id: 4, image: "/images/conference-image.jpg", title: "Get inspired by the best in the industry!", button: "Find Conferences"},
+  {id: 1, image: "/images/seminar-image.jpeg", title: "Unlock new perspectives and ignite your curiosity!", button: "Find Seminars", type: "SEMINAR"},
+  {id: 2, image: "/images/webinar-image.jpeg", title: "Learn from anywhere, grow from everywhere!", button: "Find Webinars", type: "WEBINAR"},
+  {id: 3, image: "/images/workshop-image.jpeg", title: "Get hands-on experience with industry pros!", button: "Find Workshops", type: "WORKSHOP"},
+  {id: 4, image: "/images/conference-image.jpg", title: "Get inspired by the best in the industry!", button: "Find Conferences", type: "CONFERENCE"},
 ];
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+
+  const handleCarouselClick = () => {
+    const selectedType = events[currentIndex].type;
+    navigate(`/attendees?type=${selectedType}`);
+  };
 
   // Auto-slide every 5 seconds
   useEffect(() => {
@@ -102,9 +109,13 @@ const Home = () => {
           {/* Centered Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-3xl font-extrabold text-white">{events[currentIndex].title}</h1>
-            <button className="mt-4 bg-[#D9C2A3] text-[#2E2E2E] px-6 py-3 rounded-md text-lg font-semibold transition duration-300 hover:bg-[#C4A88E]">
+            <button
+              onClick={handleCarouselClick}
+              className="mt-4 bg-[#D9C2A3] text-[#2E2E2E] px-6 py-3 rounded-md text-lg font-semibold transition duration-300 hover:bg-[#C4A88E]"
+            >
               {events[currentIndex].button}
             </button>
+
           </div>
         </div>
 
@@ -137,9 +148,6 @@ const Home = () => {
   );
 };
 
-const Networking = () => <h2 className="text-2xl font-bold text-center mt-6">Networking & Engagement Page</h2>;
-const Payments = () => <h2 className="text-2xl font-bold text-center mt-6">Payment & Financial Management Page</h2>;
-
 const SuccessPage = () => {
   const navigate = useNavigate();
 
@@ -171,6 +179,49 @@ const CancelPage = () => {
     </div>
   );
 };
+
+const PrivacyPolicy = () => {
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] p-8 text-[#2E2E2E]">
+      <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+      <p className="mb-4">
+        We are committed to protecting your privacy. Any information we collect is used solely to improve your experience.
+      </p>
+      <p className="mb-4">
+        We do not share your personal data with third parties without your consent. By using our services, you agree to this policy.
+      </p>
+    </div>
+  );
+};
+
+const TermsOfService = () => {
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] p-8 text-[#2E2E2E]">
+      <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
+      <p className="mb-4">
+        By accessing or using our platform, you agree to be bound by these Terms. If you do not agree, please discontinue use.
+      </p>
+      <p className="mb-4">
+        We reserve the right to update these terms at any time. Continued use of the service constitutes acceptance of the new terms.
+      </p>
+    </div>
+  );
+};
+
+const Contact = () => {
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] p-8 text-[#2E2E2E]">
+      <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
+      <p className="mb-4">Need help or have questions?</p>
+      <ul className="list-disc ml-6 space-y-2">
+        <li>Email: <a href="mailto:support@sees.com" className="underline">support@sees.com</a></li>
+        <li>Phone: +1 (123) 456-7890</li>
+      </ul>
+    </div>
+  );
+};
+
+
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -208,58 +259,109 @@ function App() {
     <Router>
       <div className="min-h-screen]">
         {/* Navigation Bar */}
-        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${isScrolled ? "bg-[#E3D5C8] py-2 h-12 border-b border-[#C4A88E]" : "bg-[#E3D5C8]/80 py-4 h-16 border-b border-[#C4A88E]"}`}>
-  <div className="max-w-6xl mx-auto flex items-center justify-between w-full px-6">
-    {/* Logo */}
-    <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg">
-      S E E S
-    </Link>
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-300 shadow-md backdrop-blur-md ${
+          isScrolled
+            ? "bg-[#E3D5C8] py-3 h-[60px] border-b border-[#C4A88E]"
+            : "bg-[#E3D5C8]/80 py-4 h-[64px] border-b border-[#C4A88E]"
+        }`}>
+          <div className="max-w-7xl mx-auto grid grid-cols-12 items-center w-full px-6">
+            
+          {/* Left: S E E S + Home Icon (3/12) */}
+          <div className="col-span-3 flex items-center space-x-4">
+            {/* S E E S Logo */}
+            <Link
+              to="/"
+              className="text-[#8B5E3C] font-serif font-bold text-xl tracking-wide hover:text-[#2E2E2E] transition"
+            >
+              S E E S
+            </Link>
 
-    {/* Navigation Links and Dropdown Menu */}
-    <div className="flex space-x-6">
-      <div className="hidden md:flex space-x-6">
-        <Link to="/" className="relative text-[#8B5E3C] font-serif font-bold text-xl tracking-wide drop-shadow-lg transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Home
-        </Link>
-        <Link to="/event-planning" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Event Planning
-        </Link>
-        <Link to="/attendees" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Attendees
-        </Link>
-        <Link to="/networking" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Networking
-        </Link>
-        <Link to="/payments" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Payments
-        </Link>
-        <Link to="/promotion" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-          Promotions
-        </Link>
-        <div className="relative flex items-center space-x-2">
-          <Link to="/sessions" className="relative text-[#5A5958] text-medium font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]">
-            Your Sessions
-          </Link>
-          <NotificationBell />
-        </div>
+            {/* Separate Home Icon Link */}
+            <Link
+              to="/"
+              className="p-1 rounded"
+              title="Home"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6 text-[#8B5E3C] hover:text-[#2E2E2E] transition"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 9.75L12 4.5l9 5.25M4.5 10.5V19.5a.75.75 0 00.75.75h3.75v-5.25a.75.75 0 01.75-.75h4.5a.75.75 0 01.75.75V20.25h3.75a.75.75 0 00.75-.75V10.5"
+                />
+              </svg>
+            </Link>
+          </div>
 
-      </div>
-      {isLoggedIn && (
-        <DropdownMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-      )}
-                  </div>
-      
-                  {/* Login Button */}
-                  {!isLoggedIn && (
-                    <Link
-                      to="/login"
-                      className="relative text-[#2E2E2E] text-lg font-small transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
-                    >
-                      Log In
-                    </Link>
-                  )}
-                </div>
-              </nav>
+            {/* Center: Nav Links (6/12) */}
+            <div className="col-span-6 hidden md:flex justify-center items-center gap-x-10 whitespace-nowrap">
+ 
+              <button
+                onClick={() => {
+                  const userId = localStorage.getItem("userId");
+                  const role = localStorage.getItem("role");
+
+                  if (!userId || role !== "ORGANIZER") {
+                    const confirmLogin = window.confirm("You must be logged in as an organizer to access event planning. Log in now?");
+                    if (confirmLogin) {
+                      handleLogout(); // clears all session data
+                      window.location.href = "/login";
+                    }
+                  } else {
+                    window.location.href = "/event-planning";
+                  }
+                }}
+                className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Plan Events
+              </button>
+
+
+              <button
+                onClick={() => {
+                  const userId = localStorage.getItem("userId");
+                  const role = localStorage.getItem("role");
+
+                  if (!userId || role !== "ATTENDEE") {
+                    const confirmLogin = window.confirm("You must be logged in as an attendee to register. Log in now?");
+                    if (confirmLogin) {
+                      handleLogout(); // clear everything
+                      window.location.href = "/login";
+                    }
+                  } else {
+                    window.location.href = "/attendees";
+                  }
+                }}
+                className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Attend Events
+              </button>
+            </div>
+
+
+            {/* Right: Notification + Login/Menu (3/12) */}
+            <div className="col-span-3 flex justify-end items-center space-x-4">
+              <NotificationBell />
+              {isLoggedIn ? (
+                <DropdownMenu isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+              ) : (
+                <Link
+                  to="/login"
+                  className="w-[90px] text-center bg-[#D9C2A3] text-[#2E2E2E] px-4 py-[6px] rounded-md text-lg leading-none font-semibold transition duration-300 hover:bg-[#C4A88E]"
+                >
+                  Log in
+                </Link>
+              )}
+            </div>
+
+          </div>
+        </nav>
       
         {/* Adjust spacing so content does not go under the fixed navbar */}
         <div className="mt-16">
@@ -270,7 +372,6 @@ function App() {
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/event-planning" element={<EventPlanning />} />
             <Route path="/attendees" element={<AttendeeManagement />} />
-            <Route path="/networking" element={<Networking />} />
             <Route path="/payments" element={<FinancialDashboard />} />
             <Route path="/promotion" element={<Promotion />} />
             <Route path="/success" element={<SuccessPage />} />
@@ -283,12 +384,23 @@ function App() {
             <Route path="/chat/:chatroomId" element={<ChatRoomContainer />} />
             <Route path="/dropdowns/speaker/speaker-sessions"   element={<SpeakerSessions />}/>
             <Route path="/dropdowns/organizer/event-analytics" element={<EventAnalytics />} />          
-            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} />            </Routes>
+            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} /> 
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/receipts" element={<Receipts />} />
+          </Routes>
 
           {/* Footer */}
           <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4 mt-8 text-sm">
-            © {new Date().getFullYear()} Smart Education Events System. All rights reserved.
+            <p>© {new Date().getFullYear()} Smart Education Events System. All rights reserved.</p>
+            <div className="flex justify-center space-x-4 mt-2 text-xs">
+              <Link to="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="hover:underline">Terms</Link>
+              <Link to="/contact" className="hover:underline">Contact</Link>
+            </div>
           </footer>
+
         </div>
       </div>
     </Router>
