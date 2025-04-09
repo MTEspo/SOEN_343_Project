@@ -4,5 +4,6 @@ public enum Role {
     ADMIN,
     ATTENDEE,
     SPEAKER,
-    ORGANIZER
+    ORGANIZER,
+    STAKEHOLDER
 }

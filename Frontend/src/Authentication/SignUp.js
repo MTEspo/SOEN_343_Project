@@ -6,6 +6,7 @@ const roles = [
   { value: 'ATTENDEE', label: 'Attendee' },
   { value: 'SPEAKER', label: 'Speaker' },
   { value: 'ORGANIZER', label: 'Organizer' },
+  { value: 'STAKEHOLDER', label: 'Stakeholder' },
 ];
 
 const SignUp = () => {
@@ -21,6 +22,8 @@ const SignUp = () => {
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
   const [error, setError] = useState(null);
+  const [companyName, setCompanyName] = useState('');
+  const [stakeholderType, setStakeholderType] = useState('');
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -50,6 +53,9 @@ const SignUp = () => {
       data.expertise = expertise;
     } else if (role === 'ORGANIZER') {
       data.organization = organization;
+    } else if (role === 'STAKEHOLDER') {
+      data.companyName = companyName;
+      data.stakeholderType = stakeholderType;
     }
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signup', data);
@@ -193,6 +199,33 @@ const SignUp = () => {
                 className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
               />
             </div>
+          )}
+          {role === 'STAKEHOLDER' && (
+            <>
+              <div>
+                <label className="block text-[#5A5958] font-medium">Company Name:</label>
+                <input
+                  type="text"
+                  value={companyName}
+                  onChange={(event) => setCompanyName(event.target.value)}
+                  placeholder="Enter company name"
+                  className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+                />
+              </div>
+              <div>
+                <label className="block text-[#5A5958] font-medium">Stakeholder Type:</label>
+                <select
+                  value={stakeholderType}
+                  onChange={(event) => setStakeholderType(event.target.value)}
+                  className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+                >
+                  <option value="">Select a type</option>
+                  <option value="EDUCATIONAL_INSTITUTION">Educational Institution</option>
+                  <option value="EVENT_MANAGEMENT">Event Management</option>
+                  <option value="TECHNOLOGY_PROVIDER">Technology Provider</option>
+                </select>
+              </div>
+            </>
           )}
           <button
             type="submit"

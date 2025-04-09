@@ -8,7 +8,9 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -22,6 +24,8 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private BigDecimal fundingGoal;
 
     private String name;
     private String description;
@@ -40,6 +44,18 @@ public class Event {
     @JsonIgnore
     private List<Schedule> schedules;
 
+
+    @ManyToMany
+    @JoinTable(
+    name = "event_stakeholders",
+    joinColumns = @JoinColumn(name = "event_id"),
+    inverseJoinColumns = @JoinColumn(name = "stakeholder_id")
+    )
+    private List<Stakeholder> stakeholders = new ArrayList<>();
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventInvestment> investments = new ArrayList<>();
+
     @ElementCollection
     @CollectionTable(
             name = "event_tags",
@@ -50,4 +66,5 @@ public class Event {
     private List<Tag> tags = new ArrayList<>();
 
     private Double averageRating;
+
 }
