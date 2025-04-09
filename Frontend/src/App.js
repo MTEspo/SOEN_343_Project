@@ -18,6 +18,7 @@ import SpeakerSessions from "./Dropdowns/Speaker/SpeakerSessions.js";
 import NotificationBell from "./NotificationBell.js";
 import EventAnalytics from "./Dropdowns/Organizer/EventAnalytics.js";
 import EventAnalyticsPage from "./Dropdowns/Organizer/EventAnalyticsPage.js";
+import Receipts from "./Dropdowns/Attendee/Receipts.js";
 
 
 const events = [
@@ -387,6 +388,7 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/receipts" element={<Receipts />} />
           </Routes>
 
           {/* Footer */}

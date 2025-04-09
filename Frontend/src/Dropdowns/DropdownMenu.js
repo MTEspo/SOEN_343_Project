@@ -16,7 +16,8 @@ const DropdownMenu = ({ isLoggedIn, handleLogout }) => {
     switch (role) {
       case "ATTENDEE":
         return [
-          { label: "Your Sessions", path: "/sessions"}
+          { label: "Your Sessions", path: "/sessions"},
+          { label: "Receipts", path: "/receipts" },
         ]; // No options for now
       case "ORGANIZER":
         return [
