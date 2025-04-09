@@ -11,7 +11,10 @@ const SessionDetails = () => {
     const [sessionDetails, setSessionDetails] = useState(null);
     const [eventDetails, setEventDetails] = useState(null);
     const [eventResources, setEventResources] = useState([]);
+    const [rating, setRating] = useState(0);
+    const [ratingMessage, setRatingMessage] = useState("");
     const navigate = useNavigate();
+    const userId = localStorage.getItem("userId");  
 
     useEffect(() => {
         const fetchSessionDetails = async () => {
@@ -91,8 +94,23 @@ const SessionDetails = () => {
           console.error("Download failed:", error);
       }
   };
-  
 
+  const handleSaveRating = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/event-ratings/create`, {
+        eventId: eventDetails.id,
+        userId: userId, // assuming userId is available in sessionDetails
+        rating: rating,
+      });
+      setRatingMessage("Rating saved successfully!");
+    } catch (error) {
+      if (error.response.status === 400) {
+        setRatingMessage("Invalid rating or you have already rated this event.");
+      } else {
+        setRatingMessage("You already gave a rating for this event!");
+      }
+    }
+  };
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#f7f7f7] p-6">
         <div className="max-w-4xl w-full bg-white shadow-lg rounded-xl p-8">
@@ -107,6 +125,29 @@ const SessionDetails = () => {
                 <p><span className="font-semibold">Time:</span> {sessionDetails.startTime} - {sessionDetails.endTime}</p>
                 <p><span className="font-semibold">Speaker:</span> {sessionDetails.speakerUsername}</p>
                 <p><span className="font-semibold">Date:</span> {sessionDetails.scheduleDate}</p>
+            </div>
+            <h2 className="text-3xl font-bold mt-6 mb-4">Rate This Event</h2>
+            <div className="flex items-center space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                        key={star}
+                        onClick={() => setRating(star)}
+                        className={`text-2xl ${rating >= star ? "text-yellow-400" : "text-gray-300"}`}
+                    >
+                        &#9733;
+                    </button>
+                ))}
+                <button
+                    onClick={handleSaveRating}
+                    className="px-4 py-2 bg-[#5A5958] text-white rounded-md text-lg font-semibold hover:bg-[#3E3D3C] transition"
+                >
+                    Save Rating
+                </button>
+                {ratingMessage && (
+                    <p className={`text-lg ${ratingMessage.includes("successfully") ? "text-green-500" : "text-red-500"}`}>
+                        {ratingMessage}
+                    </p>
+                )}
             </div>
             <h2 className="text-3xl font-bold mt-6 mb-4">Resources</h2>
             {eventResources.length > 0 ? (
@@ -135,6 +176,6 @@ const SessionDetails = () => {
         </div>
     </div>
 );
-};
+}
 
 export default SessionDetails;

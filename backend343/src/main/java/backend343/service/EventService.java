@@ -94,6 +94,7 @@ public class EventService {
                 .speakers(new ArrayList<>(speakers))
                 .amountGenerated(sum)
                 .attendees(new ArrayList<>(users))
+                .averageRating(event.getAverageRating())
                 .build();
     }
 

@@ -12,6 +12,7 @@ public class Analytics{
     private BigDecimal amountGenerated;
     private List<Speaker> speakers;
     private List<User> attendees;
+    private Double averageRating;
     // probable add sponsor
     // add money given by sponsor
     // add all stakeholders

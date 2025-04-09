@@ -48,4 +48,6 @@ public class Event {
     @Column(name = "tag")
     @Enumerated(EnumType.STRING)
     private List<Tag> tags = new ArrayList<>();
+
+    private Double averageRating;
 }
