@@ -75,28 +75,40 @@ public class EventService {
     public Analytics getAnalytics(Long id) {
         Event event = getEventDirectlyFromRepo(id);
         List<Schedule> schedules = event.getSchedules();
+    
         Set<Speaker> speakers = new HashSet<>();
         Set<User> users = new HashSet<>();
         List<Ticket> tickets = new ArrayList<>();
-        BigDecimal sum = BigDecimal.ZERO;
-        for(Schedule schedule : schedules) {
+        BigDecimal ticketRevenue = BigDecimal.ZERO;
+    
+        for (Schedule schedule : schedules) {
             tickets.addAll(ticketService.getTicketsBySessionId(schedule.getId()));
         }
-
+    
         List<Ticket> activeTickets = tickets.stream()
                 .filter(ticket -> ticket.getStatus() == TicketStatus.ACTIVE)
                 .toList();
-
+    
         for (Ticket ticket : activeTickets) {
-            sum = sum.add(ticket.getAmountPaid());
+            ticketRevenue = ticketRevenue.add(ticket.getAmountPaid());
             speakers.add(ticket.getSession().getSpeaker());
             users.add(ticket.getUser());
         }
-
+    
+        BigDecimal stakeholderContributions = event.getInvestments().stream()
+        .map(EventInvestment::getAmount)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    
+        List<Stakeholder> stakeholders = event.getStakeholders();
+    
         return Analytics.builder()
                 .speakers(new ArrayList<>(speakers))
-                .amountGenerated(sum)
                 .attendees(new ArrayList<>(users))
+                .amountGenerated(ticketRevenue)
+                .stakeholderContributions(stakeholderContributions)
+                .totalRevenue(ticketRevenue.add(stakeholderContributions))
+                .fundingGoal(event.getFundingGoal())
+                .stakeholders(stakeholders)
                 .build();
     }
 
@@ -151,15 +163,18 @@ public class EventService {
         }
     
         Event event = optionalEvent.get();
-
+    
+        EventInvestment investment = EventInvestment.builder()
+            .event(event)
+            .stakeholder(stakeholder)
+            .amount(amount)
+            .build();
+    
+        event.getInvestments().add(investment);
+        //make sure that stakeholder isnt added to the list again, if they wanna invest for a second time or smtg
         if (!event.getStakeholders().contains(stakeholder)) {
             event.getStakeholders().add(stakeholder);
         }
-    
-        // Update or add investment amount
-        Map<Stakeholder, BigDecimal> investments = event.getInvestments();
-        BigDecimal existingAmount = investments.getOrDefault(stakeholder, BigDecimal.ZERO);
-        investments.put(stakeholder, existingAmount.add(amount));
     
         eventRepository.save(event);
         return true;

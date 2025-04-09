@@ -51,9 +51,6 @@ public class Event {
     )
     private List<Stakeholder> stakeholders = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "event_investments", joinColumns = @JoinColumn(name = "event_id"))
-    @MapKeyJoinColumn(name = "stakeholder_id")
-    @Column(name = "investment_amount")
-    private Map<Stakeholder, BigDecimal> investments = new HashMap<>();
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EventInvestment> investments = new ArrayList<>();
 }

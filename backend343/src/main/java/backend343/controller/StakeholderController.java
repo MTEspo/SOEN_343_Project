@@ -35,7 +35,7 @@ public class StakeholderController {
     public ResponseEntity<String> investInEvent(
             @PathVariable("stakeholderId") Long stakeholderId,
             @PathVariable("eventId") Long eventId,
-            @RequestParam BigDecimal amount) {
+            @RequestParam("amount") BigDecimal amount) {
 
         Stakeholder stakeholder = (Stakeholder) userDetailsService.getUserById(stakeholderId);
         boolean success = eventService.handleStakeholderInvestment(stakeholder, eventId, amount);
