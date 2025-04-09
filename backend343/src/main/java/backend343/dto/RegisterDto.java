@@ -1,7 +1,10 @@
 package backend343.dto;
 
 import backend343.enums.Role;
+import backend343.enums.Tag;
 import lombok.Data;
+
+import java.util.List;
 
 public class RegisterDto {
     private String email;
@@ -12,6 +15,7 @@ public class RegisterDto {
     private String organization; // For Organizer
     private String profession; // For Attendee
     private String university; // For Attendee
+    private List<Tag> interests; // For Attendee
 
     public String getEmail() {
         return email;
@@ -43,6 +47,10 @@ public class RegisterDto {
 
     public String getUniversity() {
         return university;
+    }
+
+    public List<Tag> getInterests() {
+        return interests;
     }
 }
 

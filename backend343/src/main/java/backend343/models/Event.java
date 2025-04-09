@@ -1,6 +1,7 @@
 package backend343.models;
 
 import backend343.enums.EventType;
+import backend343.enums.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,4 +39,13 @@ public class Event {
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Schedule> schedules;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "event_tags",
+            joinColumns = @JoinColumn(name = "event_id")
+    )
+    @Column(name = "tag")
+    @Enumerated(EnumType.STRING)
+    private List<Tag> tags = new ArrayList<>();
 }
