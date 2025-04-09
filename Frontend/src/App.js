@@ -21,14 +21,20 @@ import EventAnalyticsPage from "./Dropdowns/Organizer/EventAnalyticsPage.js";
 
 
 const events = [
-  {id: 1, image: "/images/seminar-image.jpeg", title: "Unlock new perspectives and ignite your curiosity!", button: "Find Seminars"},
-  {id: 2, image: "/images/webinar-image.jpeg", title: "Learn from anywhere, grow from everywhere!", button: "Find Webinars"},
-  {id: 3, image: "/images/workshop-image.jpeg", title: "Get hands-on experience with industry pros!", button: "Find Workshops"},
-  {id: 4, image: "/images/conference-image.jpg", title: "Get inspired by the best in the industry!", button: "Find Conferences"},
+  {id: 1, image: "/images/seminar-image.jpeg", title: "Unlock new perspectives and ignite your curiosity!", button: "Find Seminars", type: "SEMINAR"},
+  {id: 2, image: "/images/webinar-image.jpeg", title: "Learn from anywhere, grow from everywhere!", button: "Find Webinars", type: "WEBINAR"},
+  {id: 3, image: "/images/workshop-image.jpeg", title: "Get hands-on experience with industry pros!", button: "Find Workshops", type: "WORKSHOP"},
+  {id: 4, image: "/images/conference-image.jpg", title: "Get inspired by the best in the industry!", button: "Find Conferences", type: "CONFERENCE"},
 ];
 
 const Home = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+
+  const handleCarouselClick = () => {
+    const selectedType = events[currentIndex].type;
+    navigate(`/attendees?type=${selectedType}`);
+  };
 
   // Auto-slide every 5 seconds
   useEffect(() => {
@@ -102,9 +108,13 @@ const Home = () => {
           {/* Centered Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
             <h1 className="text-3xl font-extrabold text-white">{events[currentIndex].title}</h1>
-            <button className="mt-4 bg-[#D9C2A3] text-[#2E2E2E] px-6 py-3 rounded-md text-lg font-semibold transition duration-300 hover:bg-[#C4A88E]">
+            <button
+              onClick={handleCarouselClick}
+              className="mt-4 bg-[#D9C2A3] text-[#2E2E2E] px-6 py-3 rounded-md text-lg font-semibold transition duration-300 hover:bg-[#C4A88E]"
+            >
               {events[currentIndex].button}
             </button>
+
           </div>
         </div>
 
@@ -168,6 +178,49 @@ const CancelPage = () => {
     </div>
   );
 };
+
+const PrivacyPolicy = () => {
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] p-8 text-[#2E2E2E]">
+      <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+      <p className="mb-4">
+        We are committed to protecting your privacy. Any information we collect is used solely to improve your experience.
+      </p>
+      <p className="mb-4">
+        We do not share your personal data with third parties without your consent. By using our services, you agree to this policy.
+      </p>
+    </div>
+  );
+};
+
+const TermsOfService = () => {
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] p-8 text-[#2E2E2E]">
+      <h1 className="text-3xl font-bold mb-4">Terms of Service</h1>
+      <p className="mb-4">
+        By accessing or using our platform, you agree to be bound by these Terms. If you do not agree, please discontinue use.
+      </p>
+      <p className="mb-4">
+        We reserve the right to update these terms at any time. Continued use of the service constitutes acceptance of the new terms.
+      </p>
+    </div>
+  );
+};
+
+const Contact = () => {
+  return (
+    <div className="min-h-screen bg-[#E3D5C8] p-8 text-[#2E2E2E]">
+      <h1 className="text-3xl font-bold mb-4">Contact Us</h1>
+      <p className="mb-4">Need help or have questions?</p>
+      <ul className="list-disc ml-6 space-y-2">
+        <li>Email: <a href="mailto:support@sees.com" className="underline">support@sees.com</a></li>
+        <li>Phone: +1 (123) 456-7890</li>
+      </ul>
+    </div>
+  );
+};
+
+
 
 function App() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -304,13 +357,22 @@ function App() {
             <Route path="/chat/:chatroomId" element={<ChatRoomContainer />} />
             <Route path="/dropdowns/speaker/speaker-sessions"   element={<SpeakerSessions />}/>
             <Route path="/dropdowns/organizer/event-analytics" element={<EventAnalytics />} />          
-            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} />            
+            <Route path="/dropdowns/organizer/EventsAnalyticsDetails/:eventId" element={<EventAnalyticsPage />} /> 
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
 
           {/* Footer */}
           <footer className="bg-[#E3D5C8] border-t border-[#C4A88E] text-[#5A5958] text-center py-4 mt-8 text-sm">
-            © {new Date().getFullYear()} Smart Education Events System. All rights reserved.
+            <p>© {new Date().getFullYear()} Smart Education Events System. All rights reserved.</p>
+            <div className="flex justify-center space-x-4 mt-2 text-xs">
+              <Link to="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+              <Link to="/terms-of-service" className="hover:underline">Terms</Link>
+              <Link to="/contact" className="hover:underline">Contact</Link>
+            </div>
           </footer>
+
         </div>
       </div>
     </Router>

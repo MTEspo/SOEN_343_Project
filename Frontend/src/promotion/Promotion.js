@@ -48,7 +48,7 @@ const Promotion = () => {
       {events.length === 0 ? (
         <p className="text-center text-gray-500">No events to promote yet.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto flex-grow">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {events.map((event) => (
             <div key={event.id} className="bg-white border border-[#D9C2A3] p-4 rounded-lg shadow">
               <h2 className="text-xl font-bold mb-1">{event.name}</h2>
@@ -59,7 +59,7 @@ const Promotion = () => {
               </div>
               <button
                 onClick={() => handlePromote(event)}
-                className="mt-4 w-full bg-[#D9C2A3] text-[#2E2E2E] px-4 py-2 rounded hover:bg-[#C4A88E]"
+                className="mt-4 w-full bg-[#D9C2A3] text-[#2E2E2E] px-4 py-2 rounded transition duration-300 hover:bg-[#C4A88E]"
               >
                 Promote
               </button>

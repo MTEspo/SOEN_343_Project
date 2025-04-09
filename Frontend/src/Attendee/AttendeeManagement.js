@@ -1,21 +1,34 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
+
 
 const API_URL = "http://localhost:8080/api";
 
 const AttendeeManagement = () => {
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
-  const [filterType, setFilterType] = useState("ALL");
+  const [searchParams] = useSearchParams();
+  const initialType = searchParams.get("type") || "ALL";
+  const [filterType, setFilterType] = useState(initialType);
   const [selectedEventId, setSelectedEventId] = useState(null);
   const [sessionsForEvent, setSessionsForEvent] = useState([]);
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState(null);
-
+  
 
   useEffect(() => {
     fetchAllEvents();
   }, []);
+  
+  useEffect(() => {
+    if (filterType === "ALL") {
+      setFilteredEvents(events);
+    } else {
+      setFilteredEvents(events.filter((event) => event.type === filterType));
+    }
+  }, [filterType, events]);
+  
 
   const fetchAllEvents = async () => {
     try {

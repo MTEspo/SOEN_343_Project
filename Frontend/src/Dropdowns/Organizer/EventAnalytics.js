@@ -21,38 +21,53 @@ const EventAnalytics = () => {
     }
   };
 
-  const handleAccessAnalytics = async (eventId) => {
+  const handleAccessAnalytics = (eventId) => {
     navigate(`/dropdowns/organizer/EventsAnalyticsDetails/${eventId}`);
-};
+  };
 
   return (
-    <div>
-      {events.length > 0 ? (
-        <div className="mt-8 w-full max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {events.map((event) => (
-            <div
-              key={event.id}
-              className="border border-[#D9C2A3] p-6 rounded-lg shadow bg-white flex flex-col justify-between"
-              style={{ width: '400px' }}
-            >
-              <h3 className="font-bold text-lg">{event.name}</h3>
-              <p className="text-sm text-gray-700">{event.description}</p>
-              <p className="text-sm mt-1"><strong>Type:</strong> {event.type}</p>
-              <p className="text-sm text-gray-500">Price: ${event.price}</p>
-              <button
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 mt-4"
-                onClick={() => handleAccessAnalytics(event.id)}
+    <div className="flex flex-col min-h-screen">
+      {/* Main Content */}
+      <div className="flex-grow flex flex-col p-8">
+        <h1 className="text-4xl font-bold text-center text-[#2E2E2E] mb-4">
+          Event Analytics
+        </h1>
+        <p className="text-center text-[#5A5958] mb-10">
+          View detailed analytics for your published events.
+        </p>
+
+        {events.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {events.map((event) => (
+              <div
+                key={event.id}
+                className="bg-white border border-[#D9C2A3] p-4 rounded-lg shadow h-auto"
               >
-                Access Analytics
-              </button>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="mt-8 text-center text-lg">
-          <p>You currently have no events.</p>
-        </div>
-      )}
+                <h2 className="text-xl font-bold mb-1">{event.name}</h2>
+                <p className="text-sm text-gray-600">{event.description}</p>
+                <div className="mt-3">
+                  <p className="text-sm">
+                    <strong>Type:</strong> {event.type}
+                  </p>
+                  <p className="text-sm">
+                    <strong>Price:</strong> ${parseFloat(event.price).toFixed(2)}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleAccessAnalytics(event.id)}
+                  className="mt-4 w-full bg-[#D9C2A3] text-[#2E2E2E] px-4 py-2 rounded transition duration-300 hover:bg-[#C4A88E]"
+                >
+                  Access Analytics
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-8 text-center text-lg">
+            <p>You currently have no events.</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
