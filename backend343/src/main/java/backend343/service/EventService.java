@@ -50,6 +50,7 @@ public class EventService {
     @Autowired
     private EventInvestmentRepository eventInvestmentRepository;
 
+    @Autowired
     private AttendeeService attendeeService;
 
 

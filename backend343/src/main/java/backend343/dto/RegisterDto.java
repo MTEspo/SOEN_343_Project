@@ -65,6 +65,7 @@ public class RegisterDto {
 
     public String getCompanyName() {
         return companyName;
+    }
 
     public List<Tag> getInterests() {
         return interests;
