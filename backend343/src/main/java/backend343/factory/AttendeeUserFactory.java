@@ -16,6 +16,8 @@ public class AttendeeUserFactory implements UserFactory{
 
     @Override
     public User createUser(RegisterDto input, PasswordEncoder passwordEncoder) {
-        return new Attendee(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole(), input.getProfession(), input.getUniversity());
+        Attendee attendee = new Attendee(input.getUsername(), input.getEmail(), passwordEncoder.encode(input.getPassword()), input.getRole(), input.getProfession(), input.getUniversity());
+        attendee.setInterests(input.getInterests());
+        return attendee;
     }
 }

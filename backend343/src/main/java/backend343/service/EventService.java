@@ -1,6 +1,7 @@
 package backend343.service;
 
 import backend343.enums.EventType;
+import backend343.enums.Tag;
 import backend343.enums.TicketStatus;
 import backend343.models.*;
 import backend343.proxy.EventProxy;
@@ -15,10 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +33,9 @@ public class EventService {
 
     @Autowired
     private ResourceRepository resourceRepository;
+
+    @Autowired
+    private AttendeeService attendeeService;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -138,6 +139,21 @@ public class EventService {
                 .filter(resource -> resource.getId().equals(resourceId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Resource not found with ID: " + resourceId));
+    }
+
+    public List<Event> getRecommendedEvents(Long userId) {
+        Attendee attendee = attendeeService.getAttendeeById(userId);
+        List<Tag> interests = attendee.getInterests();
+        if (interests.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return eventRepository.findEventsByTags(interests);
+    }
+
+    public Event updateEventTags(Long id, List<Tag> tags) {
+        Event event = getEventDirectlyFromRepo(id);
+        event.setTags(tags);
+        return eventRepository.save(event);
     }
 
 }

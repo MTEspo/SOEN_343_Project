@@ -1,5 +1,6 @@
 package backend343.controller;
 
+import backend343.enums.Tag;
 import backend343.models.Analytics;
 import backend343.models.Event;
 import backend343.models.Resource;
@@ -44,6 +45,11 @@ public class EventController {
     public ResponseEntity<Event> updateName(@PathVariable("id") Long id, @RequestBody String name) {
         return ResponseEntity.ok(eventService.updateEventName(id, name));
     }
+
+    @PostMapping("/update/tags/{id}")
+    public ResponseEntity<Event> updateTag(@PathVariable("id") Long id, @RequestBody List<Tag> tags) {
+        return ResponseEntity.ok(eventService.updateEventTags(id, tags));
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(eventService.findById(id));
@@ -83,6 +89,16 @@ public class EventController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getName() + "\"")
                 .contentType(MediaType.parseMediaType(resource.getType()))
                 .body(resource.getContent());
+    }
+
+    @GetMapping("/{id}/tags")
+    public ResponseEntity<List<Tag>> getTagsFromEvent(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(eventService.getEventDirectlyFromRepo(id).getTags());
+    }
+
+    @GetMapping("/recommended-events/{userId}")
+    public ResponseEntity<List<Event>> getRecommendedEvents(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(eventService.getRecommendedEvents(userId));
     }
 
 
