@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,7 +18,21 @@ const SignUp = () => {
   const [university, setUniversity] = useState('');
   const [organization, setOrganization] = useState('');
   const [expertise, setExpertise] = useState('');
+  const [tags, setTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/tags/all-tags');
+        setTags(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchTags();
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,7 +40,8 @@ const SignUp = () => {
       username,
       email,
       password,
-      role: role.toUpperCase(), 
+      role: role.toUpperCase(),
+      interests: selectedTags,
     };
     if (role === 'ATTENDEE') {
       data.profession = profession;
@@ -38,8 +53,8 @@ const SignUp = () => {
     }
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signup', data);
-      console.log(response)
-      alert("Signed up successfully! You may now verify your email")
+      console.log(response);
+      alert("Signed up successfully! You may now verify your email");
       navigate('/verify-email', { state: { email: email } });
     } catch (error) {
       if (error.response) {
@@ -52,6 +67,14 @@ const SignUp = () => {
         console.error('Error:', error.message);
         setError(error.message);
       }
+    }
+  };
+
+  const handleTagSelect = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else if (selectedTags.length < 3) {
+      setSelectedTags([...selectedTags, tag]);
     }
   };
 
@@ -106,29 +129,47 @@ const SignUp = () => {
             </select>
           </div>
           {role === 'ATTENDEE' && (
-            <>
-              <div>
-                <label className="block text-[#5A5958] font-medium">Profession:</label>
-                <input
-                  type="text"
-                  value={profession}
-                  onChange={(event) => setProfession(event.target.value)}
-                  placeholder="Enter profession"
-                  className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
-                />
+          <>
+            <div>
+              <label className="block text-[#5A5958] font-medium">Profession:</label>
+              <input
+                type="text"
+                value={profession}
+                onChange={(event) => setProfession(event.target.value)}
+                placeholder="Enter profession"
+                className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+              />
+            </div>
+            <div>
+              <label className="block text-[#5A5958] font-medium">University:</label>
+              <input
+                type="text"
+                value={university}
+                onChange={(event) => setUniversity(event.target.value)}
+                placeholder="Enter university"
+                className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
+              />
+            </div>
+            <div>
+              <label className="block text-[#5A5958] font-medium">Interests:</label>
+              <div className="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <button
+                    key={tag}
+                    type="button"
+                    className={`px-2 py-1 border border-[#C4A88E] rounded-md ${
+                      selectedTags.includes(tag) ? 'bg-[#C4A88E] text-white' : 'bg-white text-[#2E2E2E]'
+                    }`}
+                    onClick={() => handleTagSelect(tag)}
+                  >
+                    {tag}
+                  </button>
+                ))}
               </div>
-              <div>
-                <label className="block text-[#5A5958] font-medium">University:</label>
-                <input
-                  type="text"
-                  value={university}
-                  onChange={(event) => setUniversity(event.target.value)}
-                  placeholder="Enter university"
-                  className="w-full px-3 py-2 border border-[#C4A88E] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C4A88E]"
-                />
-              </div>
-            </>
-          )}
+              <p className="text-sm text-[#5A5958]">Select up to 3 interests</p>
+            </div>
+          </>
+        )}
           {role === 'SPEAKER' && (
             <div>
               <label className="block text-[#5A5958] font-medium">Expertise:</label>
