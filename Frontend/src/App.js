@@ -301,20 +301,46 @@ function App() {
             {/* Center: Nav Links (6/12) */}
             <div className="col-span-6 hidden md:flex justify-center items-center gap-x-10 whitespace-nowrap">
  
-              <Link
-                to="/event-planning"
+              <button
+                onClick={() => {
+                  const userId = localStorage.getItem("userId");
+                  const role = localStorage.getItem("role");
+
+                  if (!userId || role !== "ORGANIZER") {
+                    const confirmLogin = window.confirm("You must be logged in as an organizer to access event planning. Log in now?");
+                    if (confirmLogin) {
+                      handleLogout(); // clears all session data
+                      window.location.href = "/login";
+                    }
+                  } else {
+                    window.location.href = "/event-planning";
+                  }
+                }}
                 className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
               >
                 Plan Events
-              </Link>
+              </button>
 
-              <Link
-                to="/attendees"
+
+              <button
+                onClick={() => {
+                  const userId = localStorage.getItem("userId");
+                  const role = localStorage.getItem("role");
+
+                  if (!userId || role !== "ATTENDEE") {
+                    const confirmLogin = window.confirm("You must be logged in as an attendee to register. Log in now?");
+                    if (confirmLogin) {
+                      handleLogout(); // clear everything
+                      window.location.href = "/login";
+                    }
+                  } else {
+                    window.location.href = "/attendees";
+                  }
+                }}
                 className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
               >
                 Attend Events
-              </Link>
-
+              </button>
             </div>
 
 
