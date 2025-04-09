@@ -2,6 +2,7 @@ package backend343.controller;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,6 +46,12 @@ public class StakeholderController {
         } else {
             return ResponseEntity.badRequest().body("Investment failed.");
         }
+    }
+
+    @GetMapping("/{stakeholderId}/invested-events")
+    public ResponseEntity<List<Map<String, Object>>> getInvestedEvents(@PathVariable("stakeholderId") Long stakeholderId) {
+        List<Map<String, Object>> investments = eventService.getInvestmentsByStakeholder(stakeholderId);
+        return ResponseEntity.ok(investments);
     }
     
 }

@@ -4,6 +4,7 @@ import backend343.enums.EventType;
 import backend343.enums.TicketStatus;
 import backend343.models.*;
 import backend343.proxy.EventProxy;
+import backend343.repository.EventInvestmentRepository;
 import backend343.repository.EventRepository;
 import backend343.repository.ResourceRepository;
 import backend343.repository.TicketRepository;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +41,9 @@ public class EventService {
 
     @Autowired
     private ResourceRepository resourceRepository;
+
+    @Autowired
+    private EventInvestmentRepository eventInvestmentRepository;
 
     public List<Event> getAllEvents() {
         return eventRepository.findAll();
@@ -178,6 +183,20 @@ public class EventService {
     
         eventRepository.save(event);
         return true;
+    }
+
+    public List<Map<String, Object>> getInvestmentsByStakeholder(Long stakeholderId) {
+        List<EventInvestment> investments = eventInvestmentRepository.findByStakeholderId(stakeholderId);
+    
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (EventInvestment investment : investments) {
+            Map<String, Object> entry = new HashMap<>();
+            entry.put("eventId", investment.getEvent().getId());
+            entry.put("eventName", investment.getEvent().getName());
+            entry.put("amountInvested", investment.getAmount());
+            result.add(entry);
+        }
+        return result;
     }
 
 }
