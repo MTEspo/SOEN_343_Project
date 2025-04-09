@@ -15,19 +15,24 @@ const AttendeeManagement = () => {
   const [sessionsForEvent, setSessionsForEvent] = useState([]);
   const [showSessionModal, setShowSessionModal] = useState(false);
   const [selectedSessionId, setSelectedSessionId] = useState(null);
+  const [recommendedEvents, setRecommendedEvents] = useState([]);
+  const userId = localStorage.getItem("userId");
   
-
   useEffect(() => {
     fetchAllEvents();
+    fetchRecommendedEvents();
   }, []);
   
   useEffect(() => {
     if (filterType === "ALL") {
       setFilteredEvents(events);
+    } else if (filterType === "RECOMMENDED") {
+      setFilteredEvents(recommendedEvents);
     } else {
       setFilteredEvents(events.filter((event) => event.type === filterType));
     }
-  }, [filterType, events]);
+  }, [filterType, events, recommendedEvents]);
+  
   
 
   const fetchAllEvents = async () => {
@@ -40,18 +45,28 @@ const AttendeeManagement = () => {
     }
   };
 
-  
+  const fetchRecommendedEvents = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/event/recommended-events/${userId}`);
+      setRecommendedEvents(res.data);
+    } catch (err) {
+      console.error("Failed to fetch recommended events:", err);
+    }
+  };
+
   const handleFilterChange = (e) => {
     const selectedType = e.target.value;
     setFilterType(selectedType);
-
+  
     if (selectedType === "ALL") {
       setFilteredEvents(events);
+    } else if (selectedType === "RECOMMENDED") {
+      setFilteredEvents(recommendedEvents);
     } else {
       const filtered = events.filter((event) => event.type === selectedType);
       setFilteredEvents(filtered);
     }
-  };
+  };  
 
   const handleRegister = async (eventId) => {
     const userId = localStorage.getItem("userId");
@@ -111,7 +126,6 @@ const AttendeeManagement = () => {
     }
   };
   
-  
 
   return (
     <div className="min-h-screen flex flex-col items-center mt-6">
@@ -126,7 +140,7 @@ const AttendeeManagement = () => {
 
       {/* Filter Tabs */}
       <div className="flex space-x-6 overflow-x-auto mb-6 w-full max-w-6xl px-4">
-        {["ALL", "SEMINAR", "WEBINAR", "WORKSHOP", "CONFERENCE"].map((type) => (
+        {["ALL", "SEMINAR", "WEBINAR", "WORKSHOP", "CONFERENCE", "RECOMMENDED"].map((type) => (
           <button
             key={type}
             onClick={() => handleFilterChange({ target: { value: type } })}
@@ -136,10 +150,12 @@ const AttendeeManagement = () => {
                 : "text-gray-600 border-transparent hover:text-black hover:border-black"
             }`}
           >
-            {type === "ALL" 
-              ? "All" 
+            {type === "ALL"
+              ? "All"
+              : type === "RECOMMENDED"
+              ? "Recommended"
               : (type.charAt(0) + type.slice(1).toLowerCase()) + "s"}
-          </button>
+                  </button>
         ))}
       </div>
 

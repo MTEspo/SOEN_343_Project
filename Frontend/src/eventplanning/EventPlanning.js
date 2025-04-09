@@ -8,92 +8,88 @@ const API_URL = "http://localhost:8080/api";
 
 const EventPlanning = () => {
   const [events, setEvents] = useState([]);
-const [schedules, setSchedules] = useState([]);
-const [sessions, setSessions] = useState([]);
-const [eventSchedules, setEventSchedules] = useState({});
-const [eventSessions, setEventSessions] = useState({});
-const [editingEventId, setEditingEventId] = useState(null);
-const [editFields, setEditFields] = useState({ name: "", description: "", price: "" });
-const navigate = useNavigate();
-const [savedResources, setSavedResources] = useState({});
+  const [schedules, setSchedules] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [eventSchedules, setEventSchedules] = useState({});
+  const [eventSessions, setEventSessions] = useState({});
+  const [editingEventId, setEditingEventId] = useState(null);
+  const [editFields, setEditFields] = useState({ name: "", description: "", price: "" });
+  const navigate = useNavigate();
+  const [savedResources, setSavedResources] = useState({});
 
-const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
-const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
-const [newSession, setNewSession] = useState({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
+  const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
+  const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
+  const [newSession, setNewSession] = useState({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
+  const [availableTags, setAvailableTags] = useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
 
-const [openForm, setOpenForm] = useState({ eventId: null, type: null });
 
-const token = localStorage.getItem("token");
-const organizerId = localStorage.getItem("userId");
+  const [openForm, setOpenForm] = useState({ eventId: null, type: null });
 
-const [showSpeakerInfo, setShowSpeakerInfo] = useState(false); 
+  const token = localStorage.getItem("token");
+  const organizerId = localStorage.getItem("userId");
 
-const [selectedFiles, setSelectedFiles] = useState({});
-const [dragging, setDragging] = useState({});
+  const [showSpeakerInfo, setShowSpeakerInfo] = useState(false); 
 
-const fetchLatestResources = async (eventId) => {
-  try {
-    const response = await axios.get(`${API_URL}/event/${eventId}/resources`);
-    setSavedResources((prevResources) => ({ ...prevResources, [eventId]: response.data }));
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const [selectedFiles, setSelectedFiles] = useState({});
+  const [dragging, setDragging] = useState({});
 
-const handleDrop = (eventId, e) => {
-  e.preventDefault();
-  const files = e.dataTransfer.files;
-  setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [...(prevFiles[eventId] || []), ...files] }));
-  setDragging((prevDragging) => ({ ...prevDragging, [eventId]: false }));
-};
 
-const handleDragOver = (eventId, e) => {
-  e.preventDefault();
-  setDragging((prevDragging) => ({ ...prevDragging, [eventId]: true }));
-};
+  const handleDrop = (eventId, e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [...(prevFiles[eventId] || []), ...files] }));
+    setDragging((prevDragging) => ({ ...prevDragging, [eventId]: false }));
+  };
 
-const handleDragLeave = (eventId, e) => {
-  e.preventDefault();
-  setDragging((prevDragging) => ({ ...prevDragging, [eventId]: false }));
-};
+  const handleDragOver = (eventId, e) => {
+    e.preventDefault();
+    setDragging((prevDragging) => ({ ...prevDragging, [eventId]: true }));
+  };
 
-const handleFileChange = (eventId, e) => {
-  const files = e.target.files;
-  setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [...(prevFiles[eventId] || []), ...files] }));
-};
+  const handleDragLeave = (eventId, e) => {
+    e.preventDefault();
+    setDragging((prevDragging) => ({ ...prevDragging, [eventId]: false }));
+  };
 
-const handleRemoveFile = async (eventId, fileId) => {
-  try {
-    await axios.post(`${API_URL}/event/${eventId}/remove-file/${fileId}`);
-    await fetchLatestResources(eventId);
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const handleFileChange = (eventId, e) => {
+    const files = e.target.files;
+    setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [...(prevFiles[eventId] || []), ...files] }));
+  };
 
-const handleSaveFiles = async (eventId) => {
-  if (!selectedFiles[eventId] || selectedFiles[eventId].length === 0) return;
+  const handleRemoveFile = async (eventId, fileId) => {
+    try {
+      await axios.post(`${API_URL}/event/${eventId}/remove-file/${fileId}`);
+      await fetchLatestResources(eventId);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-  const formData = new FormData();
-  selectedFiles[eventId].forEach((file) => {
-    formData.append("files", file);
-  });
+  const handleSaveFiles = async (eventId) => {
+    if (!selectedFiles[eventId] || selectedFiles[eventId].length === 0) return;
 
-  try {
-    await axios.post(`${API_URL}/event/${eventId}/add-files`, formData);
-    setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [] }));
-    await fetchLatestResources(eventId);
-    alert("Files saved successfully!");
-  } catch (err) {
-    console.error("Failed to save files:", err);
-  }
-};
+    const formData = new FormData();
+    selectedFiles[eventId].forEach((file) => {
+      formData.append("files", file);
+    });
 
-useEffect(() => {
-  fetchEvents();
-  fetchAllSchedules();
-  fetchAllSessions();
-}, []);
+    try {
+      await axios.post(`${API_URL}/event/${eventId}/add-files`, formData);
+      setSelectedFiles((prevFiles) => ({ ...prevFiles, [eventId]: [] }));
+      await fetchLatestResources(eventId);
+      alert("Files saved successfully!");
+    } catch (err) {
+      console.error("Failed to save files:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchEvents();
+    fetchAllSchedules();
+    fetchAllSessions();
+    fetchAvailableTags();
+  }, []);
 
   const fetchEvents = async () => {
     try {
@@ -146,6 +142,24 @@ useEffect(() => {
       console.error("Failed to fetch schedules:", err);
     }
   };
+
+  const fetchLatestResources = async (eventId) => {
+    try {
+      const response = await axios.get(`${API_URL}/event/${eventId}/resources`);
+      setSavedResources((prevResources) => ({ ...prevResources, [eventId]: response.data }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchAvailableTags = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/tags/all-tags`);
+      setAvailableTags(res.data);
+    } catch (err) {
+      console.error("Failed to fetch tags:", err);
+    }
+  };  
 
   const loadSchedulesAndSessionsForEvents = async (eventList) => {
     const eventScheduleMap = {};
@@ -200,7 +214,7 @@ useEffect(() => {
 
       const res = await axios.post(
         `${API_URL}/event/create/${organizerId}`,
-        newEvent,
+        { ...newEvent, tags: selectedTags},
         {
           headers: {
             "Content-Type": "application/json",
@@ -214,6 +228,14 @@ useEffect(() => {
       console.error("Failed to create event:", err);
     }
   };
+
+  const handleTagToggle = (tag) => {
+    if (selectedTags.includes(tag)) {
+      setSelectedTags(selectedTags.filter((t) => t !== tag));
+    } else if (selectedTags.length < 3) {
+      setSelectedTags([...selectedTags, tag]);
+    }
+  };  
 
   const handleCreateSchedule = async (e) => {
     e.preventDefault();
@@ -592,6 +614,25 @@ useEffect(() => {
             className="border border-[#D9C2A3] p-2 rounded"
             required
           />
+
+          {/* Tag Selection Section */}
+          <label className="font-medium">Tags (select up to 3):</label>
+          <div className="flex flex-wrap gap-2">
+            {availableTags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => handleTagToggle(tag)}
+                className={`px-2 py-1 border border-[#C4A88E] rounded-md ${
+                  selectedTags.includes(tag) ? 'bg-[#C4A88E] text-white' : 'bg-white text-[#2E2E2E]'
+                }`}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          <p className="text-sm text-[#5A5958]">You may select up to 3 tags</p>
+
           <button type="submit" className="bg-[#D9C2A3] text-[#2E2E2E] p-2 rounded transition duration-300 hover:bg-[#C4A88E]">Create Event</button>
         </form>
       </div>

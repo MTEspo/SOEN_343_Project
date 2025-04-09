@@ -59,7 +59,7 @@ const DropdownMenu = ({ isLoggedIn, handleLogout }) => {
               onClick={handleLogout}
               className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-200"
             >
-              Logout
+              Log out
             </button>
           )}
         </div>
