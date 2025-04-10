@@ -204,6 +204,7 @@ public class EventService {
             entry.put("eventId", investment.getEvent().getId());
             entry.put("eventName", investment.getEvent().getName());
             entry.put("amountInvested", investment.getAmount());
+            entry.put("fundingGoal", investment.getEvent().getFundingGoal());
             result.add(entry);
         }
         return result;

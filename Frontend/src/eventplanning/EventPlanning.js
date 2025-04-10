@@ -17,7 +17,7 @@ const EventPlanning = () => {
   const navigate = useNavigate();
   const [savedResources, setSavedResources] = useState({});
 
-  const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "" });
+  const [newEvent, setNewEvent] = useState({ name: "", description: "", price: "", type: "", fundingGoal: "" });
   const [newSchedule, setNewSchedule] = useState({ date: "", eventId: null });
   const [newSession, setNewSession] = useState({ title: "", startTime: "", endTime: "", location: "", scheduleId: "" });
   const [availableTags, setAvailableTags] = useState([]);
@@ -611,6 +611,14 @@ const EventPlanning = () => {
             placeholder="Price"
             value={newEvent.price}
             onChange={(e) => setNewEvent({ ...newEvent, price: e.target.value })}
+            className="border border-[#D9C2A3] p-2 rounded"
+            required
+          />
+          <input
+            type="number"
+            placeholder="Funding Goal"
+            value={newEvent.fundingGoal}
+            onChange={(e) => setNewEvent({ ...newEvent, fundingGoal: e.target.value })}
             className="border border-[#D9C2A3] p-2 rounded"
             required
           />

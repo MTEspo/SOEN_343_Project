@@ -19,6 +19,9 @@ import NotificationBell from "./NotificationBell.js";
 import EventAnalytics from "./Dropdowns/Organizer/EventAnalytics.js";
 import EventAnalyticsPage from "./Dropdowns/Organizer/EventAnalyticsPage.js";
 import Receipts from "./Dropdowns/Attendee/Receipts.js";
+import StakeholderInvestPage from "./Stakeholder/StakeholderInvestPage.js";
+import StakeholderAnalytics from "./Dropdowns/Stakeholder/StakeholderAnalytics.js";
+import StakeholderAnalyticsDetails from "./Dropdowns/Stakeholder/StakeholderAnalyticsDetails.js";
 
 
 const events = [
@@ -342,6 +345,27 @@ function App() {
               >
                 Attend Events
               </button>
+
+
+              <button
+                onClick={() => {
+                  const userId = localStorage.getItem("userId");
+                  const role = localStorage.getItem("role");
+
+                  if (!userId || role !== "STAKEHOLDER") {
+                    const confirmLogin = window.confirm("You must be logged in as a stakeholder to invest in events. Log in now?");
+                    if (confirmLogin) {
+                      localStorage.clear(); // Clear any old tokens
+                      window.location.href = "/login";
+                    }
+                  } else {
+                    window.location.href = "/invest-in-events";
+                  }
+                }}
+                className="relative text-[#5A5958] text-lg font-medium tracking-widest transition-all duration-200 before:absolute before:bottom-0 before:left-0 before:w-0 before:h-[2px] before:bg-[#2E2E2E] before:transition-all before:duration-300 hover:before:w-full hover:text-[#2E2E2E]"
+              >
+                Invest in Events
+              </button>
             </div>
 
 
@@ -389,6 +413,9 @@ function App() {
             <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/receipts" element={<Receipts />} />
+            <Route path="/invest-in-events" element={<StakeholderInvestPage />} />
+            <Route path="/dropdowns/stakeholder/event-analytics" element={<StakeholderAnalytics />} />
+            <Route path="/dropdowns/stakeholder/StakeholderAnalyticsDetails/:eventId" element={<StakeholderAnalyticsDetails />} />
           </Routes>
 
           {/* Footer */}
