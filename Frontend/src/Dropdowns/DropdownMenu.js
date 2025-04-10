@@ -29,6 +29,10 @@ const DropdownMenu = ({ isLoggedIn, handleLogout }) => {
           { label: "Your Offers", path: "/dropdowns/speaker/speaker-offers" },
           { label: "Sessions Your Speaking at", path: "/dropdowns/speaker/speaker-sessions" },
         ];
+      case "STAKEHOLDER":
+        return [
+          { label: "Analytics", path: "/dropdowns/stakeholder/event-analytics" }
+        ];
       default:
         return [];
     }
